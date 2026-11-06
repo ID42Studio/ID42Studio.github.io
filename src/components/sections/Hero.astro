@@ -1,0 +1,253 @@
+---
+import type { SiteContent } from "../../i18n";
+import Icon from "../ui/Icon.astro";
+
+interface Props {
+  content: SiteContent;
+  mailHref: string;
+}
+
+const { content, mailHref } = Astro.props;
+const { hero, a11y } = content;
+---
+
+<section class="hero" id="top">
+  <div class="ambient" aria-hidden="true">
+    <div class="grid-lines"></div>
+    <div
+      class="blob"
+      style="width: 40rem; height: 40rem; left: -10rem; top: -12rem; background: radial-gradient(circle at 35% 35%, #2b4bff, transparent 68%);"
+    >
+    </div>
+    <div
+      class="blob"
+      style="width: 34rem; height: 34rem; right: -8rem; top: -4rem; background: radial-gradient(circle at 55% 45%, #8b5cf6, transparent 68%); animation-delay: -9s;"
+    >
+    </div>
+    <div
+      class="blob"
+      style="width: 26rem; height: 26rem; left: 45%; top: 26rem; background: radial-gradient(circle at 50% 50%, #0ea5e9, transparent 70%); opacity: .26; animation-delay: -14s;"
+    >
+    </div>
+  </div>
+
+  <div class="shell relative z-10">
+    <div class="hero-head">
+      <p class="eyebrow hero-in" style="--i: 0">
+        <span class="dot-live" aria-hidden="true"></span>
+        <span>{hero.eyebrow}</span>
+      </p>
+
+      <h1 class="display-1 hero-title">
+        {hero.titleLines.map((line, i) => (
+          <span class="hero-line" style={`--i:${i}`}>
+            <span class={i === hero.accentLine ? "text-grad" : undefined}>{line}</span>
+          </span>
+        ))}
+      </h1>
+    </div>
+
+    <div class="hero-body">
+      <div class="hero-copy">
+        <p class="lead hero-sub hero-in" style="--i: 3">{hero.subtitle}</p>
+
+        <div class="hero-actions hero-in" style="--i: 4">
+          <a class="btn btn--primary" href={mailHref}>
+            {hero.primaryCta}
+            <Icon name="arrowRight" size={16} />
+          </a>
+          <a class="btn btn--ghost" href="#produtos">{hero.secondaryCta}</a>
+        </div>
+
+        <div class="hero-proof hero-in" style="--i: 5">
+          <span class="mono-label">{hero.proofLabel}</span>
+          <ul class="proof-list">
+            {hero.proof.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <div class="hero-visual hero-in" style="--i: 3" data-hero-visual>
+        <div class="trace" aria-hidden="true">
+          <div class="trace-bar">
+            <span class="trace-dots">
+              <i></i><i></i><i></i>
+            </span>
+            <span class="trace-title">{hero.trace.title}</span>
+            <span class="trace-status">
+              <span class="dot-live"></span>
+              {hero.trace.status}
+            </span>
+          </div>
+
+          <ol class="trace-steps" data-trace>
+            {hero.trace.steps.map((step, i) => (
+              <li class="trace-step" data-step={i}>
+                <span class="mark">
+                  <Icon name="check" size={11} strokeWidth={2.4} />
+                </span>
+                <span class="label">{step.label}</span>
+                <span class="detail">{step.detail}</span>
+              </li>
+            ))}
+          </ol>
+
+          <div class="trace-foot">
+            <span>{hero.trace.footer}</span>
+            <span class="trace-progress"><i data-trace-progress></i></span>
+          </div>
+        </div>
+
+        <span class="chip-float chip-a" style="--chip-color: #25d366; right: -1rem; top: 3.5rem;">
+          <i></i>WhatsApp
+        </span>
+        <span class="chip-float chip-b" style="--chip-color: #5b7cff; left: -1.5rem; bottom: 4.5rem;">
+          <i></i>CRM
+        </span>
+        <span class="chip-float chip-c" style="--chip-color: #a78bfa; right: 2rem; bottom: -1.2rem;">
+          <i></i>Odoo
+        </span>
+
+        <p class="sr-only">{a11y.decorativeTrace}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding-top: clamp(7.5rem, 12vw, 9.5rem);
+    padding-bottom: clamp(3rem, 6vw, 5rem);
+  }
+
+  .hero-head {
+    display: grid;
+    gap: 1.4rem;
+  }
+
+  .hero-in {
+    opacity: 0;
+    transform: translateY(14px);
+    animation: fade-up 0.9s var(--ease-out-expo) forwards;
+    animation-delay: calc(var(--i) * 110ms + 320ms);
+  }
+
+  .hero-title {
+    margin: 0;
+  }
+
+  .hero-body {
+    display: grid;
+    gap: 2.75rem;
+    margin-top: clamp(2rem, 4vw, 3.2rem);
+    align-items: center;
+  }
+
+  .hero-copy {
+    display: grid;
+    gap: 0;
+    align-content: center;
+  }
+
+  .hero-sub {
+    max-width: 40rem;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    margin-top: 2rem;
+  }
+
+  .hero-proof {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.85rem;
+    margin-top: 2.2rem;
+    padding-top: 1.3rem;
+    border-top: 1px solid var(--color-line);
+    max-width: 30rem;
+  }
+
+  .proof-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.1rem;
+    font-size: 0.8125rem;
+    color: var(--color-muted);
+  }
+
+  .proof-list li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  .proof-list li::before {
+    content: "";
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--color-cyan);
+    opacity: 0.8;
+  }
+
+  .hero-visual {
+    position: relative;
+  }
+
+  .hero-visual .trace {
+    max-width: 30rem;
+    margin-inline: auto;
+  }
+
+  .chip-a {
+    animation: float-a 7s ease-in-out infinite;
+  }
+
+  .chip-b {
+    animation: float-b 8s ease-in-out infinite;
+  }
+
+  .chip-c {
+    animation: float-a 9s ease-in-out infinite;
+    animation-delay: -3s;
+  }
+
+  @keyframes float-a {
+    0%,
+    100% {
+      transform: translate3d(calc(var(--mx, 0) * 1px), calc(var(--my, 0) * 1px), 0);
+    }
+    50% {
+      transform: translate3d(calc(var(--mx, 0) * 1px), calc(var(--my, 0) * 1px - 10px), 0);
+    }
+  }
+
+  @keyframes float-b {
+    0%,
+    100% {
+      transform: translate3d(calc(var(--mx, 0) * 1px), calc(var(--my, 0) * 1px), 0);
+    }
+    50% {
+      transform: translate3d(calc(var(--mx, 0) * 1px + 6px), calc(var(--my, 0) * 1px + 8px), 0);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .hero-body {
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+      gap: clamp(2rem, 4vw, 3.5rem);
+    }
+
+    .hero-visual .trace {
+      margin-inline: 0;
+      margin-left: auto;
+    }
+  }
+</style>

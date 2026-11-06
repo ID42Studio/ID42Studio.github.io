@@ -1,0 +1,59 @@
+---
+import type { SiteContent } from "../../i18n";
+import SectionHead from "../ui/SectionHead.astro";
+import Icon from "../ui/Icon.astro";
+
+interface Props {
+  content: SiteContent["useCases"];
+}
+
+const { content } = Astro.props;
+---
+
+<section class="section section--line" id="casos-de-uso">
+  <div class="shell">
+    <SectionHead
+      index={content.index}
+      eyebrow={content.eyebrow}
+      title={content.title}
+      subtitle={content.subtitle}
+    />
+
+    <div class="usecase-grid">
+      {content.groups.map((group, i) => (
+        <article class="usecase" data-reveal style={`--d:${i}`}>
+          <span class="usecase-icon"><Icon name={group.icon} size={20} /></span>
+          <h3>{group.title}</h3>
+          <ul>
+            {group.items.map((item) => (
+              <li>
+                <Icon name="check" size={13} strokeWidth={2} />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .usecase-grid {
+    display: grid;
+    gap: 1rem;
+    margin-top: clamp(2.5rem, 4vw, 3.5rem);
+  }
+
+  @media (min-width: 640px) {
+    .usecase-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .usecase-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+</style>

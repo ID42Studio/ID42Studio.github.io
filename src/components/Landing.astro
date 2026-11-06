@@ -1,0 +1,49 @@
+---
+import Base from "../layouts/Base.astro";
+import Header from "../components/sections/Header.astro";
+import Hero from "../components/sections/Hero.astro";
+import Marquee from "../components/sections/Marquee.astro";
+import Problem from "../components/sections/Problem.astro";
+import Solutions from "../components/sections/Solutions.astro";
+import Process from "../components/sections/Process.astro";
+import UseCases from "../components/sections/UseCases.astro";
+import Cases from "../components/sections/Cases.astro";
+import About from "../components/sections/About.astro";
+import Cta from "../components/sections/Cta.astro";
+import Footer from "../components/sections/Footer.astro";
+import { getContent, pagePath, type Locale } from "../i18n";
+import { site, mailto } from "../data/site";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const content = getContent(locale);
+const mailHref = mailto(content.cta.emailSubject, content.cta.emailBody);
+const homeHref = pagePath(locale);
+---
+
+<Base locale={locale}>
+  <Header content={content} locale={locale} ctaHref={mailHref} homeHref={homeHref} />
+
+  <main id="main">
+    <Hero content={content} mailHref={mailHref} />
+    <Marquee content={content.marquee} />
+    <Problem content={content.problem} />
+    <Solutions content={content.solutions} />
+    <Process content={content.process} />
+    <UseCases content={content.useCases} />
+    <Cases content={content.cases} />
+    <About content={content.about} />
+    <Cta content={content.cta} mailHref={mailHref} linkedin={site.linkedin} />
+  </main>
+
+  <Footer
+    content={content}
+    locale={locale}
+    homeHref={homeHref}
+    mailHref={mailHref}
+    linkedin={site.linkedin}
+  />
+</Base>

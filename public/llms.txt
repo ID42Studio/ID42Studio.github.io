@@ -1,0 +1,22 @@
+# ID42 Studio
+> Applied AI studio. We design AI agents, automations and integrations that take over the repetitive work of a company's operation — connected to the CRM, ERP and WhatsApp it already runs.
+
+## Pages
+- [Português](https://id42studio.github.io/): default locale
+- [English](https://id42studio.github.io/en/): English version
+
+## What we do
+- Sales agents (WhatsApp, qualification, follow-up, CRM logging)
+- Workflow automation (CRM, ERP, email, spreadsheets, APIs)
+- Knowledge copilots (RAG over internal documents)
+- Systems integration (Odoo/ERP, CRM, support platforms)
+- Digital products (MVPs and micro-SaaS)
+
+## Products in production
+- [VBSell](https://vbsell.com): WhatsApp AI sales agents
+- [BuilderMonitor](https://buildermonitor.cloud.escodoo.com): operational and executive radar for construction sites
+- [Deepze](https://deepze.ai): private enterprise AI with RAG on customer infrastructure
+
+## Contact
+- Email: contato@id42.studio
+- LinkedIn: https://www.linkedin.com/company/id42studio

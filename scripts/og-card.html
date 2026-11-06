@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      @font-face {
+        font-family: "Bricolage Grotesque";
+        src: url("../public/fonts/bricolage-grotesque-latin-wght.woff2") format("woff2-variations");
+        font-weight: 200 800;
+        font-display: block;
+      }
+      @font-face {
+        font-family: "Inter";
+        src: url("../public/fonts/inter-latin-wght.woff2") format("woff2-variations");
+        font-weight: 100 900;
+        font-display: block;
+      }
+      @font-face {
+        font-family: "JetBrains Mono";
+        src: url("../public/fonts/jetbrains-mono-latin-wght.woff2") format("woff2-variations");
+        font-weight: 100 800;
+        font-display: block;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+
+      body {
+        width: 1200px;
+        height: 630px;
+        background: #050507;
+        color: #f4f4f6;
+        font-family: "Inter", sans-serif;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .grid {
+        position: absolute;
+        inset: 0;
+        background-image: linear-gradient(to right, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+        background-size: 64px 64px;
+        mask-image: radial-gradient(ellipse 80% 80% at 20% 0%, #000 10%, transparent 70%);
+      }
+
+      .blob {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(110px);
+        opacity: 0.55;
+      }
+
+      .b1 {
+        width: 620px;
+        height: 620px;
+        left: -180px;
+        top: -260px;
+        background: radial-gradient(circle at 40% 40%, #2b4bff, transparent 68%);
+      }
+
+      .b2 {
+        width: 520px;
+        height: 520px;
+        right: -160px;
+        bottom: -240px;
+        background: radial-gradient(circle at 50% 50%, #8b5cf6, transparent 68%);
+      }
+
+      .wrap {
+        position: relative;
+        height: 100%;
+        padding: 64px 72px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .brand-name {
+        font-family: "Bricolage Grotesque", sans-serif;
+        font-size: 26px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+
+      .brand-sub {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 0.26em;
+        text-transform: uppercase;
+        color: #6c6c7c;
+        margin-left: 4px;
+      }
+
+      .tag {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: #9b9baa;
+        border: 1px solid #26262f;
+        border-radius: 999px;
+        padding: 9px 16px;
+      }
+
+      h1 {
+        font-family: "Bricolage Grotesque", sans-serif;
+        font-size: 92px;
+        line-height: 0.94;
+        letter-spacing: -0.05em;
+        font-weight: 500;
+        max-width: 15ch;
+      }
+
+      .grad {
+        background-image: linear-gradient(96deg, #9fd8ff, #6f8dff 34%, #a78bfa 68%, #f0abfc);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      .foot {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 15px;
+        letter-spacing: 0.06em;
+        color: #6c6c7c;
+      }
+
+      .foot strong {
+        color: #f4f4f6;
+        font-weight: 500;
+      }
+
+      .live {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #3de1ff;
+      }
+
+      .live i {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #3de1ff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="grid"></div>
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+
+    <div class="wrap">
+      <div class="top">
+        <div class="brand">
+          <svg viewBox="0 0 26 26" width="30" height="30" fill="none">
+            <defs>
+              <linearGradient id="g" x1="0" y1="0" x2="26" y2="26" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#5B7CFF"></stop>
+                <stop offset="0.55" stop-color="#A78BFA"></stop>
+                <stop offset="1" stop-color="#3DE1FF"></stop>
+              </linearGradient>
+            </defs>
+            <rect x="0.5" y="0.5" width="10" height="10" rx="3" fill="#F4F4F6"></rect>
+            <rect x="15.5" y="0.5" width="10" height="10" rx="3" fill="url(#g)"></rect>
+            <rect x="0.5" y="15.5" width="10" height="10" rx="3" fill="url(#g)" opacity="0.55"></rect>
+            <rect x="15.5" y="15.5" width="10" height="10" rx="3" fill="#F4F4F6" opacity="0.22"></rect>
+          </svg>
+          <span class="brand-name">ID42</span>
+          <span class="brand-sub">Studio</span>
+        </div>
+        <span class="tag">Estúdio de IA aplicada</span>
+      </div>
+
+      <h1>Agentes de IA<br />que entram no<br /><span class="grad">expediente.</span></h1>
+
+      <div class="foot">
+        <span><strong>id42studio.github.io</strong></span>
+        <span class="live"><i></i>em produção</span>
+      </div>
+    </div>
+  </body>
+</html>

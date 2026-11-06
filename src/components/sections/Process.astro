@@ -1,0 +1,41 @@
+---
+import type { SiteContent } from "../../i18n";
+import SectionHead from "../ui/SectionHead.astro";
+
+interface Props {
+  content: SiteContent["process"];
+}
+
+const { content } = Astro.props;
+---
+
+<section class="section section--line" id="processo">
+  <div class="shell">
+    <SectionHead
+      index={content.index}
+      eyebrow={content.eyebrow}
+      title={content.title}
+      subtitle={content.subtitle}
+    />
+
+    <ol class="process" data-reveal>
+      {content.steps.map((step, i) => (
+        <li class="process-step" style={`--i:${i}`}>
+          <span class="n num-outline" aria-hidden="true">{step.n}</span>
+          <h3>{step.title}</h3>
+          <p>{step.text}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .process {
+    margin-top: clamp(2.5rem, 4vw, 3.5rem);
+  }
+
+  .process-step .n {
+    font-size: clamp(2.2rem, 3vw, 2.8rem);
+  }
+</style>

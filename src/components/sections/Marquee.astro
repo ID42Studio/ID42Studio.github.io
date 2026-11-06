@@ -1,0 +1,30 @@
+---
+import type { SiteContent } from "../../i18n";
+
+interface Props {
+  content: SiteContent["marquee"];
+}
+
+const { content } = Astro.props;
+---
+
+<div class="marquee" aria-label={content.label} role="group">
+  <div class="marquee-track">
+    {[0, 1].map((copy) => (
+      <div class="marquee-group" aria-hidden={copy === 1 ? "true" : undefined}>
+        {content.items.map((item) => (
+          <span class="marquee-item">{item}</span>
+        ))}
+      </div>
+    ))}
+  </div>
+</div>
+
+<style>
+  .marquee-group {
+    display: flex;
+    align-items: center;
+    gap: 1.6rem;
+    padding-inline: 1.6rem;
+  }
+</style>

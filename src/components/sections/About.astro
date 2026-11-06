@@ -1,0 +1,132 @@
+---
+import type { SiteContent } from "../../i18n";
+
+interface Props {
+  content: SiteContent["about"];
+}
+
+const { content } = Astro.props;
+---
+
+<section class="section section--line" id="estudio">
+  <div class="shell about-grid">
+    <div class="about-head" data-reveal>
+      <p class="eyebrow">
+        <span class="idx">{content.index}</span>
+        <span>{content.eyebrow}</span>
+      </p>
+      <h2 class="display-2 about-title">{content.title}</h2>
+    </div>
+
+    <div class="about-body">
+      <div class="about-text" data-reveal>
+        {content.paragraphs.map((paragraph) => (
+          <p>{paragraph}</p>
+        ))}
+      </div>
+
+      <blockquote class="quote" data-reveal style="--d:1">
+        “{content.quote}”
+      </blockquote>
+
+      <div class="about-meta" data-reveal style="--d:2">
+        <p class="mono-label">{content.expertiseLabel}</p>
+        <ul class="chip-list">
+          {content.expertise.map((item) => (
+            <li class="chip">{item}</li>
+          ))}
+        </ul>
+      </div>
+
+      <dl class="stats" data-reveal style="--d:3">
+        {content.stats.map((stat) => (
+          <div class="stat">
+            <dt class="stat-value">{stat.value}</dt>
+            <dd class="stat-label">{stat.label}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about-grid {
+    display: grid;
+    gap: 2.5rem;
+  }
+
+  .about-head {
+    display: grid;
+    gap: 1.2rem;
+    align-content: start;
+  }
+
+  .about-title {
+    max-width: 14ch;
+  }
+
+  .about-body {
+    display: grid;
+    gap: 2rem;
+    max-width: 40rem;
+  }
+
+  .about-text {
+    display: grid;
+    gap: 1rem;
+    color: var(--color-muted);
+    line-height: 1.7;
+    text-wrap: pretty;
+  }
+
+  .quote {
+    margin: 0;
+    padding-left: 1.4rem;
+    border-left: 1px solid var(--color-line-strong);
+    background: linear-gradient(90deg, rgba(91, 124, 255, 0.14), transparent 70%);
+    padding-block: 0.35rem;
+    padding-right: 1rem;
+    border-radius: 0 8px 8px 0;
+  }
+
+  .about-meta {
+    display: grid;
+    gap: 0.85rem;
+    padding-top: 0.5rem;
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.2rem;
+    margin: 0;
+    padding-top: 1.6rem;
+    border-top: 1px solid var(--color-line);
+  }
+
+  .stat {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .stat-label {
+    margin: 0;
+    font-size: 0.75rem;
+    line-height: 1.4;
+    color: var(--color-subtle);
+  }
+
+  @media (min-width: 900px) {
+    .about-grid {
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: clamp(2.5rem, 6vw, 5rem);
+    }
+
+    .about-head {
+      position: sticky;
+      top: 7rem;
+      align-self: start;
+    }
+  }
+</style>

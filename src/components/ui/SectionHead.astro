@@ -1,0 +1,47 @@
+---
+interface Props {
+  index?: string;
+  eyebrow: string;
+  title: string;
+  subtitle?: string;
+  align?: "left" | "center";
+  class?: string;
+}
+
+const { index, eyebrow, title, subtitle, align = "left", class: className = "" } = Astro.props;
+---
+
+<header class:list={["section-head", `is-${align}`, className]} data-reveal>
+  <p class="eyebrow">
+    {index && <span class="idx">{index}</span>}
+    <span>{eyebrow}</span>
+  </p>
+  <h2 class="display-2 section-title">{title}</h2>
+  {subtitle && <p class="lead section-sub">{subtitle}</p>}
+</header>
+
+<style>
+  .section-head {
+    display: grid;
+    gap: 1rem;
+    max-width: 62rem;
+  }
+
+  .is-center {
+    justify-items: center;
+    text-align: center;
+    margin-inline: auto;
+  }
+
+  .section-title {
+    max-width: 22ch;
+  }
+
+  .is-center .section-title {
+    max-width: 26ch;
+  }
+
+  .section-sub {
+    max-width: 52ch;
+  }
+</style>

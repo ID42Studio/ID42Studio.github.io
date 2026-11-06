@@ -1,0 +1,96 @@
+---
+import type { SiteContent } from "../../i18n";
+import SectionHead from "../ui/SectionHead.astro";
+
+interface Props {
+  content: SiteContent["cases"];
+}
+
+const { content } = Astro.props;
+
+const accents: Record<string, string> = {
+  blue: "#5b7cff",
+  cyan: "#3de1ff",
+  violet: "#a78bfa",
+};
+---
+
+<section class="section section--line" id="produtos">
+  <div class="shell">
+    <SectionHead
+      index={content.index}
+      eyebrow={content.eyebrow}
+      title={content.title}
+      subtitle={content.subtitle}
+    />
+
+    <div class="case-grid">
+      {content.items.map((item, i) => (
+        <a
+          class="case-card"
+          href={item.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={`--case:${accents[item.accent]}; --d:${i}`}
+          data-reveal
+          aria-label={`${item.name} — ${item.linkLabel}`}
+        >
+          <div class="case-top">
+            <span class="case-mono" aria-hidden="true">{item.monogram}</span>
+            <span class="pill"><span class="dot-live"></span>{item.category}</span>
+          </div>
+
+          <h3 class="case-name">{item.name}</h3>
+          <p class="case-desc">{item.description}</p>
+
+          <span class="case-link">
+            {item.linkLabel}
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M7 17 17 7"></path>
+              <path d="M9 7h8v8"></path>
+            </svg>
+          </span>
+        </a>
+      ))}
+    </div>
+
+    <p class="case-note" data-reveal>{content.note}</p>
+  </div>
+</section>
+
+<style>
+  .case-grid {
+    display: grid;
+    gap: 1rem;
+    margin-top: clamp(2.5rem, 4vw, 3.5rem);
+  }
+
+  .case-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .case-desc {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--color-muted);
+    flex: 1;
+  }
+
+  .case-note {
+    margin-top: 1.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-subtle);
+  }
+
+  @media (min-width: 768px) {
+    .case-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

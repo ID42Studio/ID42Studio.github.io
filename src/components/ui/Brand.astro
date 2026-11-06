@@ -1,0 +1,69 @@
+---
+interface Props {
+  href?: string;
+  compact?: boolean;
+}
+const { href = "/", compact = false } = Astro.props;
+---
+
+<a href={href} class="brand" aria-label="ID42 Studio">
+  <span class="brand-mark" aria-hidden="true">
+    <svg viewBox="0 0 26 26" width="26" height="26" fill="none">
+      <defs>
+        <linearGradient id="brand-grad" x1="0" y1="0" x2="26" y2="26" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#5B7CFF"></stop>
+          <stop offset="0.55" stop-color="#A78BFA"></stop>
+          <stop offset="1" stop-color="#3DE1FF"></stop>
+        </linearGradient>
+      </defs>
+      <rect x="0.5" y="0.5" width="10" height="10" rx="3" fill="#F4F4F6"></rect>
+      <rect x="15.5" y="0.5" width="10" height="10" rx="3" fill="url(#brand-grad)"></rect>
+      <rect x="0.5" y="15.5" width="10" height="10" rx="3" fill="url(#brand-grad)" opacity="0.55"></rect>
+      <rect x="15.5" y="15.5" width="10" height="10" rx="3" fill="#F4F4F6" opacity="0.22"></rect>
+    </svg>
+  </span>
+  <span class="brand-type">
+    <span class="brand-name">ID42</span>
+    {!compact && <span class="brand-sub">Studio</span>}
+  </span>
+</a>
+
+<style>
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex: none;
+  }
+
+  .brand-mark {
+    display: grid;
+    place-items: center;
+    transition: transform 0.5s var(--ease-out-expo);
+  }
+
+  .brand:hover .brand-mark {
+    transform: rotate(-6deg) scale(1.04);
+  }
+
+  .brand-type {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.35rem;
+  }
+
+  .brand-name {
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .brand-sub {
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--color-subtle);
+  }
+</style>

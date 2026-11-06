@@ -1,0 +1,158 @@
+---
+import type { SiteContent, Locale } from "../../i18n";
+import Brand from "../ui/Brand.astro";
+import Icon from "../ui/Icon.astro";
+import LocaleSwitch from "../ui/LocaleSwitch.astro";
+import { site } from "../../data/site";
+
+interface Props {
+  content: SiteContent;
+  locale: Locale;
+  homeHref: string;
+  mailHref: string;
+  linkedin: string;
+}
+
+const { content, locale, homeHref, mailHref, linkedin } = Astro.props;
+const { footer, nav, cta, a11y } = content;
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="shell">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <Brand href={homeHref} />
+        <p class="footer-tagline">{footer.tagline}</p>
+        <div class="footer-social">
+          <a class="footer-icon" href={mailHref} aria-label={cta.button}>
+            <Icon name="mail" size={16} />
+          </a>
+          <a
+            class="footer-icon"
+            href={linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="LinkedIn"
+          >
+            <Icon name="linkedin" size={16} />
+          </a>
+        </div>
+      </div>
+
+      <nav class="footer-col" aria-label={footer.navTitle}>
+        <p class="mono-label">{footer.navTitle}</p>
+        <ul>
+          {nav.links.map((link) => (
+            <li><a class="footer-link" href={link.href}>{link.label}</a></li>
+          ))}
+        </ul>
+      </nav>
+
+      <div class="footer-col">
+        <p class="mono-label">{footer.contactTitle}</p>
+        <ul>
+          <li><a class="footer-link" href={mailHref}>{content.cta.button}</a></li>
+          <li>
+            <a class="footer-link" href={linkedin} target="_blank" rel="noopener noreferrer">
+              LinkedIn
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© {year} {site.name}. {footer.rights}</p>
+      <div class="footer-bottom-right">
+        <span class="footer-made">{footer.madeIn}</span>
+        <LocaleSwitch locale={locale} label={a11y.language} />
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer-grid {
+    display: grid;
+    gap: 2.5rem;
+  }
+
+  .footer-brand {
+    display: grid;
+    gap: 1.1rem;
+    align-content: start;
+  }
+
+  .footer-tagline {
+    max-width: 26ch;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--color-muted);
+  }
+
+  .footer-social {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .footer-icon {
+    display: grid;
+    place-items: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    border: 1px solid var(--color-line);
+    border-radius: 10px;
+    color: var(--color-muted);
+    transition: color 0.25s ease, border-color 0.25s ease, transform 0.3s var(--ease-out-expo);
+  }
+
+  .footer-icon:hover {
+    color: var(--color-fg);
+    border-color: var(--color-line-strong);
+    transform: translateY(-2px);
+  }
+
+  .footer-col {
+    display: grid;
+    gap: 0.8rem;
+    align-content: start;
+  }
+
+  .footer-col ul {
+    display: grid;
+    gap: 0.15rem;
+  }
+
+  .footer-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: clamp(2.5rem, 5vw, 3.5rem);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-line);
+    font-size: 0.75rem;
+    color: var(--color-subtle);
+  }
+
+  .footer-bottom-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .footer-made {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+  }
+
+  @media (min-width: 768px) {
+    .footer-grid {
+      grid-template-columns: minmax(0, 1.6fr) repeat(2, minmax(0, 0.7fr));
+      gap: 2rem;
+    }
+  }
+</style>

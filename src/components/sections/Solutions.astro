@@ -1,0 +1,69 @@
+---
+import type { SiteContent } from "../../i18n";
+import SectionHead from "../ui/SectionHead.astro";
+
+interface Props {
+  content: SiteContent["solutions"];
+}
+
+const { content } = Astro.props;
+---
+
+<section class="section section--line" id="solucoes">
+  <div class="shell">
+    <SectionHead
+      index={content.index}
+      eyebrow={content.eyebrow}
+      title={content.title}
+      subtitle={content.subtitle}
+    />
+
+    <div class="solutions">
+      {content.items.map((item, i) => (
+        <article class="sol-row" data-reveal style={`--d:${i}`}>
+          <span class="sol-index">{String(i + 1).padStart(2, "0")}</span>
+          <h3 class="sol-title">{item.title}</h3>
+          <div class="sol-body">
+            <p class="sol-text">{item.text}</p>
+            <ul class="sol-tags">
+              {item.tags.map((tag) => (
+                <li class="pill">{tag}</li>
+              ))}
+            </ul>
+          </div>
+          <span class="sol-arrow" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M7 17 17 7"></path>
+              <path d="M9 7h8v8"></path>
+            </svg>
+          </span>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .solutions {
+    margin-top: clamp(2.5rem, 4vw, 3.5rem);
+  }
+
+  .sol-body {
+    display: grid;
+    gap: 0.9rem;
+    justify-items: start;
+  }
+
+  .sol-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin: 0;
+  }
+
+  @media (min-width: 768px) {
+    .sol-tags {
+      margin-top: 0;
+    }
+  }
+</style>

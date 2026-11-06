@@ -1,0 +1,88 @@
+---
+import type { SiteContent } from "../../i18n";
+import Icon from "../ui/Icon.astro";
+
+interface Props {
+  content: SiteContent["cta"];
+  mailHref: string;
+  linkedin: string;
+}
+
+const { content, mailHref, linkedin } = Astro.props;
+---
+
+<section class="section" id="contato">
+  <div class="shell">
+    <div class="cta-panel" data-reveal>
+      <div class="cta-glow" aria-hidden="true"></div>
+
+      <p class="eyebrow">
+        <span class="dot-live" aria-hidden="true"></span>
+        <span>ID42 Studio</span>
+      </p>
+
+      <h2 class="display-2 cta-title">{content.title}</h2>
+      <p class="lead cta-text">{content.text}</p>
+
+      <div class="cta-actions">
+        <a class="btn btn--primary" href={mailHref}>
+          <Icon name="mail" size={16} />
+          {content.button}
+        </a>
+        <a class="btn btn--ghost" href={linkedin} target="_blank" rel="noopener noreferrer">
+          <Icon name="linkedin" size={15} />
+          {content.secondary}
+        </a>
+      </div>
+
+      <p class="cta-note">{content.note}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-panel {
+    position: relative;
+  }
+
+  .cta-glow {
+    position: absolute;
+    width: 26rem;
+    height: 26rem;
+    right: -6rem;
+    top: -8rem;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 50%, rgba(61, 225, 255, 0.35), transparent 65%);
+    filter: blur(60px);
+    pointer-events: none;
+  }
+
+  .cta-title {
+    position: relative;
+    margin-top: 1.5rem;
+    max-width: 18ch;
+  }
+
+  .cta-text {
+    position: relative;
+    margin-top: 1.4rem;
+    max-width: 48ch;
+  }
+
+  .cta-actions {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    margin-top: 2.2rem;
+  }
+
+  .cta-note {
+    position: relative;
+    margin-top: 1.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+    color: var(--color-subtle);
+  }
+</style>

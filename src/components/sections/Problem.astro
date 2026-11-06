@@ -1,0 +1,54 @@
+---
+import type { SiteContent } from "../../i18n";
+import SectionHead from "../ui/SectionHead.astro";
+
+interface Props {
+  content: SiteContent["problem"];
+}
+
+const { content } = Astro.props;
+---
+
+<section class="section section--line" id="diagnostico">
+  <div class="shell">
+    <SectionHead index={content.index} eyebrow={content.eyebrow} title={content.title} />
+
+    <div class="problem-grid">
+      <p class="problem-text" data-reveal>{content.text}</p>
+
+      <div class="pain-grid">
+        {content.items.map((item, i) => (
+          <article class="pain" data-reveal style={`--d:${i}`}>
+            <span class="n">{item.n}</span>
+            <h3>{item.title}</h3>
+            <p>{item.text}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .problem-grid {
+    display: grid;
+    gap: 2.5rem;
+    margin-top: clamp(2.5rem, 4vw, 3.5rem);
+  }
+
+  .problem-text {
+    max-width: 46ch;
+    font-size: clamp(1rem, 1.35vw, 1.125rem);
+    line-height: 1.65;
+    color: var(--color-muted);
+    text-wrap: pretty;
+  }
+
+  @media (min-width: 1024px) {
+    .problem-grid {
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+      gap: clamp(2rem, 5vw, 4rem);
+      align-items: start;
+    }
+  }
+</style>
