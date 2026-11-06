@@ -4,13 +4,14 @@ import Header from "../components/sections/Header.astro";
 import Hero from "../components/sections/Hero.astro";
 import Marquee from "../components/sections/Marquee.astro";
 import Problem from "../components/sections/Problem.astro";
+import Deliver from "../components/sections/Deliver.astro";
 import Solutions from "../components/sections/Solutions.astro";
+import Saaw from "../components/sections/Saaw.astro";
 import Process from "../components/sections/Process.astro";
 import UseCases from "../components/sections/UseCases.astro";
 import Cases from "../components/sections/Cases.astro";
 import About from "../components/sections/About.astro";
 import Labs from "../components/sections/Labs.astro";
-import Discovery from "../components/sections/Discovery.astro";
 import Cta from "../components/sections/Cta.astro";
 import Footer from "../components/sections/Footer.astro";
 import { getContent, pagePath, type Locale } from "../i18n";
@@ -33,13 +34,14 @@ const homeHref = pagePath(locale);
     <Hero content={content} mailHref={mailHref} />
     <Marquee content={content.marquee} />
     <Problem content={content.challenges} />
+    <Deliver content={content.deliver} />
     <Solutions content={content.capabilities} />
+    <Saaw content={content.saaw} />
     <Process content={content.process} />
-    <UseCases content={content.applications} />
+    <UseCases content={content.useCases} />
     <Cases content={content.work} />
     <About content={content.about} />
     <Labs content={content.labs} />
-    <Discovery content={content.discovery} mailHref={mailHref} />
     <Cta content={content.cta} mailHref={mailHref} linkedin={site.linkedin} />
   </main>
 
