@@ -26,7 +26,9 @@ export default defineConfig({
     }),
   ],
   build: {
-    inlineStylesheets: "auto",
+    // One page, one render path: inlining the stylesheet removes the two
+    // render-blocking requests without meaningfully growing the document.
+    inlineStylesheets: "always",
   },
   vite: {
     plugins: [tailwindcss()],

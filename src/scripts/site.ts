@@ -11,14 +11,24 @@ const header = document.getElementById("site-header");
 const scrollProgress = document.querySelector<HTMLElement>("[data-scroll-progress]");
 
 let ticking = false;
+let maxScroll = 0;
+
+/** Cache the scroll range so the scroll handler never reads layout. */
+function measure() {
+  maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+}
+
+measure();
+window.addEventListener("load", measure, { once: true });
+window.addEventListener("resize", measure, { passive: true });
+window.addEventListener("orientationchange", measure, { passive: true });
 
 function paintScroll() {
   const y = window.scrollY;
   header?.classList.toggle("is-scrolled", y > 10);
 
   if (scrollProgress) {
-    const max = document.documentElement.scrollHeight - window.innerHeight;
-    const pct = max > 0 ? Math.min(100, (y / max) * 100) : 0;
+    const pct = maxScroll > 0 ? Math.min(100, (y / maxScroll) * 100) : 0;
     scrollProgress.style.width = `${pct}%`;
   }
 

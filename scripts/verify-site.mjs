@@ -194,15 +194,24 @@ check("llms.txt exists", () => {
 /* --------------------------------------------------------------- budgets */
 
 check("page weight budget", () => {
-  const html = readFileSync(join(dist, "index.html"));
-  const gz = gzipSync(html).length;
-  assert(gz < 24 * 1024, `index.html is ${(gz / 1024).toFixed(1)} KB gzipped`);
+  const html = read("index.html");
+  const gz = gzipSync(Buffer.from(html)).length;
+  assert(gz < 28 * 1024, `index.html is ${(gz / 1024).toFixed(1)} KB gzipped (budget 28)`);
+
+  const inlineCss = [...html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].reduce(
+    (total, match) => total + match[1].length,
+    0,
+  );
 
   const cssDir = join(dist, "_astro");
-  const css = readdirSync(cssDir)
-    .filter((file) => file.endsWith(".css"))
-    .reduce((total, file) => total + statSync(join(cssDir, file)).size, 0);
-  assert(css < 80 * 1024, `CSS is ${(css / 1024).toFixed(1)} KB`);
+  const externalCss = existsSync(cssDir)
+    ? readdirSync(cssDir)
+        .filter((file) => file.endsWith(".css"))
+        .reduce((total, file) => total + statSync(join(cssDir, file)).size, 0)
+    : 0;
+
+  const css = inlineCss + externalCss;
+  assert(css < 80 * 1024, `CSS is ${(css / 1024).toFixed(1)} KB (budget 80)`);
 
   return `html ${(gz / 1024).toFixed(1)} KB gz · css ${(css / 1024).toFixed(1)} KB`;
 });
