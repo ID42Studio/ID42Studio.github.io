@@ -37,9 +37,9 @@ npm run assets   # re-render og.png, og-en.png and the app icons
 src/
   components/
     Landing.astro          # page composition
-    sections/              # Header, Hero, Marquee, Problem, Solutions,
-                           # Process, UseCases, Cases, About, Labs, Discovery,
-                           # Cta, Footer
+    sections/              # Header, Hero, Marquee, Problem, Deliver, Solutions,
+                           # Saaw, Process, UseCases, Cases, About, Labs, Cta,
+                           # Footer
     ui/                    # Anchor, Brand, Icon, LocaleSwitch, SectionHead
   data/site.ts             # canonical URL, email, LinkedIn, helpers
   i18n/                    # types + pt-BR / en copy + locale helpers
@@ -73,11 +73,12 @@ lives in `astro.config.mjs` (`site`), used for canonical tags and the sitemap.
 
 ### Anchors
 
-Each section keeps its Portuguese slug as the canonical id (`#solucoes`,
-`#processo`, `#produtos`, `#estudio`, `#contato`). `<Anchor name="…" />` adds an
-empty English alias (`#solutions`, `#work`, `#studio`…) so old shared links keep
-working; `npm run verify` fails if a section id is missing, duplicated or if a
-`#anchor` in either page points at nothing.
+Each section keeps its Portuguese slug as the canonical id (`#entrega`,
+`#solucoes`, `#saaw`, `#processo`, `#produtos`, `#estudio`, `#contato`).
+`<Anchor name="…" />` adds an empty English alias (`#deliver`, `#solutions`,
+`#work`, `#studio`, and `#discovery` on the delivery section) so old shared
+links keep working; `npm run verify` fails if a section id is missing,
+duplicated or if a `#anchor` in either page points at nothing.
 
 ### Social cards and icons
 

@@ -68,6 +68,8 @@ function buildSchema(content: SiteContent, locale: Locale): Record<string, unkno
       "Odoo",
       "Workflow automation",
       "Product engineering",
+      "Intelligent operations",
+      "Software as a Work",
     ],
   };
 

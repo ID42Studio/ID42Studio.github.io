@@ -508,7 +508,7 @@
 .nav-desktop {
   display: none;
   align-items: center;
-  gap: 1.9rem;
+  gap: clamp(1rem, 1.6vw, 1.9rem);
 }
 
 .nav-link {

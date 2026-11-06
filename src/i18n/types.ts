@@ -30,20 +30,33 @@ export interface ProcessStep {
   text: string;
 }
 
-export type ApplicationIcon =
-  | "enterprise"
-  | "intelligence"
-  | "products"
-  | "experience"
-  | "knowledge"
-  | "platforms";
+export type ApplicationIcon = "sales" | "finance" | "support" | "enterprise";
 
-/** A domain where the studio ships systems — a capability, not a client case. */
-export interface ApplicationGroup {
+/**
+ * An operational domain with the outcome it can produce. These are possible
+ * applications, never deployments that were not delivered.
+ */
+export interface UseCaseGroup {
   icon: ApplicationIcon;
   title: string;
   text: string;
   items: string[];
+  deliverable: string;
+}
+
+/** Commercial delivery model: build it, run it, or sell the finished work. */
+export interface DeliveryModel {
+  key: string;
+  title: string;
+  text: string;
+  items: string[];
+  model: string;
+}
+
+/** One rung of the Software as a Work ladder. */
+export interface SaawStage {
+  label: string;
+  text: string;
 }
 
 /**
@@ -87,7 +100,7 @@ export interface SiteContent {
     primaryCta: string;
     secondaryCta: string;
     secondaryHref: string;
-    /** Brand signature, kept in English in both locales. */
+    /** Brand pillars, kept in English in both locales. */
     support: string;
     proofLabel: string;
     proof: string[];
@@ -111,6 +124,14 @@ export interface SiteContent {
     text: string;
     items: Challenge[];
   };
+  deliver: {
+    index: string;
+    eyebrow: string;
+    title: string;
+    text: string;
+    models: DeliveryModel[];
+    note: string;
+  };
   capabilities: {
     index: string;
     eyebrow: string;
@@ -118,19 +139,31 @@ export interface SiteContent {
     subtitle: string;
     items: Capability[];
   };
+  saaw: {
+    index: string;
+    eyebrow: string;
+    title: string;
+    text: string;
+    stages: SaawStage[];
+    statement: string;
+    note: string;
+  };
   process: {
     index: string;
     eyebrow: string;
     title: string;
     subtitle: string;
+    support: string;
     steps: ProcessStep[];
   };
-  applications: {
+  useCases: {
     index: string;
     eyebrow: string;
     title: string;
     subtitle: string;
-    groups: ApplicationGroup[];
+    deliverableLabel: string;
+    groups: UseCaseGroup[];
+    note: string;
   };
   work: {
     index: string;
@@ -165,16 +198,6 @@ export interface SiteContent {
     expertiseLabel: string;
     expertise: string[];
     stats: { value: string; label: string }[];
-  };
-  discovery: {
-    index: string;
-    eyebrow: string;
-    title: string;
-    text: string;
-    deliverablesLabel: string;
-    deliverables: string[];
-    cta: string;
-    note: string;
   };
   cta: {
     title: string;

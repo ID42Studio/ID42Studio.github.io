@@ -1,0 +1,139 @@
+---
+import type { SiteContent } from "../../i18n";
+import SectionHead from "../ui/SectionHead.astro";
+import Anchor from "../ui/Anchor.astro";
+
+interface Props {
+  content: SiteContent["deliver"];
+}
+
+const { content } = Astro.props;
+---
+
+<section class="section section--line" id="entrega">
+  <Anchor name="deliver" />
+  <Anchor name="discovery" />
+  <div class="shell">
+    <SectionHead
+      index={content.index}
+      eyebrow={content.eyebrow}
+      title={content.title}
+      subtitle={content.text}
+    />
+
+    <div class="deliver-grid">
+      {content.models.map((model, i) => (
+        <article class="deliver-card" data-reveal style={`--d:${i}`}>
+          <p class="deliver-key">{model.key}</p>
+          <h3>{model.title}</h3>
+          <p class="deliver-text">{model.text}</p>
+          <ul class="deliver-list">
+            {model.items.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+          <p class="deliver-model">{model.model}</p>
+        </article>
+      ))}
+    </div>
+
+    <p class="deliver-note" data-reveal>{content.note}</p>
+  </div>
+</section>
+
+<style>
+  .deliver-grid {
+    display: grid;
+    gap: 1rem;
+    margin-top: clamp(2.5rem, 4vw, 3.5rem);
+  }
+
+  .deliver-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: clamp(1.4rem, 2.4vw, 1.9rem);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.008));
+    transition: border-color 0.35s ease, transform 0.4s var(--ease-out-expo);
+  }
+
+  .deliver-card:hover {
+    border-color: var(--color-line-strong);
+    transform: translateY(-2px);
+  }
+
+  .deliver-key {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-blue);
+  }
+
+  .deliver-card h3 {
+    font-family: var(--font-display);
+    font-size: clamp(1.15rem, 1.6vw, 1.35rem);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+  }
+
+  .deliver-text {
+    font-size: 0.875rem;
+    line-height: 1.55;
+    color: var(--color-muted);
+    text-wrap: pretty;
+  }
+
+  .deliver-list {
+    display: grid;
+    gap: 0.4rem;
+    margin-top: 0.2rem;
+  }
+
+  .deliver-list li {
+    position: relative;
+    padding-left: 0.95rem;
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    color: var(--color-muted);
+  }
+
+  .deliver-list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.52em;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--color-line-strong);
+  }
+
+  .deliver-model {
+    margin-top: auto;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--color-line);
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-subtle);
+  }
+
+  .deliver-note {
+    margin-top: 1.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+    color: var(--color-subtle);
+  }
+
+  @media (min-width: 900px) {
+    .deliver-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

@@ -68,7 +68,9 @@ const pages = [
 const anchors = [
   ["top", "home"],
   ["diagnostico", "challenges"],
+  ["entrega", "deliver"],
   ["solucoes", "solutions"],
+  ["saaw", "saaw"],
   ["processo", "process"],
   ["casos-de-uso", "applications"],
   ["produtos", "work"],

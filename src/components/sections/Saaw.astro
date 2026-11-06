@@ -1,0 +1,145 @@
+---
+import type { SiteContent } from "../../i18n";
+
+interface Props {
+  content: SiteContent["saaw"];
+}
+
+const { content } = Astro.props;
+---
+
+<section class="section section--line" id="saaw">
+  <div class="shell">
+    <header class="saaw-head" data-reveal>
+      <p class="eyebrow">
+        <span class="idx">{content.index}</span>
+        <span>{content.eyebrow}</span>
+      </p>
+      <h2 class="display-2 saaw-title">{content.title}</h2>
+      <p class="lead saaw-text">{content.text}</p>
+    </header>
+
+    <ol class="saaw-stages" data-reveal>
+      {content.stages.map((stage, i) => (
+        <li class="saaw-stage" style={`--i:${i}`}>
+          <span class="saaw-index" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+          <h3>{stage.label}</h3>
+          <p>{stage.text}</p>
+        </li>
+      ))}
+    </ol>
+
+    <div class="saaw-foot" data-reveal>
+      <p class="saaw-statement">{content.statement}</p>
+      <p class="saaw-note">{content.note}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .saaw-head {
+    display: grid;
+    gap: 1.2rem;
+    max-width: 54rem;
+  }
+
+  .saaw-title {
+    max-width: 22ch;
+  }
+
+  .saaw-text {
+    max-width: 62ch;
+  }
+
+  .saaw-stages {
+    display: grid;
+    gap: 1rem;
+    margin-top: clamp(2.5rem, 4vw, 3.5rem);
+  }
+
+  .saaw-stage {
+    position: relative;
+    padding: 1.4rem 1.3rem 1.5rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    background: #08080c;
+    transition: border-color 0.35s ease;
+  }
+
+  .saaw-stage:hover {
+    border-color: var(--color-line-strong);
+  }
+
+  /* The last rung is the thesis: it carries the accent. */
+  .saaw-stage:last-child {
+    border-color: color-mix(in oklab, var(--color-blue) 45%, var(--color-line));
+    background:
+      radial-gradient(120% 90% at 0% 0%, rgba(91, 124, 255, 0.12), transparent 60%),
+      #08080c;
+  }
+
+  .saaw-index {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.14em;
+    color: var(--color-subtle);
+  }
+
+  .saaw-stage h3 {
+    margin-top: 0.9rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.1rem, 1.5vw, 1.3rem);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+  }
+
+  .saaw-stage:last-child h3 {
+    color: var(--color-fg);
+  }
+
+  .saaw-stage p {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.55;
+    color: var(--color-muted);
+    text-wrap: pretty;
+  }
+
+  .saaw-foot {
+    display: grid;
+    gap: 1rem;
+    margin-top: 2.2rem;
+    padding-top: 1.6rem;
+    border-top: 1px solid var(--color-line);
+  }
+
+  .saaw-statement {
+    font-family: var(--font-display);
+    font-size: clamp(1.4rem, 2.4vw, 2rem);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    text-wrap: balance;
+  }
+
+  .saaw-note {
+    max-width: 70ch;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    color: var(--color-subtle);
+    text-wrap: pretty;
+  }
+
+  @media (min-width: 900px) {
+    .saaw-stages {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.2rem;
+    }
+
+    .saaw-foot {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: start;
+      gap: 2rem;
+    }
+  }
+</style>
