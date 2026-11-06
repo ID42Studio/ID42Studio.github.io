@@ -5,7 +5,7 @@ Static, bilingual (pt-BR / en) one-page site for **ID42 Studio**, built with
 <https://id42studio.github.io>.
 
 No server, no runtime framework, no third-party requests: the whole page is
-~140 KB on first load, including self-hosted variable fonts.
+~130 KB on first load, including self-hosted variable fonts.
 
 ## Stack
 

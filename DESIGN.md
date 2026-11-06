@@ -92,6 +92,27 @@ never used below 1.5rem, where Bricolage loses its character.
 Numbers and metadata use `font-variant-numeric: tabular-nums` so counters and
 labels never shift while the hero trace advances.
 
+## Performance budget
+
+Measured on the deployed site (Lighthouse, mobile emulation):
+
+| Metric | Value |
+| --- | --- |
+| Performance / Accessibility / Best practices / SEO | 99 / 100 / 100 / 100 |
+| FCP · LCP · CLS · TBT | 1.2 s · 1.6 s · 0 · 0 ms |
+| Transferred on first load | ~130 KB (fonts are 129 KB of it) |
+| Requests | document + 3 font files, nothing else |
+
+Rules that keep it there:
+
+- No JavaScript framework. `src/scripts/site.ts` is the only JS and ships inline.
+- CSS is inlined at build time (`inlineStylesheets: "always"`) — one request,
+  no render-blocking stylesheet.
+- The scroll handler never reads layout: the scroll range is measured once and
+  refreshed on `load`/`resize`.
+- Fonts are latin-only variable woff2 files, self-hosted and preloaded.
+- `npm run verify` fails the build over 28 KB HTML (gzip) or 80 KB of CSS.
+
 ## Assets
 
 `public/` ships the two social cards (`og.png`, `og-en.png`), the app icon set
