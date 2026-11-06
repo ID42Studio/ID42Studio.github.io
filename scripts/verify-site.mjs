@@ -64,6 +64,20 @@ const pages = [
 
 /* ------------------------------------------------------------- structure */
 
+/** Canonical Portuguese slug first, published English alias second. */
+const anchors = [
+  ["top", "home"],
+  ["diagnostico", "challenges"],
+  ["solucoes", "solutions"],
+  ["processo", "process"],
+  ["casos-de-uso", "applications"],
+  ["produtos", "work"],
+  ["estudio", "studio"],
+  ["labs", "labs"],
+  ["discovery", "discovery"],
+  ["contato", "contact"],
+];
+
 check("both locales rendered", () => {
   for (const page of pages) assert(existsSync(join(dist, page.file)), `${page.file} missing`);
   return `${pages.length} pages`;
@@ -110,6 +124,27 @@ for (const page of pages) {
     const imagePath = image.replace("https://id42studio.github.io/", "");
     assert(existsSync(join(dist, imagePath)), `og image missing: ${imagePath}`);
     return imagePath;
+  });
+
+  check(`${page.file}: sections and published anchors`, () => {
+    const html = read(page.file);
+    const missing = anchors.flat().filter((id) => !html.includes(`id="${id}"`));
+    assert(missing.length === 0, `missing ids: ${missing.join(", ")}`);
+
+    const duplicates = [...html.matchAll(/\sid="([^"]+)"/g)]
+      .map((match) => match[1])
+      .filter((id, index, all) => all.indexOf(id) !== index);
+    assert(duplicates.length === 0, `duplicate ids: ${[...new Set(duplicates)].join(", ")}`);
+    return `${anchors.length} sections`;
+  });
+
+  check(`${page.file}: internal links resolve`, () => {
+    const html = read(page.file);
+    const targets = new Set([...html.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]));
+    const refs = [...html.matchAll(/href="#([^"]+)"/g)].map((match) => match[1]);
+    const broken = [...new Set(refs)].filter((ref) => !targets.has(ref));
+    assert(broken.length === 0, `broken anchors: ${broken.join(", ")}`);
+    return `${new Set(refs).size} anchors`;
   });
 
   check(`${page.file}: structured data`, () => {

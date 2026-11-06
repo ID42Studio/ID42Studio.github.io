@@ -12,7 +12,7 @@ The page should read as an engineering studio, not an agency.
    Any other color must be justified.
 3. **Hairlines over shadows.** Structure comes from 1px borders and spacing,
    not from cards floating in space.
-4. **Motion explains state.** Reveals, the live agent trace, the marquee. Motion
+4. **Motion explains state.** Reveals, the delivery trace, the marquee. Motion
    never blocks reading and is disabled under `prefers-reduced-motion`.
 
 ## Tokens
