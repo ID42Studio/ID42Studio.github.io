@@ -1,6 +1,7 @@
 ---
 import type { SiteContent } from "../../i18n";
 import Icon from "../ui/Icon.astro";
+import Anchor from "../ui/Anchor.astro";
 
 interface Props {
   content: SiteContent;
@@ -9,9 +10,19 @@ interface Props {
 
 const { content, mailHref } = Astro.props;
 const { hero, a11y } = content;
+
+/** Floating capability chips: order matches `hero.chips` in both locales. */
+const chipPositions = [
+  "right: -1rem; top: 3.5rem;",
+  "left: -1.5rem; bottom: 4.5rem;",
+  "right: 2rem; bottom: -1.2rem;",
+];
+const chipColors = ["#5b7cff", "#a78bfa", "#3de1ff"];
 ---
 
 <section class="hero" id="top">
+  <Anchor name="home" />
+
   <div class="ambient" aria-hidden="true">
     <div class="grid-lines"></div>
     <div
@@ -56,10 +67,12 @@ const { hero, a11y } = content;
             {hero.primaryCta}
             <Icon name="arrowRight" size={16} />
           </a>
-          <a class="btn btn--ghost" href="#produtos">{hero.secondaryCta}</a>
+          <a class="btn btn--ghost" href={hero.secondaryHref}>{hero.secondaryCta}</a>
         </div>
 
-        <div class="hero-proof hero-in" style="--i: 5">
+        <p class="hero-support mono-label hero-in" style="--i: 5">{hero.support}</p>
+
+        <div class="hero-proof hero-in" style="--i: 6">
           <span class="mono-label">{hero.proofLabel}</span>
           <ul class="proof-list">
             {hero.proof.map((item) => (
@@ -100,15 +113,14 @@ const { hero, a11y } = content;
           </div>
         </div>
 
-        <span class="chip-float chip-a" style="--chip-color: #25d366; right: -1rem; top: 3.5rem;">
-          <i></i>WhatsApp
-        </span>
-        <span class="chip-float chip-b" style="--chip-color: #5b7cff; left: -1.5rem; bottom: 4.5rem;">
-          <i></i>CRM
-        </span>
-        <span class="chip-float chip-c" style="--chip-color: #a78bfa; right: 2rem; bottom: -1.2rem;">
-          <i></i>Odoo
-        </span>
+        {hero.chips.map((chip, i) => (
+          <span
+            class={`chip-float chip-${["a", "b", "c"][i] ?? "a"}`}
+            style={`--chip-color: ${chipColors[i] ?? "#5b7cff"}; ${chipPositions[i] ?? ""}`}
+          >
+            <i></i>{chip}
+          </span>
+        ))}
 
         <p class="sr-only">{a11y.decorativeTrace}</p>
       </div>
@@ -162,12 +174,17 @@ const { hero, a11y } = content;
     margin-top: 2rem;
   }
 
+  .hero-support {
+    margin-top: 1.6rem;
+    color: var(--color-subtle);
+  }
+
   .hero-proof {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 0.85rem;
-    margin-top: 2.2rem;
+    margin-top: 1.8rem;
     padding-top: 1.3rem;
     border-top: 1px solid var(--color-line);
     max-width: 30rem;

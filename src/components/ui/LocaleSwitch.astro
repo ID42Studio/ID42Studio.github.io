@@ -1,5 +1,6 @@
 ---
 import type { Locale } from "../../i18n";
+import { pathFor } from "../../data/site";
 
 interface Props {
   locale: Locale;
@@ -8,9 +9,23 @@ interface Props {
 }
 
 const { locale, label, class: className = "" } = Astro.props;
+const ptHref = pathFor("pt-BR");
+const enHref = pathFor("en");
 ---
 
-<div class:list={["lang-switch", className]} role="group" aria-label={label}>
-  <a href="/" aria-current={locale === "pt-BR" ? "true" : "false"} hreflang="pt-BR" lang="pt-BR">PT</a>
-  <a href="/en/" aria-current={locale === "en" ? "true" : "false"} hreflang="en" lang="en">EN</a>
+<div class:list={["lang-switch", className]} role="group" aria-label={label} data-locale-switch>
+  <a
+    href={ptHref}
+    aria-current={locale === "pt-BR" ? "true" : "false"}
+    hreflang="pt-BR"
+    lang="pt-BR"
+    data-locale-link
+  >PT</a>
+  <a
+    href={enHref}
+    aria-current={locale === "en" ? "true" : "false"}
+    hreflang="en"
+    lang="en"
+    data-locale-link
+  >EN</a>
 </div>

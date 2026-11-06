@@ -1,0 +1,115 @@
+---
+import type { SiteContent } from "../../i18n";
+import Icon from "../ui/Icon.astro";
+
+interface Props {
+  content: SiteContent["labs"];
+}
+
+const { content } = Astro.props;
+---
+
+<section class="section section--line" id="labs">
+  <div class="shell labs-grid">
+    <div class="labs-head" data-reveal>
+      <p class="eyebrow">
+        <span class="idx">{content.index}</span>
+        <span>{content.eyebrow}</span>
+      </p>
+      <h2 class="display-2 labs-title">{content.title}</h2>
+      <p class="labs-text">{content.text}</p>
+      <p class="labs-note mono-label">{content.note}</p>
+    </div>
+
+    <div class="labs-focus" data-reveal style="--d:1">
+      <p class="mono-label">{content.focusLabel}</p>
+      <ul class="focus-list">
+        {content.focus.map((item, i) => (
+          <li>
+            <span class="focus-index" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+            <span class="focus-label">{item}</span>
+            <Icon name="beaker" size={14} />
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .labs-grid {
+    display: grid;
+    gap: 2.5rem;
+  }
+
+  .labs-head {
+    display: grid;
+    gap: 1.2rem;
+    align-content: start;
+  }
+
+  .labs-title {
+    max-width: 16ch;
+  }
+
+  .labs-text {
+    max-width: 46ch;
+    color: var(--color-muted);
+    line-height: 1.7;
+    text-wrap: pretty;
+  }
+
+  .labs-note {
+    color: var(--color-subtle);
+  }
+
+  .labs-focus {
+    display: grid;
+    gap: 0.85rem;
+    align-content: start;
+  }
+
+  .focus-list {
+    display: grid;
+    border-top: 1px solid var(--color-line);
+  }
+
+  .focus-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding-block: 0.85rem;
+    border-bottom: 1px solid var(--color-line);
+    color: var(--color-muted);
+  }
+
+  .focus-list li svg {
+    margin-left: auto;
+    color: var(--color-line-strong);
+    transition: color 0.3s ease, transform 0.4s var(--ease-out-expo);
+  }
+
+  .focus-list li:hover svg {
+    color: var(--color-cyan);
+    transform: rotate(-8deg);
+  }
+
+  .focus-index {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.1em;
+    color: var(--color-subtle);
+  }
+
+  .focus-label {
+    font-size: 0.9375rem;
+  }
+
+  @media (min-width: 900px) {
+    .labs-grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: clamp(2.5rem, 6vw, 5rem);
+      align-items: start;
+    }
+  }
+</style>

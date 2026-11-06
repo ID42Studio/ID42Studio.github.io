@@ -58,12 +58,16 @@ function buildSchema(content: SiteContent, locale: Locale): Record<string, unkno
     areaServed: { "@type": "Country", name: "Brazil" },
     sameAs: [site.linkedin],
     knowsAbout: [
+      "Software engineering",
+      "Solution architecture",
+      "Systems integration",
       "AI agents",
-      "Workflow automation",
+      "Retrieval-augmented generation",
+      "Digital products",
       "ERP",
       "Odoo",
-      "Systems integration",
-      "Knowledge copilots",
+      "Workflow automation",
+      "Product engineering",
     ],
   };
 
@@ -79,13 +83,13 @@ function buildSchema(content: SiteContent, locale: Locale): Record<string, unkno
   const products = {
     "@type": "ItemList",
     "@id": `${site.url}/#products`,
-    name: locale === "en" ? "Products in production" : "Produtos em produção",
-    itemListElement: content.cases.items.map((item, index) => ({
+    name: locale === "en" ? "Projects and products" : "Projetos e produtos",
+    itemListElement: content.work.items.map((item, index) => ({
       "@type": "ListItem",
       position: index + 1,
       name: item.name,
       url: item.url,
-      description: item.description,
+      description: `${item.category}. ${item.solution}`,
     })),
   };
 

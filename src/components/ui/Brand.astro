@@ -4,21 +4,24 @@ interface Props {
   compact?: boolean;
 }
 const { href = "/", compact = false } = Astro.props;
+
+/** Unique gradient id: the brand renders in the header and the footer. */
+const gradientId = `brand-grad-${Math.random().toString(36).slice(2, 8)}`;
 ---
 
 <a href={href} class="brand" aria-label="ID42 Studio">
   <span class="brand-mark" aria-hidden="true">
     <svg viewBox="0 0 26 26" width="26" height="26" fill="none">
       <defs>
-        <linearGradient id="brand-grad" x1="0" y1="0" x2="26" y2="26" gradientUnits="userSpaceOnUse">
+        <linearGradient id={gradientId} x1="0" y1="0" x2="26" y2="26" gradientUnits="userSpaceOnUse">
           <stop offset="0" stop-color="#5B7CFF"></stop>
           <stop offset="0.55" stop-color="#A78BFA"></stop>
           <stop offset="1" stop-color="#3DE1FF"></stop>
         </linearGradient>
       </defs>
       <rect x="0.5" y="0.5" width="10" height="10" rx="3" fill="#F4F4F6"></rect>
-      <rect x="15.5" y="0.5" width="10" height="10" rx="3" fill="url(#brand-grad)"></rect>
-      <rect x="0.5" y="15.5" width="10" height="10" rx="3" fill="url(#brand-grad)" opacity="0.55"></rect>
+      <rect x="15.5" y="0.5" width="10" height="10" rx="3" fill={`url(#${gradientId})`}></rect>
+      <rect x="0.5" y="15.5" width="10" height="10" rx="3" fill={`url(#${gradientId})`} opacity="0.55"></rect>
       <rect x="15.5" y="15.5" width="10" height="10" rx="3" fill="#F4F4F6" opacity="0.22"></rect>
     </svg>
   </span>

@@ -2,15 +2,17 @@
 import type { SiteContent } from "../../i18n";
 import SectionHead from "../ui/SectionHead.astro";
 import Icon from "../ui/Icon.astro";
+import Anchor from "../ui/Anchor.astro";
 
 interface Props {
-  content: SiteContent["useCases"];
+  content: SiteContent["applications"];
 }
 
 const { content } = Astro.props;
 ---
 
 <section class="section section--line" id="casos-de-uso">
+  <Anchor name="applications" />
   <div class="shell">
     <SectionHead
       index={content.index}
@@ -24,6 +26,7 @@ const { content } = Astro.props;
         <article class="usecase" data-reveal style={`--d:${i}`}>
           <span class="usecase-icon"><Icon name={group.icon} size={20} /></span>
           <h3>{group.title}</h3>
+          <p class="usecase-text">{group.text}</p>
           <ul>
             {group.items.map((item) => (
               <li>
@@ -45,6 +48,14 @@ const { content } = Astro.props;
     margin-top: clamp(2.5rem, 4vw, 3.5rem);
   }
 
+  .usecase-text {
+    margin-top: 0.5rem;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--color-subtle);
+    text-wrap: pretty;
+  }
+
   @media (min-width: 640px) {
     .usecase-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -53,7 +64,7 @@ const { content } = Astro.props;
 
   @media (min-width: 1024px) {
     .usecase-grid {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
 </style>

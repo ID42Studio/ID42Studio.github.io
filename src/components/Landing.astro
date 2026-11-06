@@ -9,6 +9,8 @@ import Process from "../components/sections/Process.astro";
 import UseCases from "../components/sections/UseCases.astro";
 import Cases from "../components/sections/Cases.astro";
 import About from "../components/sections/About.astro";
+import Labs from "../components/sections/Labs.astro";
+import Discovery from "../components/sections/Discovery.astro";
 import Cta from "../components/sections/Cta.astro";
 import Footer from "../components/sections/Footer.astro";
 import { getContent, pagePath, type Locale } from "../i18n";
@@ -30,12 +32,14 @@ const homeHref = pagePath(locale);
   <main id="main">
     <Hero content={content} mailHref={mailHref} />
     <Marquee content={content.marquee} />
-    <Problem content={content.problem} />
-    <Solutions content={content.solutions} />
+    <Problem content={content.challenges} />
+    <Solutions content={content.capabilities} />
     <Process content={content.process} />
-    <UseCases content={content.useCases} />
-    <Cases content={content.cases} />
+    <UseCases content={content.applications} />
+    <Cases content={content.work} />
     <About content={content.about} />
+    <Labs content={content.labs} />
+    <Discovery content={content.discovery} mailHref={mailHref} />
     <Cta content={content.cta} mailHref={mailHref} linkedin={site.linkedin} />
   </main>
 

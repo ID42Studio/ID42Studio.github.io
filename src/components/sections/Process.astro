@@ -1,6 +1,7 @@
 ---
 import type { SiteContent } from "../../i18n";
 import SectionHead from "../ui/SectionHead.astro";
+import Anchor from "../ui/Anchor.astro";
 
 interface Props {
   content: SiteContent["process"];
@@ -10,6 +11,7 @@ const { content } = Astro.props;
 ---
 
 <section class="section section--line" id="processo">
+  <Anchor name="process" />
   <div class="shell">
     <SectionHead
       index={content.index}
