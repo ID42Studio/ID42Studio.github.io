@@ -73,14 +73,18 @@ google-chrome --headless --screenshot=public/og.png \
 
 ## Deploying to GitHub Pages
 
-1. Create the repository `ID42Studio/ID42Studio.github.io` (public).
-2. Push this project to `main`.
-3. In **Settings → Pages**, set **Source** to *GitHub Actions*.
-4. The `deploy` workflow builds and publishes on every push to `main`.
+The site is live at <https://id42studio.github.io> (pt-BR) and
+<https://id42studio.github.io/en> (English).
 
-The site is served from the domain root, so no `base` path is configured. If it
-moves to a project page (`/repo-name/`) or a custom domain, update `site` in
-`astro.config.mjs` and add a `base` value.
+- Repository: `ID42Studio/ID42Studio.github.io`
+- Pages source: **Deploy from a branch** → `gh-pages` → `/ (root)`
+- `.github/workflows/deploy.yml` runs on every push to `main`: it installs,
+  type-checks, builds and force-pushes `dist/` to the `gh-pages` branch, which
+  triggers the Pages build. `public/.nojekyll` keeps `_astro/` assets served.
+
+Assets are referenced from the domain root, so no `base` is configured. If the
+site ever moves to a project page (`/repo-name/`) or a custom domain, update
+`site` (and add `base`) in `astro.config.mjs`.
 
 ## Motion and accessibility
 
