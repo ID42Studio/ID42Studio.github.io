@@ -38,8 +38,9 @@ src/
   components/
     Landing.astro          # page composition
     sections/              # Header, Hero, Marquee, Problem, Solutions,
-                           # Process, UseCases, Cases, About, Cta, Footer
-    ui/                    # Brand, Icon, LocaleSwitch, SectionHead
+                           # Process, UseCases, Cases, About, Labs, Discovery,
+                           # Cta, Footer
+    ui/                    # Anchor, Brand, Icon, LocaleSwitch, SectionHead
   data/site.ts             # canonical URL, email, LinkedIn, helpers
   i18n/                    # types + pt-BR / en copy + locale helpers
   layouts/Base.astro       # document shell, head, skip link
@@ -56,7 +57,7 @@ public/
   icon-192.png, icon-512.png, apple-touch-icon.png, favicon.svg
   manifest.webmanifest, robots.txt, llms.txt, .nojekyll
 scripts/
-  verify-site.mjs          # post-build gate: 16 assertions on dist/
+  verify-site.mjs          # post-build gate: 20 assertions on dist/
   render-assets.sh         # regenerates cards + icons (headless Chrome)
   og-card.html, icon-card.html
 ```
@@ -69,6 +70,14 @@ a missing translation is a type error, not a silent fallback.
 
 Contact details (email, LinkedIn) are in `src/data/site.ts`. The canonical URL
 lives in `astro.config.mjs` (`site`), used for canonical tags and the sitemap.
+
+### Anchors
+
+Each section keeps its Portuguese slug as the canonical id (`#solucoes`,
+`#processo`, `#produtos`, `#estudio`, `#contato`). `<Anchor name="…" />` adds an
+empty English alias (`#solutions`, `#work`, `#studio`…) so old shared links keep
+working; `npm run verify` fails if a section id is missing, duplicated or if a
+`#anchor` in either page points at nothing.
 
 ### Social cards and icons
 
@@ -91,6 +100,7 @@ breaks:
 - title/description lengths inside search-safe ranges
 - Open Graph, Twitter and hreflang sets complete; OG image exists on disk
 - JSON-LD parses and carries Organization, WebSite and ItemList
+- every section id present, no duplicate ids, every `#anchor` resolves
 - every referenced asset exists in `dist/`; no external resource requests
 - sitemap lists both URLs, `robots.txt` points at it
 - page weight budgets (HTML gzipped, total CSS)

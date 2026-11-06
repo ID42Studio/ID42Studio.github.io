@@ -252,4 +252,18 @@ if (visual && window.matchMedia("(pointer: fine)").matches && !reduceMotion) {
   });
 }
 
+/* ------------------------------------------------------------- locale switch */
+
+/**
+ * Switching language keeps the reader in the same section: the hash of the
+ * current view is appended to the target locale path (`/en/#work`). Static
+ * markup ships the plain path, so the link still works without JavaScript.
+ */
+for (const link of document.querySelectorAll<HTMLAnchorElement>("[data-locale-link]")) {
+  link.addEventListener("click", () => {
+    const [path] = link.href.split("#");
+    if (window.location.hash) link.href = `${path}${window.location.hash}`;
+  });
+}
+
 export {};

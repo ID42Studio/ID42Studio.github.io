@@ -1,21 +1,30 @@
 # ID42 Studio
-> Applied AI studio. We design AI agents, automations and integrations that take over the repetitive work of a company's operation — connected to the CRM, ERP and WhatsApp it already runs.
+> Software, AI and intelligent solutions studio. We design, build and operate software systems, intelligent applications and digital products — engineering first, AI when it adds value.
 
 ## Pages
 - [Português](https://id42studio.github.io/): default locale
 - [English](https://id42studio.github.io/en/): English version
 
 ## What we do
-- Sales agents (WhatsApp, qualification, follow-up, CRM logging)
-- Workflow automation (CRM, ERP, email, spreadsheets, APIs)
-- Knowledge copilots (RAG over internal documents)
-- Systems integration (Odoo/ERP, CRM, support platforms)
-- Digital products (MVPs and micro-SaaS)
+- Software engineering: custom systems, web applications, backend services, APIs, SaaS platforms
+- AI and agentic systems: agents, multi-agent systems, copilots, RAG, LLM applications, evaluation
+- Automation and integration: ERP/CRM integration, workflow automation, APIs, event-driven pipelines
+- Product engineering: discovery, MVP, SaaS engineering, product architecture, evolution
+- Architecture and consulting: solution architecture, technical review, modernisation, AI adoption
+- Research and prototyping: applied R&D, proofs of concept, experiments, open source
 
-## Products in production
-- [VBSell](https://vbsell.com): WhatsApp AI sales agents
-- [BuilderMonitor](https://buildermonitor.cloud.escodoo.com): operational and executive radar for construction sites
-- [Deepze](https://deepze.ai): private enterprise AI with RAG on customer infrastructure
+## How we work
+Discover, Architect, Build, Validate, Operate, Evolve. The same six stages apply to conventional
+software, AI, integrations, digital products and experiments.
+
+## Projects
+- [VBSell](https://vbsell.com): omnichannel sales platform with WhatsApp AI agents that answer, qualify, follow up and log into the CRM
+- [BuilderMonitor](https://buildermonitor.cloud.escodoo.com): enterprise SaaS radar for construction sites — schedule, cost and field data above the ERP
+- [Deepze](https://deepze.ai): private enterprise AI with chat and copilots over the company knowledge base, RAG on customer infrastructure
+
+## Labs
+ID42 Labs is the studio's applied research and prototyping practice: agents and multi-agent systems,
+local and private LLMs, developer tooling, open source, emerging architectures and applied AI evaluation.
 
 ## Contact
 - Email: contato@id42.studio

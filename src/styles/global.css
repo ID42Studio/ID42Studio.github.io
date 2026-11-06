@@ -1531,13 +1531,25 @@
   }
 
   .process {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 1.6rem;
   }
 
   .pain-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+}
+
+/* ==========================================================================
+   Anchors: published English slugs kept as alias targets
+   ========================================================================== */
+
+.anchor-alias {
+  display: block;
+  position: relative;
+  top: -1px;
+  height: 0;
+  scroll-margin-top: 7rem;
 }
 
 /* ==========================================================================

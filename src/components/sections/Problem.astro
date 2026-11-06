@@ -1,15 +1,17 @@
 ---
 import type { SiteContent } from "../../i18n";
 import SectionHead from "../ui/SectionHead.astro";
+import Anchor from "../ui/Anchor.astro";
 
 interface Props {
-  content: SiteContent["problem"];
+  content: SiteContent["challenges"];
 }
 
 const { content } = Astro.props;
 ---
 
 <section class="section section--line" id="diagnostico">
+  <Anchor name="challenges" />
   <div class="shell">
     <SectionHead index={content.index} eyebrow={content.eyebrow} title={content.title} />
 

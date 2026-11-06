@@ -1,15 +1,18 @@
 ---
 import type { SiteContent } from "../../i18n";
 import SectionHead from "../ui/SectionHead.astro";
+import Icon from "../ui/Icon.astro";
+import Anchor from "../ui/Anchor.astro";
 
 interface Props {
-  content: SiteContent["solutions"];
+  content: SiteContent["capabilities"];
 }
 
 const { content } = Astro.props;
 ---
 
 <section class="section section--line" id="solucoes">
+  <Anchor name="solutions" />
   <div class="shell">
     <SectionHead
       index={content.index}
@@ -22,7 +25,10 @@ const { content } = Astro.props;
       {content.items.map((item, i) => (
         <article class="sol-row" data-reveal style={`--d:${i}`}>
           <span class="sol-index">{String(i + 1).padStart(2, "0")}</span>
-          <h3 class="sol-title">{item.title}</h3>
+          <div class="sol-head">
+            <span class="sol-icon" aria-hidden="true"><Icon name={item.icon} size={18} /></span>
+            <h3 class="sol-title">{item.title}</h3>
+          </div>
           <div class="sol-body">
             <p class="sol-text">{item.text}</p>
             <ul class="sol-tags">
@@ -46,6 +52,30 @@ const { content } = Astro.props;
 <style>
   .solutions {
     margin-top: clamp(2.5rem, 4vw, 3.5rem);
+  }
+
+  .sol-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .sol-icon {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 2.1rem;
+    height: 2.1rem;
+    border: 1px solid var(--color-line);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--color-blue);
+    transition: color 0.3s ease, border-color 0.3s ease;
+  }
+
+  .sol-row:hover .sol-icon {
+    color: var(--color-cyan);
+    border-color: var(--color-line-strong);
   }
 
   .sol-body {

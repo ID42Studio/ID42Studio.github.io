@@ -1,0 +1,15 @@
+---
+/**
+ * Empty target that keeps previously published English anchors working.
+ * The Portuguese slug stays the canonical id of each section; these aliases
+ * are only here so `/en/#work` and older shared links still land.
+ * Set `inert` so the span never becomes a tap target or a focus stop.
+ */
+interface Props {
+  name: string;
+}
+
+const { name } = Astro.props;
+---
+
+<span id={name} class="anchor-alias" aria-hidden="true"></span>

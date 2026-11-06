@@ -10,13 +10,15 @@ export interface TraceStep {
   detail: string;
 }
 
-export interface PainPoint {
+export interface Challenge {
   n: string;
   title: string;
   text: string;
 }
 
-export interface Solution {
+/** One engineering capability. `icon` names a glyph in `ui/Icon.astro`. */
+export interface Capability {
+  icon: string;
   title: string;
   text: string;
   tags: string[];
@@ -28,20 +30,43 @@ export interface ProcessStep {
   text: string;
 }
 
-export interface UseCaseGroup {
-  icon: "sales" | "support" | "ops" | "finance";
+export type ApplicationIcon =
+  | "enterprise"
+  | "intelligence"
+  | "products"
+  | "experience"
+  | "knowledge"
+  | "platforms";
+
+/** A domain where the studio ships systems — a capability, not a client case. */
+export interface ApplicationGroup {
+  icon: ApplicationIcon;
   title: string;
+  text: string;
   items: string[];
 }
 
-export interface ProductCase {
+/**
+ * A product the studio built and runs. Every field is factual by contract:
+ * `problem` and `solution` describe the system, never results that were not
+ * measured.
+ */
+export interface WorkItem {
   name: string;
   monogram: string;
   category: string;
-  description: string;
+  problem: string;
+  solution: string;
+  capabilities: string[];
+  status: string;
   url: string;
   linkLabel: string;
   accent: "blue" | "cyan" | "violet";
+}
+
+export interface Principle {
+  title: string;
+  text: string;
 }
 
 export interface SiteContent {
@@ -61,8 +86,12 @@ export interface SiteContent {
     subtitle: string;
     primaryCta: string;
     secondaryCta: string;
+    secondaryHref: string;
+    /** Brand signature, kept in English in both locales. */
+    support: string;
     proofLabel: string;
     proof: string[];
+    chips: string[];
     trace: {
       title: string;
       status: string;
@@ -75,19 +104,19 @@ export interface SiteContent {
     label: string;
     items: string[];
   };
-  problem: {
+  challenges: {
     index: string;
     eyebrow: string;
     title: string;
     text: string;
-    items: PainPoint[];
+    items: Challenge[];
   };
-  solutions: {
+  capabilities: {
     index: string;
     eyebrow: string;
     title: string;
     subtitle: string;
-    items: Solution[];
+    items: Capability[];
   };
   process: {
     index: string;
@@ -96,19 +125,33 @@ export interface SiteContent {
     subtitle: string;
     steps: ProcessStep[];
   };
-  useCases: {
+  applications: {
     index: string;
     eyebrow: string;
     title: string;
     subtitle: string;
-    groups: UseCaseGroup[];
+    groups: ApplicationGroup[];
   };
-  cases: {
+  work: {
     index: string;
     eyebrow: string;
     title: string;
     subtitle: string;
-    items: ProductCase[];
+    labels: {
+      problem: string;
+      solution: string;
+      capabilities: string;
+    };
+    items: WorkItem[];
+    note: string;
+  };
+  labs: {
+    index: string;
+    eyebrow: string;
+    title: string;
+    text: string;
+    focusLabel: string;
+    focus: string[];
     note: string;
   };
   about: {
@@ -116,10 +159,22 @@ export interface SiteContent {
     eyebrow: string;
     title: string;
     paragraphs: string[];
+    principlesLabel: string;
+    principles: Principle[];
     quote: string;
     expertiseLabel: string;
     expertise: string[];
     stats: { value: string; label: string }[];
+  };
+  discovery: {
+    index: string;
+    eyebrow: string;
+    title: string;
+    text: string;
+    deliverablesLabel: string;
+    deliverables: string[];
+    cta: string;
+    note: string;
   };
   cta: {
     title: string;

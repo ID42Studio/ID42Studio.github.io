@@ -1,6 +1,7 @@
 ---
 import type { SiteContent } from "../../i18n";
 import Icon from "../ui/Icon.astro";
+import Anchor from "../ui/Anchor.astro";
 
 interface Props {
   content: SiteContent["cta"];
@@ -12,6 +13,7 @@ const { content, mailHref, linkedin } = Astro.props;
 ---
 
 <section class="section" id="contato">
+  <Anchor name="contact" />
   <div class="shell">
     <div class="cta-panel" data-reveal>
       <div class="cta-glow" aria-hidden="true"></div>

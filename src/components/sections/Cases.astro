@@ -1,9 +1,10 @@
 ---
 import type { SiteContent } from "../../i18n";
 import SectionHead from "../ui/SectionHead.astro";
+import Anchor from "../ui/Anchor.astro";
 
 interface Props {
-  content: SiteContent["cases"];
+  content: SiteContent["work"];
 }
 
 const { content } = Astro.props;
@@ -16,6 +17,7 @@ const accents: Record<string, string> = {
 ---
 
 <section class="section section--line" id="produtos">
+  <Anchor name="work" />
   <div class="shell">
     <SectionHead
       index={content.index}
@@ -37,11 +39,33 @@ const accents: Record<string, string> = {
         >
           <div class="case-top">
             <span class="case-mono" aria-hidden="true">{item.monogram}</span>
-            <span class="pill"><span class="dot-live"></span>{item.category}</span>
+            <span class="pill case-status"><span class="dot-live"></span>{item.status}</span>
           </div>
 
-          <h3 class="case-name">{item.name}</h3>
-          <p class="case-desc">{item.description}</p>
+          <div class="case-head">
+            <h3 class="case-name">{item.name}</h3>
+            <p class="case-category">{item.category}</p>
+          </div>
+
+          <dl class="case-facts">
+            <div>
+              <dt>{content.labels.problem}</dt>
+              <dd>{item.problem}</dd>
+            </div>
+            <div>
+              <dt>{content.labels.solution}</dt>
+              <dd>{item.solution}</dd>
+            </div>
+          </dl>
+
+          <div class="case-caps">
+            <p class="mono-label">{content.labels.capabilities}</p>
+            <ul>
+              {item.capabilities.map((capability) => (
+                <li class="pill">{capability}</li>
+              ))}
+            </ul>
+          </div>
 
           <span class="case-link">
             {item.linkLabel}
@@ -72,11 +96,56 @@ const accents: Record<string, string> = {
     gap: 1rem;
   }
 
-  .case-desc {
+  .case-status {
+    text-align: right;
+    line-height: 1.3;
+  }
+
+  .case-head {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .case-category {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-subtle);
+  }
+
+  .case-facts {
+    display: grid;
+    gap: 0.9rem;
+    margin: 0;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-line);
+  }
+
+  .case-facts dt {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-subtle);
+  }
+
+  .case-facts dd {
+    margin: 0.35rem 0 0;
     font-size: 0.9rem;
-    line-height: 1.6;
+    line-height: 1.55;
     color: var(--color-muted);
-    flex: 1;
+  }
+
+  .case-caps {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .case-caps ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
   }
 
   .case-note {
