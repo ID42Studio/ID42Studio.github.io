@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <title>ID42 Studio — app icon</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        background: transparent;
+      }
+      img {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      const size = Number(location.hash.slice(1)) || 512;
+      const img = document.createElement("img");
+      img.src = "../public/favicon.svg";
+      img.width = size;
+      img.height = size;
+      document.body.appendChild(img);
+    </script>
+  </body>
+</html>

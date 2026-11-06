@@ -26,6 +26,9 @@ npm run dev      # http://localhost:4321
 npm run build    # static output in dist/
 npm run preview  # serve dist/ locally
 npm run check    # astro check (types + template diagnostics)
+npm run verify   # asserts on dist/: SEO, assets, i18n parity, budgets
+npm run ship     # check + build + verify (what CI runs)
+npm run assets   # re-render og.png, og-en.png and the app icons
 ```
 
 ## Structure
@@ -39,7 +42,8 @@ src/
     ui/                    # Brand, Icon, LocaleSwitch, SectionHead
   data/site.ts             # canonical URL, email, LinkedIn, helpers
   i18n/                    # types + pt-BR / en copy + locale helpers
-  layouts/Base.astro       # <head>, SEO, JSON-LD, fonts, skip link
+  layouts/Base.astro       # document shell, head, skip link
+  lib/seo.ts               # canonical, hreflang, OG, JSON-LD graph
   pages/
     index.astro            # pt-BR at /
     en/index.astro         # English at /en/
@@ -48,8 +52,13 @@ src/
   styles/global.css        # tokens, layout primitives, motion
 public/
   fonts/                   # latin variable woff2 (preloaded)
-  og.png                   # 1200x630 social card (source: scripts/og-card.html)
-  favicon.svg, apple-touch-icon.png, robots.txt, .nojekyll
+  og.png, og-en.png        # 1200x630 cards (source: scripts/og-card.html)
+  icon-192.png, icon-512.png, apple-touch-icon.png, favicon.svg
+  manifest.webmanifest, robots.txt, llms.txt, .nojekyll
+scripts/
+  verify-site.mjs          # post-build gate: 16 assertions on dist/
+  render-assets.sh         # regenerates cards + icons (headless Chrome)
+  og-card.html, icon-card.html
 ```
 
 ## Editing content
@@ -61,15 +70,31 @@ a missing translation is a type error, not a silent fallback.
 Contact details (email, LinkedIn) are in `src/data/site.ts`. The canonical URL
 lives in `astro.config.mjs` (`site`), used for canonical tags and the sitemap.
 
-### Social card
+### Social cards and icons
 
-`scripts/og-card.html` is the source artwork for `public/og.png`. It is rendered
-with headless Chrome at 1200×630:
+`scripts/og-card.html` renders both social cards (pass `#en` for English) and
+`scripts/icon-card.html` renders the app icons. Regenerate everything with:
 
 ```bash
-google-chrome --headless --screenshot=public/og.png \
-  --window-size=1200,630 scripts/og-card.html
+npm run assets          # uses `google-chrome`; override with CHROME=/path/to/chrome
 ```
+
+Output: `public/og.png`, `public/og-en.png`, `public/icon-192.png`,
+`public/icon-512.png`, `public/apple-touch-icon.png`.
+
+## Quality gate
+
+`npm run verify` runs after `astro build` and fails the CI job when an invariant
+breaks:
+
+- both locales rendered, one `<h1>` each, correct `lang` and canonical
+- title/description lengths inside search-safe ranges
+- Open Graph, Twitter and hreflang sets complete; OG image exists on disk
+- JSON-LD parses and carries Organization, WebSite and ItemList
+- every referenced asset exists in `dist/`; no external resource requests
+- sitemap lists both URLs, `robots.txt` points at it
+- page weight budgets (HTML gzipped, total CSS)
+- `pt-BR` and `en` dictionaries have identical key shapes and no empty strings
 
 ## Deploying to GitHub Pages
 

@@ -12,6 +12,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
+    "verify": "node scripts/verify-site.mjs",
+    "ship": "npm run check && npm run build && npm run verify",
+    "assets": "bash scripts/render-assets.sh",
     "astro": "astro"
   },
   "dependencies": {

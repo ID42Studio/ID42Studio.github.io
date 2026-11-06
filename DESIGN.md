@@ -71,8 +71,30 @@ never used below 1.5rem, where Bricolage loses its character.
 
 ## Accessibility
 
-- Body copy on `--color-bg` is `#9b9baa` (≈ 6.4:1); headings `#f4f4f6` (> 15:1).
-- `--color-subtle` is reserved for decorative metadata, never for essential text.
+- Body copy (`--color-muted` on `--color-bg`) is 7.4:1 — WCAG AAA for normal text.
+  Headings are above 15:1. `--color-subtle` (5.1:1) is used only for short
+  metadata, never for running text.
 - Focus ring: 2px cyan with 3px offset, visible on every interactive element.
+- The mobile menu is a labelled dialog: focus moves in, is trapped, background
+  regions are `inert`, and focus returns to the toggle on close.
 - The hero trace is decorative (`aria-hidden`) with an equivalent screen-reader
   description; the page is fully readable without JavaScript.
+
+## Preferences
+
+| Preference | Behaviour |
+| --- | --- |
+| `prefers-reduced-motion` | All animation and smooth scrolling disabled; reveals render immediately |
+| `prefers-contrast: more` | Muted/subtle text and hairlines are promoted; gradient text falls back to solid |
+| `forced-colors: active` | Borders use system colors; gradient text becomes `CanvasText` |
+| Print | Chrome/nav/motion dropped, white background, black text, underlined links |
+
+Numbers and metadata use `font-variant-numeric: tabular-nums` so counters and
+labels never shift while the hero trace advances.
+
+## Assets
+
+`public/` ships the two social cards (`og.png`, `og-en.png`), the app icon set
+(`icon-192`, `icon-512`, `apple-touch-icon`), `favicon.svg`, `manifest.webmanifest`,
+`robots.txt` and `llms.txt`. All are generated from sources in `scripts/` via
+`npm run assets` — no binary is hand-edited.

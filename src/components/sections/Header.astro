@@ -19,7 +19,7 @@ const { nav, a11y } = content;
   <div class="header-inner">
     <Brand href={homeHref} />
 
-    <nav class="nav-desktop" aria-label="Primary">
+    <nav class="nav-desktop" aria-label={a11y.mainNav}>
       {nav.links.map((link) => (
         <a class="nav-link" href={link.href} data-nav-link>{link.label}</a>
       ))}
@@ -51,8 +51,8 @@ const { nav, a11y } = content;
   <div class="scroll-progress" aria-hidden="true"><span data-scroll-progress></span></div>
 </header>
 
-<div class="mobile-menu" id="mobile-menu" inert data-menu>
-  <nav aria-label="Mobile">
+<div class="mobile-menu" id="mobile-menu" inert data-menu role="dialog" aria-modal="true" aria-label={a11y.menu}>
+  <nav aria-label={a11y.mobileNav}>
     {nav.links.map((link, i) => (
       <a class="mobile-link" href={link.href} data-menu-link>
         <span>{String(i + 1).padStart(2, "0")}</span>

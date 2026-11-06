@@ -91,20 +91,56 @@ if (observed.length && "IntersectionObserver" in window) {
 
 const menuToggle = document.querySelector<HTMLButtonElement>("[data-menu-toggle]");
 const menu = document.querySelector<HTMLElement>("[data-menu]");
+const pageRegions = [
+  document.getElementById("main"),
+  document.querySelector<HTMLElement>(".site-footer"),
+].filter((el): el is HTMLElement => el !== null);
+
+let lastFocused: HTMLElement | null = null;
+
+function focusables(root: HTMLElement): HTMLElement[] {
+  return Array.from(
+    root.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    ),
+  ).filter((el) => el.offsetParent !== null);
+}
 
 function setMenu(open: boolean) {
   if (!menuToggle || !menu) return;
 
+  const isOpen = menu.classList.contains("is-open");
+  if (open === isOpen) return;
+
   menu.classList.toggle("is-open", open);
   menu.inert = !open;
   menuToggle.setAttribute("aria-expanded", String(open));
+  pageRegions.forEach((region) => {
+    region.inert = open;
+  });
+  document.documentElement.classList.toggle("menu-open", open);
 
   const label = open
     ? menuToggle.dataset.labelClose ?? "Close menu"
     : menuToggle.dataset.labelOpen ?? "Open menu";
 
   menuToggle.setAttribute("aria-label", label);
-  document.documentElement.style.overflow = open ? "hidden" : "";
+
+  if (open) {
+    lastFocused = document.activeElement as HTMLElement | null;
+    // The panel fades in from `visibility: hidden`, which makes it unfocusable
+    // on the first frame — retry once the transition has committed.
+    requestAnimationFrame(() => {
+      const target = focusables(menu)[0];
+      target?.focus();
+      if (target && document.activeElement !== target) {
+        window.setTimeout(() => target.focus(), 120);
+      }
+    });
+  } else {
+    lastFocused?.focus();
+    lastFocused = null;
+  }
 }
 
 menuToggle?.addEventListener("click", () => {
@@ -116,7 +152,27 @@ document.querySelectorAll("[data-menu-link]").forEach((link) => {
 });
 
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape") setMenu(false);
+  if (event.key === "Escape") {
+    setMenu(false);
+    return;
+  }
+
+  if (event.key !== "Tab" || !menu?.classList.contains("is-open")) return;
+
+  const items = focusables(menu);
+  if (!items.length) return;
+
+  const first = items[0];
+  const last = items[items.length - 1];
+  const active = document.activeElement;
+
+  if (event.shiftKey && active === first) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && active === last) {
+    event.preventDefault();
+    first.focus();
+  }
 });
 
 window.matchMedia("(min-width: 1024px)").addEventListener("change", (event) => {

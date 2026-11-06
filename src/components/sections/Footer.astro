@@ -66,6 +66,13 @@ const year = new Date().getFullYear();
       <p>© {year} {site.name}. {footer.rights}</p>
       <div class="footer-bottom-right">
         <span class="footer-made">{footer.madeIn}</span>
+        <a class="footer-top" href="#top">
+          {footer.backToTop}
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 19V5"></path>
+            <path d="M6 11l6-6 6 6"></path>
+          </svg>
+        </a>
         <LocaleSwitch locale={locale} label={a11y.language} />
       </div>
     </div>
@@ -147,6 +154,23 @@ const year = new Date().getFullYear();
     font-family: var(--font-mono);
     font-size: 0.6875rem;
     letter-spacing: 0.06em;
+  }
+
+  .footer-top {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-subtle);
+    transition: color 0.25s ease, gap 0.3s var(--ease-out-expo);
+  }
+
+  .footer-top:hover {
+    color: var(--color-fg);
+    gap: 0.55rem;
   }
 
   @media (min-width: 768px) {

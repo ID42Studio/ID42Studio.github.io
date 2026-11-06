@@ -5,7 +5,7 @@ export const ptBR: SiteContent = {
   meta: {
     title: "ID42 Studio — Agentes de IA que entram no expediente",
     description:
-      "Estúdio de IA aplicada: projetamos agentes, automações e integrações que assumem o trabalho repetitivo da operação — conectados ao CRM, ERP e WhatsApp que sua empresa já usa.",
+      "Agentes, automações e integrações que assumem o trabalho repetitivo da sua operação — conectados ao CRM, ERP e WhatsApp que você já usa.",
     ogLocale: "pt_BR",
   },
   nav: {
@@ -54,7 +54,7 @@ export const ptBR: SiteContent = {
       "APIs internas",
       "PostgreSQL",
       "Planilhas",
-      "n8n",
+      "Sistemas legados",
       "LLMs",
       "Webhooks",
       "S3",
@@ -298,12 +298,16 @@ export const ptBR: SiteContent = {
     contactTitle: "Contato",
     rights: "Todos os direitos reservados.",
     madeIn: "Feito no Brasil.",
+    backToTop: "Voltar ao topo",
   },
   a11y: {
     skip: "Ir para o conteúdo",
     menuOpen: "Abrir menu",
     menuClose: "Fechar menu",
     language: "Idioma",
+    mainNav: "Navegação principal",
+    mobileNav: "Navegação do menu",
+    menu: "Menu",
     decorativeTrace:
       "Ilustração de um fluxo automatizado: mensagem recebida, contexto recuperado, lead qualificado, CRM atualizado e reunião proposta.",
   },

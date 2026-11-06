@@ -5,7 +5,7 @@ export const en: SiteContent = {
   meta: {
     title: "ID42 Studio — AI agents that clock in",
     description:
-      "An applied-AI studio: we design agents, automations and integrations that take over the repetitive work of your operation — wired into the CRM, ERP and WhatsApp you already run.",
+      "AI agents, automations and integrations that take over the repetitive work of your operation — wired into the CRM, ERP and WhatsApp you already run.",
     ogLocale: "en_US",
   },
   nav: {
@@ -54,7 +54,7 @@ export const en: SiteContent = {
       "Internal APIs",
       "PostgreSQL",
       "Spreadsheets",
-      "n8n",
+      "Legacy systems",
       "LLMs",
       "Webhooks",
       "S3",
@@ -298,12 +298,16 @@ export const en: SiteContent = {
     contactTitle: "Contact",
     rights: "All rights reserved.",
     madeIn: "Built in Brazil.",
+    backToTop: "Back to top",
   },
   a11y: {
     skip: "Skip to content",
     menuOpen: "Open menu",
     menuClose: "Close menu",
     language: "Language",
+    mainNav: "Main navigation",
+    mobileNav: "Menu navigation",
+    menu: "Menu",
     decorativeTrace:
       "Illustration of an automated flow: message received, context retrieved, lead qualified, CRM updated and meeting proposed.",
   },

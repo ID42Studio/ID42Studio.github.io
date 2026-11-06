@@ -136,12 +136,16 @@ export interface SiteContent {
     contactTitle: string;
     rights: string;
     madeIn: string;
+    backToTop: string;
   };
   a11y: {
     skip: string;
     menuOpen: string;
     menuClose: string;
     language: string;
+    mainNav: string;
+    mobileNav: string;
+    menu: string;
     decorativeTrace: string;
   };
 }

@@ -187,15 +187,27 @@
           <span class="brand-name">ID42</span>
           <span class="brand-sub">Studio</span>
         </div>
-        <span class="tag">Estúdio de IA aplicada</span>
+        <span class="tag" data-tag>Estúdio de IA aplicada</span>
       </div>
 
-      <h1>Agentes de IA<br />que entram no<br /><span class="grad">expediente.</span></h1>
+      <h1 data-title>Agentes de IA<br />que entram no<br /><span class="grad">expediente.</span></h1>
 
       <div class="foot">
         <span><strong>id42studio.github.io</strong></span>
-        <span class="live"><i></i>em produção</span>
+        <span class="live"><i></i><span data-status>em produção</span></span>
       </div>
     </div>
+
+    <script>
+      // Render with `#en` to produce the English card.
+      const isEn = location.hash.includes("en");
+      if (isEn) {
+        document.documentElement.lang = "en";
+        document.querySelector("[data-tag]").textContent = "Applied AI studio";
+        document.querySelector("[data-status]").textContent = "in production";
+        document.querySelector("[data-title]").innerHTML =
+          'AI agents<br />that clock in<br /><span class="grad">with your team.</span>';
+      }
+    </script>
   </body>
 </html>
