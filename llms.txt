@@ -1,0 +1,43 @@
+# ID42 Studio
+> Software, AI and intelligent solutions studio. Software that doesn't just run — it gets work done. Engineering first, AI when it adds value.
+
+## Pages
+- [Português](https://id42studio.github.io/): default locale
+- [English](https://id42studio.github.io/en/): English version
+
+## Thesis
+Software as a Work: systems that combine engineering, automation and artificial intelligence to
+execute authorised steps of a process, validate results and route exceptions. The degree of autonomy
+depends on process risk, reliability, business rules and governance.
+
+Stages: Software as a Tool, Software as an Assistant, Software as Work.
+
+## What we deliver
+- Build: custom software, enterprise integrations, AI agents, digital platforms, SaaS, modernisation
+- Operate: managed workflows, agent monitoring, application support, integration monitoring, AI quality evaluation
+- Outcome: outcome-based services where acceptance criteria exist (under evaluation, subject to feasibility)
+
+## Capabilities
+- Software engineering: enterprise systems, web applications, APIs, platforms
+- AI and agentic systems: agents, copilots, RAG, LLM applications, evaluation
+- Automation and integration: ERP/CRM integration, workflow automation, APIs, webhooks
+- Product engineering: discovery, MVP, SaaS engineering, product evolution
+- Architecture and consulting: solution architecture, assessment, modernisation, AI strategy
+- Intelligent operations: business rules, automation and AI with traceability and risk-proportional supervision
+
+## How we work
+Discover, Architect, Build, Validate, Operate, Evolve. The same six stages apply to conventional
+software, AI, integrations, digital products and experiments.
+
+## Products
+- [VBSell](https://vbsell.com): omnichannel platform for service and commercial operations
+- [BuilderMonitor](https://buildermonitor.cloud.escodoo.com): operational intelligence for construction — schedule, cost and field data above the ERP
+- [Deepze](https://deepze.ai): private enterprise AI with chat and copilots over the company knowledge base, RAG inside the client infrastructure
+
+## Labs
+ID42 Labs is the studio's applied research and prototyping practice: agents and multi-agent systems,
+local and private LLMs, developer tooling, open source, emerging architectures and applied AI evaluation.
+
+## Contact
+- Email: contato@id42.studio
+- LinkedIn: https://www.linkedin.com/company/id42studio
