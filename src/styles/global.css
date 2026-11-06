@@ -720,8 +720,8 @@
 .hero-line > span {
   display: block;
   transform: translateY(115%);
-  animation: line-up 1s var(--ease-out-expo) forwards;
-  animation-delay: calc(var(--i) * 100ms + 120ms);
+  animation: line-up 0.8s var(--ease-out-expo) forwards;
+  animation-delay: calc(var(--i) * 70ms + 80ms);
 }
 
 .hero-visual {
@@ -1383,8 +1383,8 @@
    ========================================================================== */
 
 [data-reveal] {
-  transition: opacity 0.85s var(--ease-out-expo), transform 0.85s var(--ease-out-expo);
-  transition-delay: calc(var(--d, 0) * 80ms);
+  transition: opacity 0.7s var(--ease-out-expo), transform 0.7s var(--ease-out-expo);
+  transition-delay: calc(var(--d, 0) * 60ms);
 }
 
 .js [data-reveal] {

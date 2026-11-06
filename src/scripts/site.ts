@@ -215,7 +215,7 @@ if (trace) {
     window.setInterval(() => {
       current = (current + 1) % steps.length;
       paint();
-    }, 1800);
+    }, 2200);
   }
 }
 
