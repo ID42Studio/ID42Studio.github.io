@@ -11,6 +11,7 @@ export const ptBR: SiteContent = {
   nav: {
     links: [
       { label: "Soluções", href: "#solucoes" },
+      { label: "Playground", href: "#playground" },
       { label: "Como trabalhamos", href: "#processo" },
       { label: "Produtos", href: "#produtos" },
       { label: "Estúdio", href: "#estudio" },
@@ -254,8 +255,59 @@ export const ptBR: SiteContent = {
     statement: "Menos tarefas manuais. Mais capacidade operacional.",
     note: "O grau de autonomia depende do risco do processo, da confiabilidade, das regras de negócio e da governança. Autonomia total não é o objetivo.",
   },
-  process: {
+  playground: {
     index: "05",
+    eyebrow: "Playground",
+    title: "Descreva o processo. O motor monta o fluxo.",
+    subtitle:
+      "Um classificador local lê a sua descrição, escolhe o modelo de entrega e monta as etapas. Sem servidor, sem enviar dados.",
+    label: "Descreva um processo da sua operação",
+    placeholder:
+      "Ex.: o time gasta dois dias por mês conferindo notas fiscais e lançando no ERP",
+    examplesLabel: "Experimente",
+    examples: [
+      {
+        label: "Notas fiscais",
+        text: "O time gasta dois dias por mês conferindo notas fiscais e lançando no ERP.",
+      },
+      {
+        label: "Leads no WhatsApp",
+        text: "Perdemos leads porque ninguém responde o WhatsApp no fim de semana.",
+      },
+      {
+        label: "Plantão 24/7",
+        text: "Precisamos monitorar nossos serviços 24/7, com plantão e SLA de resposta.",
+      },
+      {
+        label: "Novo produto",
+        text: "Queremos criar um aplicativo novo do zero para os técnicos em campo.",
+      },
+    ],
+    hint: "A classificação roda no seu navegador, a cada tecla.",
+    modelLabel: "Modelo sugerido",
+    domainLabel: "Domínio",
+    confidenceLabel: "Confiança",
+    signalsLabel: "Sinais detectados",
+    noSignals: "Poucos sinais. Descreva o trabalho, o volume e quem faz hoje.",
+    resultLabel: "Resultado esperado",
+    run: "Executar este fluxo",
+    replay: "Executar de novo",
+    note: "Sugestão gerada por regras locais, não por um modelo remoto. Serve para estruturar a conversa, não como diagnóstico.",
+    models: {
+      build: "Build",
+      operate: "Operate",
+      outcome: "Outcome",
+    },
+    domains: {
+      sales: "Comercial",
+      finance: "Financeiro",
+      support: "Atendimento",
+      enterprise: "Empresarial",
+      generic: "Genérico",
+    },
+  },
+  process: {
+    index: "06",
     eyebrow: "Como trabalhamos",
     title: "Projetamos, construímos e operamos.",
     subtitle:
@@ -295,7 +347,7 @@ export const ptBR: SiteContent = {
     ],
   },
   useCases: {
-    index: "06",
+    index: "07",
     eyebrow: "Onde aplicamos",
     title: "O trabalho que seu software pode assumir.",
     subtitle:
@@ -362,7 +414,7 @@ export const ptBR: SiteContent = {
     note: "Aplicações possíveis, não produtos já entregues. Aprovações e pagamentos seguem sob controle humano, com trilha de auditoria.",
   },
   work: {
-    index: "07",
+    index: "08",
     eyebrow: "Produtos",
     title: "Produtos que demonstram nossa capacidade de execução.",
     subtitle:
@@ -416,7 +468,7 @@ export const ptBR: SiteContent = {
     note: "Links e status verificados. Nenhum mockup.",
   },
   about: {
-    index: "08",
+    index: "09",
     eyebrow: "Estúdio",
     title: "Experiência em engenharia. Mentalidade de produto.",
     paragraphs: [
@@ -448,7 +500,7 @@ export const ptBR: SiteContent = {
     ],
   },
   labs: {
-    index: "09",
+    index: "10",
     eyebrow: "ID42 Labs",
     title: "Exploramos o que vem depois.",
     text: "O ID42 Labs é a nossa prática de pesquisa aplicada, prototipação e experimentação tecnológica. Investigamos arquiteturas, ferramentas e abordagens antes de levá-las a produto.",

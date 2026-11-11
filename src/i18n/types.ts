@@ -85,6 +85,41 @@ export interface WorkItem {
   accent: "blue" | "cyan" | "violet";
 }
 
+export interface PlaygroundExample {
+  label: string;
+  text: string;
+}
+
+/** Copy for the local classifier playground. */
+export interface Playground {
+  index: string;
+  eyebrow: string;
+  title: string;
+  subtitle: string;
+  label: string;
+  placeholder: string;
+  examplesLabel: string;
+  examples: PlaygroundExample[];
+  hint: string;
+  modelLabel: string;
+  domainLabel: string;
+  confidenceLabel: string;
+  signalsLabel: string;
+  noSignals: string;
+  resultLabel: string;
+  run: string;
+  replay: string;
+  note: string;
+  models: { build: string; operate: string; outcome: string };
+  domains: {
+    sales: string;
+    finance: string;
+    support: string;
+    enterprise: string;
+    generic: string;
+  };
+}
+
 export interface Principle {
   title: string;
   text: string;
@@ -159,6 +194,7 @@ export interface SiteContent {
     statement: string;
     note: string;
   };
+  playground: Playground;
   process: {
     index: string;
     eyebrow: string;
