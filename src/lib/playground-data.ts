@@ -66,6 +66,11 @@ export const PLAYGROUND: Record<Locale, LangData> = {
           "bot",
           "responder",
           "responde",
+          "sistema próprio",
+          "sistema proprio",
+          "sob medida",
+          "personalizado",
+          "customizado",
         ],
         steps: [
           { label: "Entender {{noun}}", detail: "escopo, regras e critérios de aceite" },
@@ -255,6 +260,10 @@ export const PLAYGROUND: Record<Locale, LangData> = {
           "bot",
           "answer",
           "respond",
+          "own system",
+          "custom",
+          "bespoke",
+          "tailor-made",
         ],
         steps: [
           { label: "Understand {{noun}}", detail: "scope, rules and acceptance criteria" },

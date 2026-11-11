@@ -307,6 +307,7 @@ check("locales have identical shape", () => {
 /* -------------------------------------------------------- playground engine */
 
 const { analyze } = await import(join(root, "src/lib/classify.ts"));
+const { EXEMPLARS } = await import(join(root, "src/lib/exemplars.ts"));
 
 const classifierCases = [
   {
@@ -331,7 +332,7 @@ const classifierCases = [
     text: "Queremos criar um aplicativo novo do zero para os técnicos em campo.",
     locale: "pt-BR",
     model: "build",
-    domain: "generic",
+    domain: "support",
   },
   {
     text: "The team spends two days a month checking invoices and typing them into the ERP.",
@@ -380,6 +381,27 @@ check("playground classifier", () => {
   assert(empty.confidence < 0.3, "noise should not score high confidence");
 
   return `${classifierCases.length} cases + noise`;
+});
+
+check("playground corpus is self-consistent", () => {
+  let total = 0;
+
+  for (const locale of ["pt-BR", "en"]) {
+    for (const exemplar of EXEMPLARS[locale]) {
+      const analysis = analyze(exemplar.text, locale);
+      total += 1;
+      assert(
+        analysis.model === exemplar.model,
+        `[${locale}] "${exemplar.text.slice(0, 42)}…" → ${analysis.model}, expected ${exemplar.model}`,
+      );
+      assert(
+        analysis.domain === exemplar.domain,
+        `[${locale}] "${exemplar.text.slice(0, 42)}…" → ${analysis.domain}, expected ${exemplar.domain}`,
+      );
+    }
+  }
+
+  return `${total} exemplars`;
 });
 
 /* ------------------------------------------------------------------ report */

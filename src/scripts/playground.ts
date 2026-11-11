@@ -18,6 +18,7 @@ if (root) {
   const flowEl = root.querySelector<HTMLElement>("[data-pg-flow]");
   const outcomeEl = root.querySelector<HTMLElement>("[data-pg-outcome]");
   const signalsEl = root.querySelector<HTMLElement>("[data-pg-signals]");
+  const nearEl = root.querySelector<HTMLElement>("[data-pg-near]");
   const runButton = root.querySelector<HTMLButtonElement>("[data-pg-run]");
   const runLabel = root.querySelector<HTMLElement>("[data-pg-run-label]");
 
@@ -66,6 +67,27 @@ if (root) {
     }
   }
 
+  function renderNeighbours(analysis: Analysis) {
+    if (!nearEl) return;
+    nearEl.textContent = "";
+
+    for (const neighbour of analysis.neighbours) {
+      const item = document.createElement("li");
+      item.className = "pg-near-item";
+
+      const score = document.createElement("span");
+      score.className = "pg-near-score";
+      score.textContent = `${Math.round(neighbour.score * 100)}%`;
+
+      const text = document.createElement("span");
+      text.className = "pg-near-text";
+      text.textContent = neighbour.text;
+
+      item.append(score, text);
+      nearEl.append(item);
+    }
+  }
+
   function renderFlow(analysis: Analysis) {
     if (!flowEl) return;
     flowEl.textContent = "";
@@ -106,6 +128,7 @@ if (root) {
 
     renderFlow(analysis);
     renderSignals(analysis);
+    renderNeighbours(analysis);
   }
 
   function run() {

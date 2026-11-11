@@ -105,6 +105,7 @@ export interface Playground {
   domainLabel: string;
   confidenceLabel: string;
   signalsLabel: string;
+  neighboursLabel: string;
   noSignals: string;
   resultLabel: string;
   run: string;
