@@ -10,6 +10,14 @@ export interface TraceStep {
   detail: string;
 }
 
+/** One runnable flow in the hero console: a delivery model, its stages and its outcome. */
+export interface ConsoleScenario {
+  id: string;
+  label: string;
+  steps: TraceStep[];
+  result: string;
+}
+
 export interface Challenge {
   n: string;
   title: string;
@@ -105,12 +113,15 @@ export interface SiteContent {
     proofLabel: string;
     proof: string[];
     chips: string[];
-    trace: {
+    console: {
       title: string;
       status: string;
-      steps: TraceStep[];
-      footer: string;
-      caption: string;
+      scenarioLabel: string;
+      run: string;
+      replay: string;
+      resultLabel: string;
+      note: string;
+      scenarios: ConsoleScenario[];
     };
   };
   marquee: {
@@ -224,6 +235,5 @@ export interface SiteContent {
     mainNav: string;
     mobileNav: string;
     menu: string;
-    decorativeTrace: string;
   };
 }

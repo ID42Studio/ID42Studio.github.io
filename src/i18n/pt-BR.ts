@@ -31,19 +31,55 @@ export const ptBR: SiteContent = {
     proofLabel: "Em produção",
     proof: ["VBSell", "BuilderMonitor", "Deepze"],
     chips: ["ERP", "API", "Agente de IA"],
-    trace: {
+    console: {
       title: "ID42 / execution.engine",
-      status: "workflow ativo",
-      steps: [
-        { label: "Requisição recebida", detail: "entrada do processo" },
-        { label: "Contexto sincronizado", detail: "sistemas + dados" },
-        { label: "Trabalho executado", detail: "etapas autorizadas" },
-        { label: "Resultado validado", detail: "critérios de aceite" },
-        { label: "Entrega concluída", detail: "resultado verificável" },
+      status: "execução simulada",
+      scenarioLabel: "Modelo de entrega",
+      run: "Executar",
+      replay: "Executar de novo",
+      resultLabel: "Resultado",
+      note: "dados ilustrativos",
+      scenarios: [
+        {
+          id: "build",
+          label: "Build",
+          steps: [
+            { label: "Problema recebido", detail: "escopo + critérios" },
+            { label: "Arquitetura definida", detail: "limites e integrações" },
+            { label: "Software construído", detail: "entregas incrementais" },
+            { label: "Comportamento validado", detail: "testes + aceite" },
+            { label: "Sistema em produção", detail: "operação iniciada" },
+          ],
+          result:
+            "Sistema entregue com arquitetura documentada e critérios de aceite verificados.",
+        },
+        {
+          id: "operate",
+          label: "Operate",
+          steps: [
+            { label: "Sinal recebido", detail: "métrica ou incidente" },
+            { label: "Contexto correlacionado", detail: "logs + histórico" },
+            { label: "Ação executada", detail: "runbook autorizado" },
+            { label: "Efeito verificado", detail: "indicador normalizado" },
+            { label: "Registro encerrado", detail: "trilha de auditoria" },
+          ],
+          result:
+            "Operação estabilizada com registro do que foi detectado, feito e verificado.",
+        },
+        {
+          id: "outcome",
+          label: "Outcome",
+          steps: [
+            { label: "Lote recebido", detail: "fila de trabalho" },
+            { label: "Regra aplicada", detail: "critério de aceite" },
+            { label: "Trabalho executado", detail: "etapas autorizadas" },
+            { label: "Resultado conferido", detail: "amostragem + exceções" },
+            { label: "Entrega contabilizada", detail: "unidade concluída" },
+          ],
+          result:
+            "Unidade de trabalho concluída e contabilizada, com exceções separadas para revisão.",
+        },
       ],
-      footer: "5 etapas · 1 resultado",
-      caption:
-        "Ilustração de um fluxo de execução: requisição recebida, contexto sincronizado, trabalho executado, resultado validado e entrega concluída.",
     },
   },
   marquee: {
@@ -452,7 +488,5 @@ export const ptBR: SiteContent = {
     mainNav: "Navegação principal",
     mobileNav: "Navegação do menu",
     menu: "Menu",
-    decorativeTrace:
-      "Ilustração de um fluxo de execução: requisição recebida, contexto sincronizado, trabalho executado, resultado validado e entrega concluída.",
   },
 };

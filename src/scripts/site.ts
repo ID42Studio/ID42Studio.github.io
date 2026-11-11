@@ -189,33 +189,137 @@ window.matchMedia("(min-width: 1024px)").addEventListener("change", (event) => {
   if (event.matches) setMenu(false);
 });
 
-/* ------------------------------------------------------------ hero trace */
+/* ---------------------------------------------------------- hero console */
 
-const trace = document.querySelector<HTMLElement>("[data-trace]");
+const consoleEl = document.querySelector<HTMLElement>("[data-console]");
 
-if (trace) {
-  const steps = Array.from(trace.querySelectorAll<HTMLElement>("[data-step]"));
-  const bar = document.querySelector<HTMLElement>("[data-trace-progress]");
-  let current = 0;
+if (consoleEl) {
+  const tabs = Array.from(consoleEl.querySelectorAll<HTMLButtonElement>("[data-scenario]"));
+  const panels = Array.from(consoleEl.querySelectorAll<HTMLElement>("[data-panel]"));
+  const runButton = consoleEl.querySelector<HTMLButtonElement>("[data-run]");
+  const runLabel = consoleEl.querySelector<HTMLElement>("[data-run-label]");
+  const progress = consoleEl.querySelector<HTMLElement>("[data-progress]");
+  const live = consoleEl.querySelector<HTMLElement>("[data-console-live]");
 
-  const paint = () => {
-    steps.forEach((step, index) => {
-      step.classList.toggle("is-active", index === current);
-      step.classList.toggle("is-done", index < current);
-    });
+  const STEP_MS = 900;
+  let timer = 0;
+  let activePanel = panels[0] ?? null;
 
-    if (bar) {
-      bar.style.width = `${((current + 1) / steps.length) * 100}%`;
-    }
+  const stepsOf = (panel: HTMLElement | null) =>
+    panel ? Array.from(panel.querySelectorAll<HTMLElement>("[data-step]")) : [];
+
+  const setProgress = (panel: HTMLElement | null, done: number) => {
+    const total = stepsOf(panel).length || 1;
+    if (progress) progress.style.width = `${Math.min(100, (done / total) * 100)}%`;
   };
 
-  paint();
+  const reset = (panel: HTMLElement | null, announce = true) => {
+    window.clearInterval(timer);
+    timer = 0;
 
-  if (!reduceMotion && steps.length > 1) {
-    window.setInterval(() => {
-      current = (current + 1) % steps.length;
-      paint();
-    }, 2200);
+    stepsOf(panel).forEach((step) => {
+      step.classList.remove("is-active", "is-done");
+      step.removeAttribute("aria-current");
+    });
+
+    const result = panel?.querySelector<HTMLElement>("[data-result]");
+    if (result) result.hidden = true;
+
+    if (runButton) runButton.disabled = false;
+    if (runLabel) runLabel.textContent = runLabel.dataset.idle ?? runLabel.textContent ?? "";
+    setProgress(panel, 0);
+
+    if (announce && live) live.textContent = "";
+  };
+
+  const finish = (panel: HTMLElement | null) => {
+    const steps = stepsOf(panel);
+    steps.forEach((step) => {
+      step.classList.remove("is-active");
+      step.classList.add("is-done");
+      step.removeAttribute("aria-current");
+    });
+
+    const result = panel?.querySelector<HTMLElement>("[data-result]");
+    if (result) result.hidden = false;
+
+    if (progress) progress.style.width = "100%";
+    if (runButton) runButton.disabled = false;
+    if (runLabel && runLabel.dataset.done) runLabel.textContent = runLabel.dataset.done;
+
+    const outcome = result?.lastElementChild?.textContent?.trim();
+    if (live && outcome) live.textContent = outcome;
+  };
+
+  const run = () => {
+    if (!activePanel || timer !== 0) return;
+
+    reset(activePanel, false);
+
+    const steps = stepsOf(activePanel);
+    if (!steps.length) return;
+
+    if (reduceMotion) {
+      finish(activePanel);
+      return;
+    }
+
+    if (runButton) runButton.disabled = true;
+
+    let index = 0;
+    steps[0].classList.add("is-active");
+    steps[0].setAttribute("aria-current", "step");
+    setProgress(activePanel, 1);
+
+    timer = window.setInterval(() => {
+      if (index < steps.length - 1) {
+        steps[index].classList.remove("is-active");
+        steps[index].classList.add("is-done");
+        steps[index].removeAttribute("aria-current");
+        index += 1;
+        steps[index].classList.add("is-active");
+        steps[index].setAttribute("aria-current", "step");
+        setProgress(activePanel, index + 1);
+        if (live) live.textContent = steps[index].textContent?.trim() ?? "";
+      } else {
+        window.clearInterval(timer);
+        timer = 0;
+        finish(activePanel);
+      }
+    }, STEP_MS);
+  };
+
+  const select = (index: number) => {
+    const panel = panels[index];
+    if (!panel) return;
+
+    activePanel = panel;
+
+    tabs.forEach((tab, i) => {
+      const isActive = i === index;
+      tab.classList.toggle("is-active", isActive);
+      tab.setAttribute("aria-pressed", String(isActive));
+    });
+
+    panels.forEach((item, i) => {
+      item.hidden = i !== index;
+    });
+
+    reset(panel);
+  };
+
+  tabs.forEach((tab, index) => {
+    tab.addEventListener("click", () => select(index));
+  });
+
+  runButton?.addEventListener("click", run);
+
+  // Start in the finished state for reduced motion, otherwise run once shortly
+  // after load so the panel demonstrates itself without waiting for a click.
+  if (reduceMotion) {
+    finish(activePanel);
+  } else {
+    window.setTimeout(run, 900);
   }
 }
 
@@ -225,7 +329,6 @@ const visual = document.querySelector<HTMLElement>("[data-hero-visual]");
 
 if (visual && window.matchMedia("(pointer: fine)").matches && !reduceMotion) {
   const chips = Array.from(visual.querySelectorAll<HTMLElement>(".chip-float"));
-  const panel = visual.querySelector<HTMLElement>(".trace");
 
   visual.addEventListener("pointermove", (event) => {
     const rect = visual.getBoundingClientRect();
@@ -237,9 +340,6 @@ if (visual && window.matchMedia("(pointer: fine)").matches && !reduceMotion) {
       chip.style.setProperty("--mx", String(dx * depth));
       chip.style.setProperty("--my", String(dy * depth));
     });
-
-    panel?.style.setProperty("--ry", `${dx * 4}deg`);
-    panel?.style.setProperty("--rx", `${-dy * 4}deg`);
   });
 
   visual.addEventListener("pointerleave", () => {
@@ -247,8 +347,6 @@ if (visual && window.matchMedia("(pointer: fine)").matches && !reduceMotion) {
       chip.style.setProperty("--mx", "0");
       chip.style.setProperty("--my", "0");
     });
-    panel?.style.setProperty("--ry", "0deg");
-    panel?.style.setProperty("--rx", "0deg");
   });
 }
 

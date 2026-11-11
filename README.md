@@ -15,8 +15,9 @@ No server, no runtime framework, no third-party requests: the whole page is
 | Styling | Tailwind CSS v4 via `@tailwindcss/vite` + design tokens in `src/styles/global.css` |
 | Fonts | Self-hosted `@fontsource-variable` subsets (Bricolage Grotesque, Inter, JetBrains Mono) |
 | Copy / i18n | Typed dictionaries in `src/i18n/` (`pt-BR.ts`, `en.ts`) |
+| Hero | Hand-written WebGL shader (`src/scripts/hero-gl.ts`) + interactive execution console |
 | SEO | Canonical + hreflang, Open Graph, JSON-LD, `@astrojs/sitemap`, `robots.txt` |
-| Deploy | GitHub Actions → GitHub Pages (`actions/deploy-pages`) |
+| Deploy | GitHub Actions → GitHub Pages (`gh-pages` branch) |
 
 ## Commands
 
@@ -37,9 +38,9 @@ npm run assets   # re-render og.png, og-en.png and the app icons
 src/
   components/
     Landing.astro          # page composition
-    sections/              # Header, Hero, Marquee, Problem, Deliver, Solutions,
-                           # Saaw, Process, UseCases, Cases, About, Labs, Cta,
-                           # Footer
+    sections/              # Header, Hero, AgentConsole, Marquee, Problem,
+                           # Deliver, Solutions, Saaw, Process, UseCases,
+                           # Cases, About, Labs, Cta, Footer
     ui/                    # Anchor, Brand, Icon, LocaleSwitch, SectionHead
   data/site.ts             # canonical URL, email, LinkedIn, helpers
   i18n/                    # types + pt-BR / en copy + locale helpers
@@ -50,6 +51,7 @@ src/
     en/index.astro         # English at /en/
     404.astro              # GitHub Pages 404
   scripts/site.ts          # progressive enhancement (no framework)
+  scripts/hero-gl.ts       # hand-written WebGL signal field for the hero
   styles/global.css        # tokens, layout primitives, motion
 public/
   fonts/                   # latin variable woff2 (preloaded)
@@ -126,11 +128,14 @@ site ever moves to a project page (`/repo-name/`) or a custom domain, update
 
 - Animations are CSS-first and respect `prefers-reduced-motion`.
 - Progressive enhancement only: with JavaScript disabled the page is fully
-  readable; the hero trace simply stays on its first step.
+  readable and the console renders in its finished state.
+- The WebGL hero field is decorative (`aria-hidden`) and disappears entirely
+  without a hardware-accelerated context — the CSS aurora is the fallback.
+- The execution console is real UI: labelled buttons, `aria-pressed` on the
+  model switcher, `aria-current="step"` while running, and a polite live region
+  announcing each stage and the outcome.
 - Skip link, labelled nav/menu, `aria-current` on the language switch, visible
   focus rings, and semantic headings throughout.
-- The decorative hero trace is `aria-hidden` and mirrored by a screen-reader
-  description.
 
 ## License
 

@@ -31,19 +31,55 @@ export const en: SiteContent = {
     proofLabel: "In production",
     proof: ["VBSell", "BuilderMonitor", "Deepze"],
     chips: ["ERP", "API", "AI agent"],
-    trace: {
+    console: {
       title: "ID42 / execution.engine",
-      status: "workflow active",
-      steps: [
-        { label: "Request received", detail: "process input" },
-        { label: "Context synchronized", detail: "systems + data" },
-        { label: "Work executed", detail: "authorised steps" },
-        { label: "Result validated", detail: "acceptance criteria" },
-        { label: "Outcome delivered", detail: "verifiable result" },
+      status: "simulated run",
+      scenarioLabel: "Delivery model",
+      run: "Run",
+      replay: "Run again",
+      resultLabel: "Result",
+      note: "illustrative data",
+      scenarios: [
+        {
+          id: "build",
+          label: "Build",
+          steps: [
+            { label: "Problem received", detail: "scope + criteria" },
+            { label: "Architecture defined", detail: "boundaries and integrations" },
+            { label: "Software built", detail: "incremental delivery" },
+            { label: "Behaviour validated", detail: "tests + acceptance" },
+            { label: "System in production", detail: "operations started" },
+          ],
+          result:
+            "System delivered with documented architecture and verified acceptance criteria.",
+        },
+        {
+          id: "operate",
+          label: "Operate",
+          steps: [
+            { label: "Signal received", detail: "metric or incident" },
+            { label: "Context correlated", detail: "logs + history" },
+            { label: "Action executed", detail: "authorised runbook" },
+            { label: "Effect verified", detail: "metric normalised" },
+            { label: "Record closed", detail: "audit trail" },
+          ],
+          result:
+            "Operation stabilised with a record of what was detected, done and verified.",
+        },
+        {
+          id: "outcome",
+          label: "Outcome",
+          steps: [
+            { label: "Batch received", detail: "work queue" },
+            { label: "Rule applied", detail: "acceptance criteria" },
+            { label: "Work executed", detail: "authorised steps" },
+            { label: "Result checked", detail: "sampling + exceptions" },
+            { label: "Delivery counted", detail: "completed unit" },
+          ],
+          result:
+            "Unit of work completed and counted, with exceptions separated for review.",
+        },
       ],
-      footer: "5 stages · 1 outcome",
-      caption:
-        "Illustration of an execution flow: request received, context synchronized, work executed, result validated and outcome delivered.",
     },
   },
   marquee: {
@@ -452,7 +488,5 @@ export const en: SiteContent = {
     mainNav: "Main navigation",
     mobileNav: "Menu navigation",
     menu: "Menu",
-    decorativeTrace:
-      "Illustration of an execution flow: request received, context synchronized, work executed, result validated and outcome delivered.",
   },
 };

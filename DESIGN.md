@@ -90,7 +90,25 @@ never used below 1.5rem, where Bricolage loses its character.
 | Print | Chrome/nav/motion dropped, white background, black text, underlined links |
 
 Numbers and metadata use `font-variant-numeric: tabular-nums` so counters and
-labels never shift while the hero trace advances.
+labels never shift while the console advances.
+
+## Hero field and execution console
+
+The hero has two custom pieces, both dependency-free:
+
+- **Signal field** — `src/scripts/hero-gl.ts` compiles a hand-written GLSL
+  fragment shader (domain-warped fbm) into a fullscreen triangle, rendered at a
+  fixed ~460k fragment budget and paused when the canvas leaves the viewport or
+  the tab is hidden. It reacts to the pointer and to hero scroll.
+- **Execution console** — `components/sections/AgentConsole.astro` is a working
+  demo: three delivery models (Build / Operate / Outcome), each with five stages
+  and an outcome. It runs itself once after load, can be replayed, and is fully
+  operable by keyboard.
+
+Both degrade on purpose: without WebGL, on a software rasteriser
+(SwiftShader/llvmpipe/headless), when a single frame costs more than ~45 ms, or
+under `prefers-reduced-motion`, the field is dropped and the CSS aurora stays.
+Append `?gl=force` to bypass the performance guards when inspecting the shader.
 
 ## Performance budget
 
@@ -99,13 +117,15 @@ Measured on the deployed site (Lighthouse, mobile emulation):
 | Metric | Value |
 | --- | --- |
 | Performance / Accessibility / Best practices / SEO | 99 / 100 / 100 / 100 |
-| FCP · LCP · CLS · TBT | 1.2 s · 1.6 s · 0 · 0 ms |
-| Transferred on first load | ~130 KB (fonts are 129 KB of it) |
-| Requests | document + 3 font files, nothing else |
+| FCP · LCP · CLS · TBT | 1.4 s · 1.4 s · 0 · 60 ms |
+| Transferred on first load | ~135 KB (fonts are 129 KB of it) |
+| Requests | document + 3 font files + 2 small modules |
 
 Rules that keep it there:
 
-- No JavaScript framework. `src/scripts/site.ts` is the only JS and ships inline.
+- No JavaScript framework. `src/scripts/site.ts` and `hero-gl.ts` are the only
+  JS; the shader boots from an idle slot after `load` so it never competes with
+  the first paint.
 - CSS is inlined at build time (`inlineStylesheets: "always"`) — one request,
   no render-blocking stylesheet.
 - The scroll handler never reads layout: the scroll range is measured once and

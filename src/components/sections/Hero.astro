@@ -2,6 +2,7 @@
 import type { SiteContent } from "../../i18n";
 import Icon from "../ui/Icon.astro";
 import Anchor from "../ui/Anchor.astro";
+import AgentConsole from "./AgentConsole.astro";
 
 interface Props {
   content: SiteContent;
@@ -9,7 +10,7 @@ interface Props {
 }
 
 const { content, mailHref } = Astro.props;
-const { hero, a11y } = content;
+const { hero } = content;
 
 /** Floating capability chips: order matches `hero.chips` in both locales. */
 const chipPositions = [
@@ -22,6 +23,8 @@ const chipColors = ["#5b7cff", "#a78bfa", "#3de1ff"];
 
 <section class="hero" id="top">
   <Anchor name="home" />
+
+  <canvas class="hero-canvas" data-gl aria-hidden="true"></canvas>
 
   <div class="ambient" aria-hidden="true">
     <div class="grid-lines"></div>
@@ -83,34 +86,8 @@ const chipColors = ["#5b7cff", "#a78bfa", "#3de1ff"];
       </div>
 
       <div class="hero-visual hero-in" style="--i: 3" data-hero-visual>
-        <div class="trace" aria-hidden="true">
-          <div class="trace-bar">
-            <span class="trace-dots">
-              <i></i><i></i><i></i>
-            </span>
-            <span class="trace-title">{hero.trace.title}</span>
-            <span class="trace-status">
-              <span class="dot-live"></span>
-              {hero.trace.status}
-            </span>
-          </div>
-
-          <ol class="trace-steps" data-trace>
-            {hero.trace.steps.map((step, i) => (
-              <li class="trace-step" data-step={i}>
-                <span class="mark">
-                  <Icon name="check" size={11} strokeWidth={2.4} />
-                </span>
-                <span class="label">{step.label}</span>
-                <span class="detail">{step.detail}</span>
-              </li>
-            ))}
-          </ol>
-
-          <div class="trace-foot">
-            <span>{hero.trace.footer}</span>
-            <span class="trace-progress"><i data-trace-progress></i></span>
-          </div>
+        <div class="console-slot">
+          <AgentConsole content={hero.console} />
         </div>
 
         {hero.chips.map((chip, i) => (
@@ -121,8 +98,6 @@ const chipColors = ["#5b7cff", "#a78bfa", "#3de1ff"];
             <i></i>{chip}
           </span>
         ))}
-
-        <p class="sr-only">{a11y.decorativeTrace}</p>
       </div>
     </div>
   </div>
@@ -218,7 +193,28 @@ const chipColors = ["#5b7cff", "#a78bfa", "#3de1ff"];
     position: relative;
   }
 
-  .hero-visual .trace {
+  /* WebGL field: sits behind the ambient layer and fades in once the shader
+     is compiled, so a failed context leaves the CSS aurora untouched. */
+  .hero-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.4s ease;
+  }
+
+  .hero-canvas[data-gl-ready="true"] {
+    opacity: 1;
+  }
+
+  .hero:has(.hero-canvas[data-gl-ready="true"]) .ambient {
+    opacity: 0.45;
+  }
+
+  .console-slot {
     max-width: 30rem;
     margin-inline: auto;
   }
@@ -262,9 +258,13 @@ const chipColors = ["#5b7cff", "#a78bfa", "#3de1ff"];
       gap: clamp(2rem, 4vw, 3.5rem);
     }
 
-    .hero-visual .trace {
+    .console-slot {
       margin-inline: 0;
       margin-left: auto;
     }
   }
 </style>
+
+<script>
+  import "../../scripts/hero-gl";
+</script>
