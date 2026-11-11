@@ -46,6 +46,10 @@ src/
   i18n/                    # types + pt-BR / en copy + locale helpers
   layouts/Base.astro       # document shell, head, skip link
   lib/seo.ts               # canonical, hreflang, OG, JSON-LD graph
+  lib/playground-data.ts   # bilingual cue lexicons + flow templates
+  lib/exemplars.ts         # 36 process descriptions used as the retrieval corpus
+  lib/embed.ts             # char n-gram TF-IDF vectors + cosine similarity
+  lib/classify.ts          # hybrid classifier (lexicon + retrieval)
   pages/
     index.astro            # pt-BR at /
     en/index.astro         # English at /en/
@@ -108,6 +112,8 @@ breaks:
 - sitemap lists both URLs, `robots.txt` points at it
 - page weight budgets (HTML gzipped, total CSS)
 - `pt-BR` and `en` dictionaries have identical key shapes and no empty strings
+- the classifier passes 8 bilingual cases plus a noise case, and every one of the
+  36 corpus exemplars classifies to its own label
 
 ## Deploying to GitHub Pages
 

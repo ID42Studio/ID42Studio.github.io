@@ -288,6 +288,7 @@ export const en: SiteContent = {
     domainLabel: "Domain",
     confidenceLabel: "Confidence",
     signalsLabel: "Detected signals",
+    neighboursLabel: "Closest examples",
     noSignals: "Few signals. Describe the work, the volume and who does it today.",
     resultLabel: "Expected outcome",
     run: "Run this flow",

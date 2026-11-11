@@ -110,6 +110,38 @@ Both degrade on purpose: without WebGL, on a software rasteriser
 under `prefers-reduced-motion`, the field is dropped and the CSS aurora stays.
 Append `?gl=force` to bypass the performance guards when inspecting the shader.
 
+
+## Playground engine
+
+The playground is a hybrid scorer, entirely local:
+
+1. **Lexicon** — bilingual cue lists (model + domain), stem tolerant, accent
+   insensitive. High precision, explains itself with the matched terms.
+2. **Vector retrieval** — character 3–4-grams per word, TF-IDF, cosine
+   similarity against a corpus of 36 hand-written process descriptions
+   (`src/lib/exemplars.ts`). High recall: it tolerates paraphrase and phrasing
+   it has never seen as a cue.
+3. **Combination** — 58% vectors / 42% lexicon when both fire; the winner is
+   shown with a confidence that blends separation (top vs. runner-up) with
+   evidence mass, plus the three closest examples and their similarity.
+
+### Why not a neural embedding model
+
+| Candidate | Size | Problem |
+| --- | --- | --- |
+| `all-MiniLM-L6-v2` (q8) | ~23 MB | English only — fails on the primary locale |
+| `paraphrase-multilingual-MiniLM` (q8) | ~120 MB | 250k-token vocabulary dominates the file |
+| `multilingual-e5-small` (q8) | ~118 MB | same vocabulary cost |
+
+A multilingual encoder cannot shrink below ~60 MB because of its vocabulary, and
+60–120 MB is two orders of magnitude above the whole page (169 KB). Shipping an
+English-only model behind a "multilingual" site would be worse than shipping
+none: it would classify Portuguese text at random.
+
+The vector space above is the largest capability that fits the page's own
+performance thesis. If a real multilingual encoder is ever wanted, it belongs
+behind an explicit, metered download — not in the default path.
+
 ## Performance budget
 
 Measured on the deployed site (Lighthouse, mobile emulation):

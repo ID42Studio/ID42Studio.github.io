@@ -288,6 +288,7 @@ export const ptBR: SiteContent = {
     domainLabel: "Domínio",
     confidenceLabel: "Confiança",
     signalsLabel: "Sinais detectados",
+    neighboursLabel: "Parecido com",
     noSignals: "Poucos sinais. Descreva o trabalho, o volume e quem faz hoje.",
     resultLabel: "Resultado esperado",
     run: "Executar este fluxo",

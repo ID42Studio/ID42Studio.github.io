@@ -108,6 +108,18 @@ const initialConfidence = Math.round(initial.confidence * 100);
           <span data-pg-outcome>{initial.result}</span>
         </p>
 
+        <div class="pg-near">
+          <span class="mono-label">{content.neighboursLabel}</span>
+          <ul class="pg-near-list" data-pg-near>
+            {initial.neighbours.map((neighbour) => (
+              <li class="pg-near-item">
+                <span class="pg-near-score">{Math.round(neighbour.score * 100)}%</span>
+                <span class="pg-near-text">{neighbour.text}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
         <div class="pg-foot">
           <button type="button" class="pg-run" data-pg-run>
             <span data-pg-run-label>{content.run}</span>
@@ -409,6 +421,39 @@ const initialConfidence = Math.round(initial.confidence * 100);
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--color-cyan);
+  }
+
+  .pg-near {
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .pg-near-list {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .pg-near-item {
+    display: grid;
+    grid-template-columns: 2.6rem minmax(0, 1fr);
+    gap: 0.6rem;
+    align-items: baseline;
+    font-size: 0.75rem;
+    line-height: 1.45;
+    color: var(--color-muted);
+  }
+
+  .pg-near-score {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    color: var(--color-cyan);
+  }
+
+  .pg-near-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   .pg-foot {
