@@ -1,0 +1,487 @@
+---
+import type { Locale, SiteContent } from "../../i18n";
+import SectionHead from "../ui/SectionHead.astro";
+import { analyze } from "../../lib/classify";
+
+interface Props {
+  content: SiteContent["playground"];
+  locale: Locale;
+}
+
+const { content, locale } = Astro.props;
+
+// Server-rendered initial state: the section is meaningful without JavaScript.
+const initial = analyze(content.examples[0].text, locale);
+const initialModel = content.models[initial.model];
+const initialDomain = content.domains[initial.domain];
+const initialConfidence = Math.round(initial.confidence * 100);
+---
+
+<section class="section section--line" id="playground">
+  <div class="shell">
+    <SectionHead
+      index={content.index}
+      eyebrow={content.eyebrow}
+      title={content.title}
+      subtitle={content.subtitle}
+    />
+
+    <div
+      class="pg"
+      data-pg
+      data-locale={locale}
+      data-models={JSON.stringify(content.models)}
+      data-domains={JSON.stringify(content.domains)}
+      data-no-signals={content.noSignals}
+      data-run={content.run}
+      data-replay={content.replay}
+    >
+      <div class="pg-input">
+        <label class="pg-label" for="pg-text">{content.label}</label>
+        <textarea
+          id="pg-text"
+          class="pg-textarea"
+          rows="4"
+          spellcheck="false"
+          placeholder={content.placeholder}
+          data-pg-input
+          aria-describedby="pg-hint">{content.examples[0].text}</textarea>
+
+        <div class="pg-examples">
+          <span class="mono-label">{content.examplesLabel}</span>
+          <div class="pg-chips">
+            {content.examples.map((example, index) => (
+              <button
+                type="button"
+                class="pg-chip"
+                data-pg-example={index}
+                data-text={example.text}
+              >
+                {example.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <p class="pg-hint" id="pg-hint">
+          <span class="dot-live" aria-hidden="true"></span>
+          {content.hint}
+        </p>
+      </div>
+
+      <div class="pg-output">
+        <div class="pg-head" aria-live="polite">
+          <div class="pg-badges">
+            <span class="pg-badge pg-badge--model">
+              <span class="pg-badge-label">{content.modelLabel}</span>
+              <strong data-pg-model>{initialModel}</strong>
+            </span>
+            <span class="pg-badge">
+              <span class="pg-badge-label">{content.domainLabel}</span>
+              <strong data-pg-domain>{initialDomain}</strong>
+            </span>
+          </div>
+
+          <div class="pg-confidence">
+            <span class="pg-conf-label">
+              {content.confidenceLabel}
+              <b data-pg-confidence>{initialConfidence}%</b>
+            </span>
+            <span class="pg-meter" aria-hidden="true">
+              <i data-pg-meter style={`width:${initialConfidence}%`}></i>
+            </span>
+          </div>
+        </div>
+
+        <ol class="pg-flow" data-pg-flow>
+          {initial.flow.map((step, index) => (
+            <li class="pg-step" data-step={index}>
+              <span class="pg-step-mark" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+              <span class="pg-step-label">{step.label}</span>
+              <span class="pg-step-detail">{step.detail}</span>
+            </li>
+          ))}
+        </ol>
+
+        <p class="pg-outcome">
+          <span class="pg-outcome-label">{content.resultLabel}</span>
+          <span data-pg-outcome>{initial.result}</span>
+        </p>
+
+        <div class="pg-foot">
+          <button type="button" class="pg-run" data-pg-run>
+            <span data-pg-run-label>{content.run}</span>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12h13"></path>
+              <path d="M13 6l6 6-6 6"></path>
+            </svg>
+          </button>
+
+          <div class="pg-signals">
+            <span class="mono-label">{content.signalsLabel}</span>
+            <ul class="pg-signal-list" data-pg-signals>
+              {initial.signals.map((signal) => (
+                <li class="pg-signal">{signal}</li>
+              ))}
+              {initial.signals.length === 0 && <li class="pg-signal pg-signal--empty">{content.noSignals}</li>}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="pg-note" data-reveal>{content.note}</p>
+  </div>
+</section>
+
+<style>
+  .pg {
+    display: grid;
+    gap: 1rem;
+    margin-top: clamp(2rem, 4vw, 3rem);
+  }
+
+  .pg-input,
+  .pg-output {
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-lg);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.012));
+    padding: clamp(1.1rem, 2vw, 1.5rem);
+  }
+
+  .pg-input {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .pg-label {
+    font-family: var(--font-display);
+    font-size: clamp(1.1rem, 1.6vw, 1.35rem);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+
+  .pg-textarea {
+    width: 100%;
+    flex: 1;
+    min-height: 9rem;
+    resize: vertical;
+    padding: 0.85rem 0.9rem;
+    border: 1px solid var(--color-line-strong);
+    border-radius: 12px;
+    background: #08080c;
+    color: var(--color-fg);
+    font: inherit;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .pg-textarea::placeholder {
+    color: var(--color-subtle);
+  }
+
+  .pg-textarea:focus-visible {
+    outline: none;
+    border-color: color-mix(in oklab, var(--color-blue) 60%, var(--color-line-strong));
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-blue) 18%, transparent);
+  }
+
+  .pg-examples {
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .pg-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .pg-chip {
+    padding: 0.4rem 0.7rem;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--color-muted);
+    font-size: 0.8125rem;
+    transition: color 0.25s ease, border-color 0.25s ease, background-color 0.25s ease;
+  }
+
+  .pg-chip:hover {
+    color: var(--color-fg);
+    border-color: var(--color-line-strong);
+    background: rgba(255, 255, 255, 0.07);
+  }
+
+  .pg-hint {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.05em;
+    color: var(--color-subtle);
+  }
+
+  .pg-output {
+    display: grid;
+    gap: 1rem;
+    align-content: start;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pg-output::before {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    height: 140px;
+    background: radial-gradient(60% 100% at 70% 0%, rgba(91, 124, 255, 0.14), transparent 70%);
+    pointer-events: none;
+  }
+
+  .pg-head {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .pg-badges {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .pg-badge {
+    display: grid;
+    gap: 0.1rem;
+    padding: 0.45rem 0.7rem;
+    border: 1px solid var(--color-line);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .pg-badge--model {
+    border-color: color-mix(in oklab, var(--color-blue) 45%, var(--color-line));
+    background: color-mix(in oklab, var(--color-blue) 10%, transparent);
+  }
+
+  .pg-badge-label {
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-subtle);
+  }
+
+  .pg-badge strong {
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .pg-confidence {
+    display: grid;
+    gap: 0.35rem;
+    min-width: 8.5rem;
+    flex: 1;
+    max-width: 14rem;
+  }
+
+  .pg-conf-label {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-subtle);
+  }
+
+  .pg-conf-label b {
+    color: var(--color-fg);
+    font-weight: 500;
+  }
+
+  .pg-meter {
+    display: block;
+    height: 3px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+  }
+
+  .pg-meter i {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--color-blue), var(--color-cyan));
+    transition: width 0.45s var(--ease-out-expo);
+  }
+
+  .pg-flow {
+    display: grid;
+    gap: 0.3rem;
+    counter-reset: step;
+  }
+
+  .pg-step {
+    display: grid;
+    grid-template-columns: 1.6rem minmax(0, 1fr);
+    grid-template-areas:
+      "mark label"
+      ". detail";
+    gap: 0.1rem 0.7rem;
+    padding: 0.55rem 0.65rem;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    opacity: 0.55;
+    transition: opacity 0.4s ease, background-color 0.4s ease, border-color 0.4s ease;
+  }
+
+  .pg-step.is-active {
+    opacity: 1;
+    border-color: color-mix(in oklab, var(--color-blue) 40%, transparent);
+    background: color-mix(in oklab, var(--color-blue) 9%, transparent);
+  }
+
+  .pg-step.is-done {
+    opacity: 0.85;
+  }
+
+  .pg-step-mark {
+    grid-area: mark;
+    display: grid;
+    place-items: center;
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 50%;
+    border: 1px solid var(--color-line-strong);
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    color: var(--color-subtle);
+    transition: color 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
+  }
+
+  .pg-step.is-active .pg-step-mark,
+  .pg-step.is-done .pg-step-mark {
+    border-color: color-mix(in oklab, var(--color-cyan) 50%, transparent);
+    background: color-mix(in oklab, var(--color-cyan) 12%, transparent);
+    color: var(--color-cyan);
+  }
+
+  .pg-step-label {
+    grid-area: label;
+    align-self: center;
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  .pg-step-detail {
+    grid-area: detail;
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    color: var(--color-subtle);
+  }
+
+  .pg-outcome {
+    display: grid;
+    gap: 0.2rem;
+    padding: 0.7rem 0.8rem;
+    border: 1px solid color-mix(in oklab, var(--color-cyan) 28%, transparent);
+    border-radius: 12px;
+    background: color-mix(in oklab, var(--color-cyan) 6%, transparent);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+
+  .pg-outcome-label {
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-cyan);
+  }
+
+  .pg-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.9rem;
+  }
+
+  .pg-run {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.85rem;
+    border: 1px solid var(--color-line-strong);
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-fg);
+    background: rgba(255, 255, 255, 0.04);
+    transition: background-color 0.25s ease, border-color 0.25s ease;
+  }
+
+  .pg-run:hover {
+    background: rgba(255, 255, 255, 0.09);
+    border-color: color-mix(in oklab, var(--color-blue) 55%, var(--color-line-strong));
+  }
+
+  .pg-signals {
+    display: grid;
+    gap: 0.4rem;
+    min-width: 0;
+  }
+
+  .pg-signal-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+
+  .pg-signal {
+    padding: 0.2rem 0.5rem;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    color: var(--color-muted);
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .pg-signal--empty {
+    border-style: dashed;
+    color: var(--color-subtle);
+  }
+
+  .pg-note {
+    margin-top: 1.2rem;
+    max-width: 62ch;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    line-height: 1.6;
+    color: var(--color-subtle);
+  }
+
+  @media (min-width: 900px) {
+    .pg {
+      grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+      gap: 1.25rem;
+    }
+  }
+</style>
+
+<script>
+  import "../../scripts/playground";
+</script>

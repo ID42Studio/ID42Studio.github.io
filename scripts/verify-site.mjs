@@ -71,6 +71,7 @@ const anchors = [
   ["entrega", "deliver"],
   ["solucoes", "solutions"],
   ["saaw", "saaw"],
+  ["playground", "playground"],
   ["processo", "process"],
   ["casos-de-uso", "applications"],
   ["produtos", "work"],
@@ -301,6 +302,84 @@ check("locales have identical shape", () => {
 
   assert(empty.length === 0, `empty strings: ${empty.join(", ")}`);
   return `${ptKeys.length} keys`;
+});
+
+/* -------------------------------------------------------- playground engine */
+
+const { analyze } = await import(join(root, "src/lib/classify.ts"));
+
+const classifierCases = [
+  {
+    text: "O time gasta dois dias por mês conferindo notas fiscais e lançando no ERP.",
+    locale: "pt-BR",
+    model: "outcome",
+    domain: "finance",
+  },
+  {
+    text: "Perdemos leads porque ninguém responde o WhatsApp no fim de semana.",
+    locale: "pt-BR",
+    model: "build",
+    domain: "sales",
+  },
+  {
+    text: "Precisamos monitorar nossos serviços 24/7, com plantão e SLA de resposta.",
+    locale: "pt-BR",
+    model: "operate",
+    domain: "generic",
+  },
+  {
+    text: "Queremos criar um aplicativo novo do zero para os técnicos em campo.",
+    locale: "pt-BR",
+    model: "build",
+    domain: "generic",
+  },
+  {
+    text: "The team spends two days a month checking invoices and typing them into the ERP.",
+    locale: "en",
+    model: "outcome",
+    domain: "finance",
+  },
+  {
+    text: "We lose leads because nobody answers WhatsApp over the weekend.",
+    locale: "en",
+    model: "build",
+    domain: "sales",
+  },
+  {
+    text: "We need to monitor our services 24/7, with on-call rotation and response SLAs.",
+    locale: "en",
+    model: "operate",
+    domain: "generic",
+  },
+  {
+    text: "We want to build a new field app from scratch for our technicians.",
+    locale: "en",
+    model: "build",
+    domain: "generic",
+  },
+];
+
+check("playground classifier", () => {
+  for (const item of classifierCases) {
+    const analysis = analyze(item.text, item.locale);
+    assert(
+      analysis.model === item.model,
+      `[${item.locale}] expected ${item.model}, got ${analysis.model} — "${item.text.slice(0, 40)}…"`,
+    );
+    assert(
+      analysis.domain === item.domain,
+      `[${item.locale}] expected ${item.domain}, got ${analysis.domain}`,
+    );
+    assert(analysis.flow.length === 5, "flow must have five stages");
+    assert(analysis.flow.every((step) => step.label && step.detail), "empty stage copy");
+    assert(!analysis.result.includes("{{"), "unfilled placeholder in the outcome");
+  }
+
+  const empty = analyze("oi", "pt-BR");
+  assert(empty.matched === false, "short text should not be treated as matched");
+  assert(empty.confidence < 0.3, "noise should not score high confidence");
+
+  return `${classifierCases.length} cases + noise`;
 });
 
 /* ------------------------------------------------------------------ report */

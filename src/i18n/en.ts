@@ -11,6 +11,7 @@ export const en: SiteContent = {
   nav: {
     links: [
       { label: "Solutions", href: "#solucoes" },
+      { label: "Playground", href: "#playground" },
       { label: "How we work", href: "#processo" },
       { label: "Products", href: "#produtos" },
       { label: "Studio", href: "#estudio" },
@@ -254,8 +255,59 @@ export const en: SiteContent = {
     statement: "Fewer manual tasks. More operational capacity.",
     note: "The degree of autonomy depends on process risk, reliability, business rules and governance. Total autonomy is not the goal.",
   },
-  process: {
+  playground: {
     index: "05",
+    eyebrow: "Playground",
+    title: "Describe the process. The engine assembles the flow.",
+    subtitle:
+      "A local classifier reads your description, picks the delivery model and assembles the stages. No server, no data leaves the page.",
+    label: "Describe a process in your operation",
+    placeholder:
+      "e.g. the team spends two days a month checking invoices and typing them into the ERP",
+    examplesLabel: "Try one",
+    examples: [
+      {
+        label: "Invoices",
+        text: "The team spends two days a month checking invoices and typing them into the ERP.",
+      },
+      {
+        label: "WhatsApp leads",
+        text: "We lose leads because nobody answers WhatsApp over the weekend.",
+      },
+      {
+        label: "24/7 on-call",
+        text: "We need to monitor our services 24/7, with on-call rotation and response SLAs.",
+      },
+      {
+        label: "New product",
+        text: "We want to build a new field app from scratch for our technicians.",
+      },
+    ],
+    hint: "Classification runs in your browser, on every keystroke.",
+    modelLabel: "Suggested model",
+    domainLabel: "Domain",
+    confidenceLabel: "Confidence",
+    signalsLabel: "Detected signals",
+    noSignals: "Few signals. Describe the work, the volume and who does it today.",
+    resultLabel: "Expected outcome",
+    run: "Run this flow",
+    replay: "Run again",
+    note: "Suggested by local rules, not by a remote model. It structures the conversation; it is not a diagnosis.",
+    models: {
+      build: "Build",
+      operate: "Operate",
+      outcome: "Outcome",
+    },
+    domains: {
+      sales: "Sales",
+      finance: "Finance",
+      support: "Support",
+      enterprise: "Enterprise",
+      generic: "Generic",
+    },
+  },
+  process: {
+    index: "06",
     eyebrow: "How we work",
     title: "We design, build and operate.",
     subtitle:
@@ -295,7 +347,7 @@ export const en: SiteContent = {
     ],
   },
   useCases: {
-    index: "06",
+    index: "07",
     eyebrow: "Where we apply it",
     title: "The work your software can take on.",
     subtitle:
@@ -362,7 +414,7 @@ export const en: SiteContent = {
     note: "Possible applications, not products already delivered. Approvals and payments stay under human control, with an audit trail.",
   },
   work: {
-    index: "07",
+    index: "08",
     eyebrow: "Products",
     title: "Products that demonstrate our ability to execute.",
     subtitle:
@@ -416,7 +468,7 @@ export const en: SiteContent = {
     note: "Links and status verified. No mockups.",
   },
   about: {
-    index: "08",
+    index: "09",
     eyebrow: "Studio",
     title: "Engineering experience. Product mindset.",
     paragraphs: [
@@ -448,7 +500,7 @@ export const en: SiteContent = {
     ],
   },
   labs: {
-    index: "09",
+    index: "10",
     eyebrow: "ID42 Labs",
     title: "Exploring what comes next.",
     text: "ID42 Labs is our practice of applied research, prototyping and technology experimentation. We investigate architectures, tools and approaches before taking them into a product.",
