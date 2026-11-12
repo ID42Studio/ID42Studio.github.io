@@ -23,9 +23,9 @@
   --color-violet: #a78bfa;
   --color-cyan: #3de1ff;
 
-  --font-display: "Bricolage Grotesque", "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-display: "Instrument Sans", "Instrument Sans Fallback", "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Manrope", "Manrope Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
   --radius-xs: 8px;
   --radius-sm: 12px;
@@ -37,12 +37,43 @@
 }
 
 /* ==========================================================================
-   Fonts — self-hosted variable subsets (latin), copied to /public/fonts
+   Fonts — self-hosted variable latin subsets (OFL)
+   Instrument Sans (display) · Manrope (body) · Geist Mono (labels)
+   Fallback metrics reduce CLS while variable files swap in.
    ========================================================================== */
 
 @font-face {
-  font-family: "Bricolage Grotesque";
-  src: url("/fonts/bricolage-grotesque-latin-wght.woff2") format("woff2-variations");
+  font-family: "Instrument Sans Fallback";
+  src: local("Arial");
+  size-adjust: 107%;
+  ascent-override: 95%;
+  descent-override: 22%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: "Manrope Fallback";
+  src: local("Arial");
+  size-adjust: 103%;
+  ascent-override: 98%;
+  descent-override: 24%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: "Instrument Sans";
+  src: url("/fonts/instrument-sans-latin-wght.woff2") format("woff2-variations");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Manrope";
+  src: url("/fonts/manrope-latin-wght.woff2") format("woff2-variations");
   font-weight: 200 800;
   font-style: normal;
   font-display: swap;
@@ -52,20 +83,9 @@
 }
 
 @font-face {
-  font-family: "Inter";
-  src: url("/fonts/inter-latin-wght.woff2") format("woff2-variations");
+  font-family: "Geist Mono";
+  src: url("/fonts/geist-mono-latin-wght.woff2") format("woff2-variations");
   font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
-    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
-    U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
-@font-face {
-  font-family: "JetBrains Mono";
-  src: url("/fonts/jetbrains-mono-latin-wght.woff2") format("woff2-variations");
-  font-weight: 100 800;
   font-style: normal;
   font-display: swap;
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
@@ -103,9 +123,12 @@
     color: var(--color-fg);
     font-family: var(--font-sans);
     font-size: 1rem;
-    line-height: 1.6;
+    line-height: 1.65;
+    font-weight: 400;
+    letter-spacing: -0.011em;
     font-optical-sizing: auto;
     font-synthesis-weight: none;
+    font-feature-settings: "ss01" on, "cv11" on;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -119,14 +142,16 @@
   h4 {
     margin: 0;
     font-family: var(--font-display);
-    font-weight: 600;
-    line-height: 1.02;
-    letter-spacing: -0.035em;
+    font-weight: 560;
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+    font-feature-settings: "ss01" on, "ss02" on;
     text-wrap: balance;
   }
 
   p {
     margin: 0;
+    max-width: 68ch;
   }
 
   a {
@@ -191,14 +216,14 @@
 
 .shell {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1180px;
   margin-inline: auto;
-  padding-inline: clamp(1.25rem, 4vw, 2.5rem);
+  padding-inline: clamp(1.25rem, 4.2vw, 2.75rem);
 }
 
 .section {
   position: relative;
-  padding-block: clamp(4.5rem, 9vw, 8.5rem);
+  padding-block: clamp(4.75rem, 9.5vw, 9rem);
 }
 
 .section--line {
@@ -234,39 +259,44 @@
 
 .display-1 {
   font-family: var(--font-display);
-  font-size: clamp(2.75rem, 7.4vw, 6.9rem);
-  font-weight: 500;
-  line-height: 0.9;
-  letter-spacing: -0.055em;
+  font-size: clamp(2.55rem, 6.8vw, 6.1rem);
+  font-weight: 550;
+  line-height: 0.94;
+  letter-spacing: -0.058em;
+  font-feature-settings: "ss01" on, "ss02" on;
 }
 
 .display-2 {
   font-family: var(--font-display);
-  font-size: clamp(2.1rem, 4.8vw, 3.9rem);
-  font-weight: 500;
-  line-height: 0.98;
-  letter-spacing: -0.045em;
+  font-size: clamp(2rem, 4.6vw, 3.65rem);
+  font-weight: 550;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  font-feature-settings: "ss01" on, "ss02" on;
 }
 
 .display-3 {
   font-family: var(--font-display);
-  font-size: clamp(1.5rem, 2.4vw, 2rem);
-  font-weight: 500;
-  line-height: 1.08;
-  letter-spacing: -0.03em;
+  font-size: clamp(1.45rem, 2.3vw, 1.95rem);
+  font-weight: 550;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
 }
 
 .lead {
-  font-size: clamp(1.02rem, 1.3vw, 1.18rem);
-  line-height: 1.65;
+  font-size: clamp(1.05rem, 1.35vw, 1.2rem);
+  line-height: 1.7;
+  letter-spacing: -0.012em;
   color: var(--color-muted);
+  max-width: 52ch;
   text-wrap: pretty;
 }
 
 .mono-label {
   font-family: var(--font-mono);
   font-size: 0.6875rem;
-  letter-spacing: 0.16em;
+  font-weight: 500;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--color-subtle);
 }
@@ -499,10 +529,10 @@
   align-items: center;
   justify-content: space-between;
   gap: 1.5rem;
-  height: 68px;
-  max-width: 1200px;
+  height: 72px;
+  max-width: 1180px;
   margin-inline: auto;
-  padding-inline: clamp(1.25rem, 4vw, 2.5rem);
+  padding-inline: clamp(1.25rem, 4.2vw, 2.75rem);
 }
 
 .nav-desktop {

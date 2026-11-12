@@ -140,13 +140,35 @@ const initialConfidence = Math.round(initial.confidence * 100);
           </div>
         </div>
       </div>
+
+      {/* Shared markup for client re-renders — clones keep Astro scoped attrs. */}
+      <template data-pg-tpl-step>
+        <li class="pg-step">
+          <span class="pg-step-mark" aria-hidden="true"></span>
+          <span class="pg-step-label"></span>
+          <span class="pg-step-detail"></span>
+        </li>
+      </template>
+      <template data-pg-tpl-near>
+        <li class="pg-near-item">
+          <span class="pg-near-score"></span>
+          <span class="pg-near-text"></span>
+        </li>
+      </template>
+      <template data-pg-tpl-signal>
+        <li class="pg-signal"></li>
+      </template>
     </div>
 
     <p class="pg-note" data-reveal>{content.note}</p>
   </div>
 </section>
 
-<style>
+<style is:global>
+  /*
+    Playground styles are global (unique `.pg-*` prefix) so client-cloned
+    nodes from <template> keep the same look as the Astro first paint.
+  */
   .pg {
     display: grid;
     gap: 1rem;
@@ -178,6 +200,7 @@ const initialConfidence = Math.round(initial.confidence * 100);
     width: 100%;
     flex: 1;
     min-height: 9rem;
+    max-height: 18rem;
     resize: vertical;
     padding: 0.85rem 0.9rem;
     border: 1px solid var(--color-line-strong);
@@ -187,6 +210,7 @@ const initialConfidence = Math.round(initial.confidence * 100);
     font: inherit;
     font-size: 0.9375rem;
     line-height: 1.55;
+    overflow-wrap: anywhere;
     transition: border-color 0.25s ease, box-shadow 0.25s ease;
   }
 
@@ -243,6 +267,7 @@ const initialConfidence = Math.round(initial.confidence * 100);
     align-content: start;
     position: relative;
     overflow: hidden;
+    min-height: 28rem;
   }
 
   .pg-output::before {
@@ -341,7 +366,7 @@ const initialConfidence = Math.round(initial.confidence * 100);
   .pg-flow {
     display: grid;
     gap: 0.3rem;
-    counter-reset: step;
+    min-height: 14.5rem;
   }
 
   .pg-step {
@@ -402,6 +427,7 @@ const initialConfidence = Math.round(initial.confidence * 100);
     font-family: var(--font-mono);
     font-size: 0.625rem;
     color: var(--color-subtle);
+    overflow-wrap: anywhere;
   }
 
   .pg-outcome {
@@ -413,6 +439,7 @@ const initialConfidence = Math.round(initial.confidence * 100);
     background: color-mix(in oklab, var(--color-cyan) 6%, transparent);
     font-size: 0.8125rem;
     line-height: 1.5;
+    min-height: 4.25rem;
   }
 
   .pg-outcome-label {
@@ -426,6 +453,7 @@ const initialConfidence = Math.round(initial.confidence * 100);
   .pg-near {
     display: grid;
     gap: 0.45rem;
+    min-height: 5.5rem;
   }
 
   .pg-near-list {
@@ -447,6 +475,7 @@ const initialConfidence = Math.round(initial.confidence * 100);
     font-family: var(--font-mono);
     font-size: 0.625rem;
     color: var(--color-cyan);
+    font-variant-numeric: tabular-nums;
   }
 
   .pg-near-text {
@@ -454,6 +483,7 @@ const initialConfidence = Math.round(initial.confidence * 100);
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    overflow-wrap: anywhere;
   }
 
   .pg-foot {
@@ -487,12 +517,15 @@ const initialConfidence = Math.round(initial.confidence * 100);
     display: grid;
     gap: 0.4rem;
     min-width: 0;
+    flex: 1;
   }
 
   .pg-signal-list {
     display: flex;
     flex-wrap: wrap;
     gap: 0.3rem;
+    max-height: 4.5rem;
+    overflow: hidden;
   }
 
   .pg-signal {
@@ -503,6 +536,10 @@ const initialConfidence = Math.round(initial.confidence * 100);
     font-size: 0.625rem;
     color: var(--color-muted);
     background: rgba(255, 255, 255, 0.02);
+    max-width: 16rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .pg-signal--empty {
@@ -523,6 +560,11 @@ const initialConfidence = Math.round(initial.confidence * 100);
     .pg {
       grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
       gap: 1.25rem;
+      align-items: stretch;
+    }
+
+    .pg-output {
+      min-height: 32rem;
     }
   }
 </style>
