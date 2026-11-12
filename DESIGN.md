@@ -40,17 +40,56 @@ Radii: `8 / 12 / 16 / 24 / 32px` (`--radius-xs…xl`). Buttons are fully rounded
 
 | Role | Family | Notes |
 | --- | --- | --- |
-| Display | Bricolage Grotesque 500–700 | `clamp()` up to 6.9rem, tracking `-0.055em`, line-height `0.9` |
-| Body | Inter 400–600 | 16px base, 1.6–1.7 line-height, `text-wrap: pretty` |
-| Labels | JetBrains Mono 400–500 | 11px, uppercase, tracking `0.16–0.2em` |
+| Display | Instrument Sans 500–650 | Fluid `clamp()` up to ~6.1rem, tight tracking only ≥~1.45rem |
+| Body | Manrope 400–600 | 16px base, tracking `0` (+ slight word-spacing), max ~52–68ch |
+| Labels | Geist Mono 400–500 | 11px, uppercase, tracking `0.14–0.2em` |
 
-Only latin subsets are shipped (`public/fonts`, preloaded). Display type is
-never used below 1.5rem, where Bricolage loses its character.
+### Why this pairing
+
+Bricolage Grotesque + Inter read as a common “startup landing” stack: display
+was quirky at mid sizes and Inter is ubiquitous enough to feel generic next to
+a technical studio brand. The replacement system is deliberately quieter and
+more engineered:
+
+- **Instrument Sans** (OFL, Instrument Foundry) — a refined geometric grotesk
+  with optical tightness at large sizes, strong Portuguese diacritics, and
+  enough character to carry the hero without competing with the brand mark.
+- **Manrope** (OFL) — a highly legible geometric text face with open counters
+  and even color; pairs with Instrument Sans through shared geometry while
+  staying softer for long Portuguese paragraphs.
+- **Geist Mono** (OFL, Vercel) — a contemporary mono for technical labels,
+  console chrome and metadata; clearer at 11px than the previous JetBrains cut
+  we shipped.
+
+All three are variable `woff2` latin subsets under SIL OFL 1.1, self-hosted in
+`public/fonts` (no CDN). Display + body are preloaded; mono rides the critical
+path only when first used. `font-display: swap` plus metric-matched Arial
+fallbacks (`size-adjust` / ascent / descent overrides) keep FOUT from shifting
+layout. Display type stays at ≥1.45rem — below that Manrope takes over.
+
+### Type scale
+
+| Token | Size | Weight | Tracking | Line-height |
+| --- | --- | --- | --- | --- |
+| `.display-1` | `clamp(2.55rem, 6.8vw, 6.1rem)` | 550 | `-0.055em` | 0.94 |
+| `.display-2` | `clamp(2rem, 4.6vw, 3.65rem)` | 550 | `-0.045em` | 1.0 |
+| `.display-3` | `clamp(1.45rem, 2.3vw, 1.95rem)` | 550 | `-0.03em` | 1.1 |
+| `.lead` | `clamp(1.05rem, 1.35vw, 1.2rem)` | 400 | `0` | 1.7 |
+| Body | `1rem` | 400 | `0` (+ `word-spacing: 0.02em`) | 1.65 |
+| `.mono-label` | `0.6875rem` | 500 | `0.14em` | — |
+
+Tight tracking is reserved for large display headings. Anything below ~18px
+(body, leads, list items, captions, cards, playground copy) uses `0` or a
+slightly positive letter/word spacing so Portuguese words stay separable —
+Manrope collapses visually under negative tracking at text sizes.
+
+`font-feature-settings: "ss01"` (and `"ss02"` on display) sharpen Instrument
+Sans alternates; body uses `ss01` + `cv11` where available.
 
 ## Layout
 
-- Content width: **1200px**, gutters `clamp(1.25rem, 4vw, 2.5rem)`.
-- Section rhythm: `clamp(4.5rem, 9vw, 8.5rem)` block padding, hairline top
+- Content width: **1180px**, gutters `clamp(1.25rem, 4.2vw, 2.75rem)`.
+- Section rhythm: `clamp(4.75rem, 9.5vw, 9rem)` block padding, hairline top
   border between sections.
 - Section heads: mono eyebrow with a numeric index (`01`, `02`, …), display
   title (max 22ch), muted lead paragraph (max 52ch).
@@ -150,7 +189,7 @@ Measured on the deployed site (Lighthouse, mobile emulation):
 | --- | --- |
 | Performance / Accessibility / Best practices / SEO | 99 / 100 / 100 / 100 |
 | FCP · LCP · CLS · TBT | 1.4 s · 1.4 s · 0 · 60 ms |
-| Transferred on first load | ~135 KB (fonts are 129 KB of it) |
+| Transferred on first load | ~110 KB (fonts are ~78 KB of it) |
 | Requests | document + 3 font files + 2 small modules |
 
 Rules that keep it there:
@@ -163,7 +202,11 @@ Rules that keep it there:
 - The scroll handler never reads layout: the scroll range is measured once and
   refreshed on `load`/`resize`.
 - Fonts are latin-only variable woff2 files, self-hosted and preloaded.
+- Playground client updates clone Astro `<template>` nodes (global `.pg-*`
+  styles) so re-renders never lose structure or styling.
 - `npm run verify` fails the build over 28 KB HTML (gzip) or 80 KB of CSS.
+- `npm run test:e2e` runs a Playwright check that types into the playground and
+  asserts step badges, neighbour columns and signal chips stay styled.
 
 ## Assets
 

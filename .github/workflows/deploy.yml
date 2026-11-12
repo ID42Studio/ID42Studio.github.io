@@ -31,6 +31,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
       - name: Type-check
         run: npm run check
 
@@ -39,6 +42,9 @@ jobs:
 
       - name: Verify build
         run: npm run verify
+
+      - name: Playground e2e
+        run: npm run test:e2e
 
       - name: Publish dist/ to gh-pages
         env:

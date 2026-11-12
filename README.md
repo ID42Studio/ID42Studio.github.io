@@ -13,7 +13,7 @@ No server, no runtime framework, no third-party requests: the whole page is
 | --- | --- |
 | Framework | Astro 7 (static output) |
 | Styling | Tailwind CSS v4 via `@tailwindcss/vite` + design tokens in `src/styles/global.css` |
-| Fonts | Self-hosted `@fontsource-variable` subsets (Bricolage Grotesque, Inter, JetBrains Mono) |
+| Fonts | Self-hosted `@fontsource-variable` subsets (Instrument Sans, Manrope, Geist Mono) |
 | Copy / i18n | Typed dictionaries in `src/i18n/` (`pt-BR.ts`, `en.ts`) |
 | Hero | Hand-written WebGL shader (`src/scripts/hero-gl.ts`) + interactive execution console |
 | SEO | Canonical + hreflang, Open Graph, JSON-LD, `@astrojs/sitemap`, `robots.txt` |
@@ -28,7 +28,8 @@ npm run build    # static output in dist/
 npm run preview  # serve dist/ locally
 npm run check    # astro check (types + template diagnostics)
 npm run verify   # asserts on dist/: SEO, assets, i18n parity, budgets
-npm run ship     # check + build + verify (what CI runs)
+npm run test:e2e # Playwright: playground re-render keeps styled structure
+npm run ship     # check + build + verify + e2e
 npm run assets   # re-render og.png, og-en.png and the app icons
 ```
 
@@ -114,6 +115,10 @@ breaks:
 - `pt-BR` and `en` dictionaries have identical key shapes and no empty strings
 - the classifier passes 8 bilingual cases plus a noise case, and every one of the
   36 corpus exemplars classifies to its own label
+
+`npm run test:e2e` then boots `dist/` under Playwright, types a new process into
+the playground, and asserts step badges / neighbour columns / signal chips keep
+their styled structure after the client re-render.
 
 ## Deploying to GitHub Pages
 
