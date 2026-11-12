@@ -40,8 +40,8 @@ Radii: `8 / 12 / 16 / 24 / 32px` (`--radius-xs…xl`). Buttons are fully rounded
 
 | Role | Family | Notes |
 | --- | --- | --- |
-| Display | Instrument Sans 500–650 | Fluid `clamp()` up to ~6.5rem, tracking `-0.06em`, line-height `0.92` |
-| Body | Manrope 400–600 | 16px base, 1.65–1.7 line-height, max ~52–68ch, `text-wrap: pretty` |
+| Display | Instrument Sans 500–650 | Fluid `clamp()` up to ~6.1rem, tight tracking only ≥~1.45rem |
+| Body | Manrope 400–600 | 16px base, tracking `0` (+ slight word-spacing), max ~52–68ch |
 | Labels | Geist Mono 400–500 | 11px, uppercase, tracking `0.14–0.2em` |
 
 ### Why this pairing
@@ -71,12 +71,17 @@ layout. Display type stays at ≥1.45rem — below that Manrope takes over.
 
 | Token | Size | Weight | Tracking | Line-height |
 | --- | --- | --- | --- | --- |
-| `.display-1` | `clamp(2.65rem, 7.2vw, 6.5rem)` | 550 | `-0.06em` | 0.92 |
-| `.display-2` | `clamp(2rem, 4.6vw, 3.65rem)` | 550 | `-0.05em` | 1.0 |
-| `.display-3` | `clamp(1.45rem, 2.3vw, 1.95rem)` | 550 | `-0.035em` | 1.1 |
-| `.lead` | `clamp(1.05rem, 1.35vw, 1.2rem)` | 400 | `-0.012em` | 1.7 |
-| Body | `1rem` | 400 | `-0.011em` | 1.65 |
+| `.display-1` | `clamp(2.55rem, 6.8vw, 6.1rem)` | 550 | `-0.055em` | 0.94 |
+| `.display-2` | `clamp(2rem, 4.6vw, 3.65rem)` | 550 | `-0.045em` | 1.0 |
+| `.display-3` | `clamp(1.45rem, 2.3vw, 1.95rem)` | 550 | `-0.03em` | 1.1 |
+| `.lead` | `clamp(1.05rem, 1.35vw, 1.2rem)` | 400 | `0` | 1.7 |
+| Body | `1rem` | 400 | `0` (+ `word-spacing: 0.02em`) | 1.65 |
 | `.mono-label` | `0.6875rem` | 500 | `0.14em` | — |
+
+Tight tracking is reserved for large display headings. Anything below ~18px
+(body, leads, list items, captions, cards, playground copy) uses `0` or a
+slightly positive letter/word spacing so Portuguese words stay separable —
+Manrope collapses visually under negative tracking at text sizes.
 
 `font-feature-settings: "ss01"` (and `"ss02"` on display) sharpen Instrument
 Sans alternates; body uses `ss01` + `cv11` where available.

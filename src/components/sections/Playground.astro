@@ -193,7 +193,7 @@ const initialConfidence = Math.round(initial.confidence * 100);
     font-family: var(--font-display);
     font-size: clamp(1.1rem, 1.6vw, 1.35rem);
     font-weight: 500;
-    letter-spacing: -0.02em;
+    letter-spacing: 0;
   }
 
   .pg-textarea {
@@ -320,7 +320,7 @@ const initialConfidence = Math.round(initial.confidence * 100);
   .pg-badge strong {
     font-size: 0.875rem;
     font-weight: 600;
-    letter-spacing: -0.01em;
+    letter-spacing: 0;
   }
 
   .pg-confidence {
@@ -419,7 +419,7 @@ const initialConfidence = Math.round(initial.confidence * 100);
     align-self: center;
     font-size: 0.875rem;
     font-weight: 500;
-    letter-spacing: -0.01em;
+    letter-spacing: 0;
   }
 
   .pg-step-detail {
@@ -438,7 +438,9 @@ const initialConfidence = Math.round(initial.confidence * 100);
     border-radius: 12px;
     background: color-mix(in oklab, var(--color-cyan) 6%, transparent);
     font-size: 0.8125rem;
-    line-height: 1.5;
+    line-height: 1.55;
+    letter-spacing: 0.01em;
+    word-spacing: 0.04em;
     min-height: 4.25rem;
   }
 
@@ -468,6 +470,8 @@ const initialConfidence = Math.round(initial.confidence * 100);
     align-items: baseline;
     font-size: 0.75rem;
     line-height: 1.45;
+    letter-spacing: 0.01em;
+    word-spacing: 0.04em;
     color: var(--color-muted);
   }
 
