@@ -13,8 +13,12 @@
     "preview": "astro preview",
     "check": "astro check",
     "verify": "node scripts/verify-site.mjs",
+    "test": "node --test tests/*.test.mjs",
     "test:e2e": "node scripts/playground-e2e.mjs",
-    "ship": "npm run check && npm run build && npm run verify && npm run test:e2e",
+    "build:preview": "node scripts/build-preview.mjs",
+    "verify:preview": "node scripts/verify-preview.mjs",
+    "test:preview": "node scripts/preview-e2e.mjs",
+    "ship": "npm test && npm run check && npm run build && npm run verify && npm run test:e2e",
     "assets": "node scripts/render-assets.mjs",
     "astro": "astro"
   },

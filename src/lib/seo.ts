@@ -1,5 +1,6 @@
 import { publishedProfiles, site } from "../data/site";
 import { getContent, htmlLang, pagePath, type Locale, type SiteContent } from "../i18n";
+import { isPreview, withBase } from "./base";
 
 export interface SeoInput {
   locale: Locale;
@@ -23,10 +24,25 @@ export interface Seo {
   schema: Record<string, unknown>;
 }
 
+/** Absolute URL for a root-absolute path, including the preview base when one is configured. */
+function abs(path: string): string {
+  return new URL(withBase(path), site.url).href;
+}
+
+/**
+ * Origin used in structured data. Production stays `https://id42studio.github.io`
+ * (no trailing slash). A preview uses its own directory so it does not claim
+ * the production canonical identity.
+ */
+function rootHref(): string {
+  return abs("/").replace(/\/$/, "");
+}
+
 /** Single source of truth for everything that goes into <head>. */
 export function buildSeo({ locale, path, title, description, noindex = false }: SeoInput): Seo {
   const content = getContent(locale);
-  const canonical = new URL(path ?? pagePath(locale), site.url).href;
+  const canonical = abs(path ?? pagePath(locale));
+  const preview = isPreview();
 
   return {
     content,
@@ -34,16 +50,18 @@ export function buildSeo({ locale, path, title, description, noindex = false }: 
     title: title ?? content.meta.title,
     description: description ?? content.meta.description,
     canonical,
-    ogImage: `${site.url}${locale === "en" ? "/og-en.png" : "/og.png"}`,
+    ogImage: abs(locale === "en" ? "/og-en.png" : "/og.png"),
     ogLocaleAlternate: getContent(locale === "en" ? "pt-BR" : "en").meta.ogLocale,
     alternates: [
-      { hreflang: "pt-BR", href: `${site.url}/` },
-      { hreflang: "en", href: `${site.url}/en/` },
-      { hreflang: "x-default", href: `${site.url}/` },
+      { hreflang: "pt-BR", href: abs("/") },
+      { hreflang: "en", href: abs("/en/") },
+      { hreflang: "x-default", href: abs("/") },
     ],
-    robots: noindex
-      ? "noindex, follow"
-      : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
+    robots: preview
+      ? "noindex, nofollow"
+      : noindex
+        ? "noindex, follow"
+        : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
     schema: buildSchema(content, locale),
   };
 }
@@ -51,15 +69,16 @@ export function buildSeo({ locale, path, title, description, noindex = false }: 
 /** Organization (also a ProfessionalService) + WebSite + shipped products, as one @graph. */
 function buildSchema(content: SiteContent, locale: Locale): Record<string, unknown> {
   const sameAs = publishedProfiles();
+  const root = rootHref();
 
   const organization = {
     "@type": ["Organization", "ProfessionalService"],
-    "@id": `${site.url}/#organization`,
+    "@id": `${root}/#organization`,
     name: site.name,
-    url: site.url,
+    url: root,
     logo: {
       "@type": "ImageObject",
-      url: new URL(site.logo, site.url).href,
+      url: abs(site.logo),
       width: 512,
       height: 512,
     },
@@ -85,16 +104,16 @@ function buildSchema(content: SiteContent, locale: Locale): Record<string, unkno
 
   const website = {
     "@type": "WebSite",
-    "@id": `${site.url}/#website`,
-    url: site.url,
+    "@id": `${root}/#website`,
+    url: root,
     name: site.name,
     inLanguage: ["pt-BR", "en"],
-    publisher: { "@id": `${site.url}/#organization` },
+    publisher: { "@id": `${root}/#organization` },
   };
 
   const products = {
     "@type": "ItemList",
-    "@id": `${site.url}/#products`,
+    "@id": `${root}/#products`,
     name: locale === "en" ? "Projects and products" : "Projetos e produtos",
     itemListElement: content.work.items.map((item, index) => ({
       "@type": "ListItem",

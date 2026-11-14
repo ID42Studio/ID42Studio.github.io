@@ -17,7 +17,7 @@ No server, no runtime framework, no third-party requests: the whole page is
 | Copy / i18n | Typed dictionaries in `src/i18n/` (`pt-BR.ts`, `en.ts`) |
 | Hero | Hand-written WebGL shader (`src/scripts/hero-gl.ts`) + interactive execution console |
 | SEO | Canonical + hreflang, Open Graph, JSON-LD, `@astrojs/sitemap`, `robots.txt` |
-| Deploy | GitHub Actions → GitHub Pages (`gh-pages` branch) |
+| Deploy | GitHub Actions. `gh-pages` keeps production and `pr-preview/`; Pages deploy publishes the snapshot |
 
 ## Commands
 
@@ -27,9 +27,13 @@ npm run dev      # http://localhost:4321
 npm run build    # static output in dist/
 npm run preview  # serve dist/ locally
 npm run check    # astro check (types + template diagnostics)
+npm run test     # preview plan, artifact gate and workflow guards
 npm run verify   # asserts on dist/: SEO, assets, i18n parity, budgets
 npm run test:e2e # Playwright: playground re-render keeps styled structure
-npm run ship     # check + build + verify + e2e
+npm run ship     # test + check + build + verify + e2e
+PR_NUMBER=123 npm run build:preview   # preview build in dist-preview/
+PR_NUMBER=123 npm run verify:preview  # noindex, base path, no sitemap
+PR_NUMBER=123 npm run test:preview    # browser: locales, assets, language switch
 npm run assets   # re-render og.png, og-en.png and the app icons
 ```
 
@@ -124,7 +128,8 @@ breaks:
 - each locale's navigation uses that locale's anchors
 - every referenced asset exists in `dist/`; no external resource requests
 - the 404 is `noindex` and contains both languages
-- sitemap lists both URLs with `lastmod` and an `x-default` alternate for the default locale; `robots.txt` points at it
+- sitemap lists both URLs with `lastmod` and an `x-default` alternate for the default locale; `robots.txt` points at it and disallows `/pr-preview/`
+- production HTML and the sitemap do not mention `/pr-preview/`
 - LinkedIn is absent from the built pages while `site.linkedin.published` is false
 - page weight budgets (HTML gzipped, total CSS)
 - `pt-BR` and `en` dictionaries have identical key shapes and no empty strings
@@ -141,14 +146,25 @@ The site is live at <https://id42studio.github.io> (pt-BR) and
 <https://id42studio.github.io/en> (English).
 
 - Repository: `ID42Studio/ID42Studio.github.io`
-- Pages source: **Deploy from a branch** → `gh-pages` → `/ (root)`
-- `.github/workflows/deploy.yml` runs on every push to `main`: it installs,
-  type-checks, builds and force-pushes `dist/` to the `gh-pages` branch, which
-  triggers the Pages build. `public/.nojekyll` keeps `_astro/` assets served.
+- `gh-pages` stores the production tree plus `pr-preview/pr-<N>/`
+- `.github/workflows/pages.yml` runs `npm run ship` on every push to `main` and
+  commits `dist/` to `gh-pages` with `clean-exclude: pr-preview/`
+- `.github/workflows/pages-deploy.yml` deploys that snapshot with GitHub Pages
+- `.github/workflows/checks.yml` runs the same gate on pull requests, with
+  read-only contents permission, and uploads `preview-pr-<N>`
+- `.github/workflows/pages-preview.yml` runs from `main` only. It publishes the
+  artifact and comments on the PR. It never checks out pull request code.
 
-Assets are referenced from the domain root, so no `base` is configured. If the
-site ever moves to a project page (`/repo-name/`) or a custom domain, update
-`site` (and add `base`) in `astro.config.mjs`.
+Production assets stay at the domain root. A preview build sets `SITE_BASE` to
+`/pr-preview/pr-<N>/`. Pull request pages are `noindex, nofollow`, omit the
+sitemap, and keep canonical, hreflang and the language switch inside that
+directory. `public/.nojekyll` is still copied so a branch deploy can serve
+`_astro/`.
+
+GitHub Pages has to serve the Actions deployment rather than the `gh-pages`
+branch. The repository setting is **Settings → Pages → Build and deployment →
+Source → GitHub Actions**. Until that change, the branch update still publishes
+and `Pages deploy` fails.
 
 ## Motion and accessibility
 

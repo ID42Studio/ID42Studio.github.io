@@ -328,10 +328,24 @@ check("linkedin follows the published flag", () => {
   return site.linkedin.published ? "published" : "hidden";
 });
 
-check("robots.txt points at the sitemap", () => {
+check("robots.txt points at the sitemap and hides previews", () => {
   const robots = read("robots.txt");
   assert(/Sitemap: https:\/\/id42studio\.github\.io\/sitemap-index\.xml/.test(robots), "sitemap line missing");
-  return "ok";
+  assert(/Disallow:\s*\/pr-preview\//.test(robots), "preview path must be disallowed");
+  assert(!/^Disallow:\s*\/\s*$/m.test(robots), "must not disallow the whole site");
+  return "sitemap + disallow /pr-preview/";
+});
+
+check("production build is not a preview", () => {
+  for (const file of ["index.html", "en/index.html"]) {
+    const html = read(file);
+    assert(!html.includes("/pr-preview/"), `${file} contains a preview base`);
+    const robots = meta(html, "name", "robots") ?? "";
+    assert(robots.includes("index") && !robots.includes("noindex"), `${file} must stay indexable`);
+  }
+  const sitemap = read("sitemap-0.xml");
+  assert(!sitemap.includes("/pr-preview/"), "production sitemap lists a preview");
+  return "root base";
 });
 
 check("llms.txt exists", () => {

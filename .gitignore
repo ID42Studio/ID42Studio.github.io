@@ -1,5 +1,6 @@
 # build output
 dist/
+dist-preview/
 .next/
 # generated types
 .astro/
