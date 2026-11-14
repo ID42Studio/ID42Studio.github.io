@@ -34,7 +34,7 @@ function assert(condition, message) {
 
 const read = (file) => readFileSync(join(dist, file), "utf8");
 
-const { site } = await import(join(root, "src/data/site.ts"));
+const { site, mailto } = await import(join(root, "src/data/site.ts"));
 const [{ ptBR }, { en }] = await Promise.all([
   import(join(root, "src/i18n/pt-BR.ts")),
   import(join(root, "src/i18n/en.ts")),
@@ -352,6 +352,31 @@ check("llms.txt exists", () => {
   const body = read("llms.txt");
   assert(body.includes("https://id42studio.github.io/en/"), "missing English url");
   return `${(body.length / 1024).toFixed(1)} KB`;
+});
+
+check("contact address follows site.email", () => {
+  const htmlHref = (subject, body) => mailto(subject, body).replaceAll("&", "&amp;");
+  const pages = [
+    { file: "index.html", href: htmlHref(ptBR.cta.emailSubject, ptBR.cta.emailBody), note: ptBR.cta.note },
+    { file: "en/index.html", href: htmlHref(en.cta.emailSubject, en.cta.emailBody), note: en.cta.note },
+  ];
+
+  for (const page of pages) {
+    const html = read(page.file);
+    assert(html.includes(page.href), `${page.file} mailto dropped the subject or body`);
+    assert(html.includes(`${site.email} · ${page.note}`), `${page.file} is missing the visible address`);
+    assert(html.includes(`"email":"${site.email}"`), `${page.file} JSON-LD email drifted`);
+    assert(!html.includes("{{email}}"), `${page.file} still has the llms placeholder`);
+  }
+
+  const notFound = read("404.html");
+  assert(notFound.includes(`mailto:${site.email}`), "404 mailto drifted");
+  assert(notFound.includes(`>${site.email}<`), "404 is missing the visible address");
+
+  const llms = read("llms.txt");
+  assert(llms.includes(`Email: ${site.email}`), "llms.txt email drifted");
+  assert(!llms.includes("{{email}}"), "llms.txt placeholder was not stamped");
+  return site.email;
 });
 
 /* --------------------------------------------------------------- budgets */
