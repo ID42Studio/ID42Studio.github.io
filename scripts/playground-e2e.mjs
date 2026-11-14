@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
- * Playwright check: after typing a new process into the playground, the
- * client-rendered result must keep the same styled structure as the SSR paint
- * (step mark / label / detail, neighbour score column, signal chips).
+ * Playwright check: the playground re-render keeps its styled structure, and
+ * the one-page brief renders in both locales, links back to the homes, and
+ * prints on a single A4 page.
  */
 import { createServer } from "node:http";
 import { readFileSync, existsSync, statSync } from "node:fs";
@@ -143,14 +143,94 @@ try {
 
   const model = (await page.locator("[data-pg-model]").textContent())?.trim() ?? "";
   assert(model.length > 0, `model badge populated (${model})`);
+
+  const { site } = await import(join(root, "src/data/site.ts"));
+  const { ptBR } = await import(join(root, "src/i18n/pt-BR.ts"));
+  const { en } = await import(join(root, "src/i18n/en.ts"));
+
+  const pdfPageCount = (buffer) => (buffer.toString("latin1").match(/\/Type\s*\/Page(?!s)/g) ?? []).length;
+
+  const assertSheet = async (path, copy) => {
+    await page.emulateMedia({ media: "screen" });
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto(`${base}${path}`, { waitUntil: "networkidle" });
+
+    const h1 = (await page.locator("h1").innerText()).replace(/\s+/g, " ");
+    for (const line of copy.hero.titleLines) {
+      assert(h1.includes(line), `${path} headline includes “${line}”`);
+    }
+    assert((await page.locator(".site-header").count()) === 0, `${path} has no site header`);
+    assert(
+      (await page.locator(`a[href^="mailto:${site.email}"]`).count()) >= 1,
+      `${path} mailto uses site.email`,
+    );
+    assert((await page.getByText(site.email, { exact: true }).count()) >= 1, `${path} shows the contact address`);
+    for (const product of copy.work.items) {
+      assert((await page.locator(`a[href="${product.url}"]`).count()) === 1, `${path} links ${product.name}`);
+    }
+    assert(
+      (await page.getByText(copy.deliver.models[2].model, { exact: true }).count()) >= 1,
+      `${path} keeps the Outcome caveat`,
+    );
+    assert((await page.getByText(copy.deliver.note, { exact: true }).count()) >= 1, `${path} states there is no list price`);
+
+    await page.evaluate(() => {
+      window.__printed = 0;
+      window.print = () => {
+        window.__printed += 1;
+      };
+    });
+    await page.locator("[data-print]").click();
+    assert((await page.evaluate(() => window.__printed)) === 1, `${path} print action calls window.print`);
+
+    const enHref = await page.locator('[data-locale-switch] a[hreflang="en"]').getAttribute("href");
+    const ptHref = await page.locator('[data-locale-switch] a[hreflang="pt-BR"]').getAttribute("href");
+    assert(enHref === "/en/one-pager/", `${path} English switch stays on the sheet (${enHref})`);
+    assert(ptHref === "/one-pager/", `${path} Portuguese switch stays on the sheet (${ptHref})`);
+
+    await page.emulateMedia({ media: "print" });
+    assert((await page.locator(".sheet-toolbar").isVisible()) === false, `${path} hides the toolbar when printing`);
+    const background = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+    assert(background === "rgb(5, 5, 7)", `${path} print keeps the brand background (${background})`);
+    const pdf = await page.pdf({ printBackground: true, preferCSSPageSize: true });
+    const pdfPages = pdfPageCount(pdf);
+    assert(pdfPages === 1, `${path} prints on one A4 page (got ${pdfPages})`);
+    await page.emulateMedia({ media: "screen" });
+  };
+
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto(`${base}/`, { waitUntil: "networkidle" });
+  const portugueseDownload = page.locator('a[href="/one-pager/"]');
+  assert((await portugueseDownload.count()) === 1, "Portuguese home links to the one-pager");
+  await portugueseDownload.click();
+  await page.waitForURL(/\/one-pager\/$/);
+
+  await assertSheet("/one-pager/", ptBR);
+  await page.locator('[data-locale-switch] a[hreflang="en"]').click();
+  await page.waitForURL(/\/en\/one-pager\/$/);
+  await assertSheet("/en/one-pager/", en);
+
+  await page.goto(`${base}/en/`, { waitUntil: "networkidle" });
+  assert((await page.locator('a[href="/en/one-pager/"]').count()) === 1, "English home links to the one-pager");
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  for (const path of ["/one-pager/", "/en/one-pager/"]) {
+    await page.goto(`${base}${path}`, { waitUntil: "networkidle" });
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+    );
+    assert(!overflow, `${path} has no horizontal overflow at 390px`);
+    assert(await page.locator("h1").isVisible(), `${path} headline is visible on a phone`);
+    assert(await page.locator("[data-print]").isVisible(), `${path} print action is visible on a phone`);
+  }
 } finally {
   await browser.close();
   server.close();
 }
 
 if (failed) {
-  console.error("\nPlayground e2e failed.");
+  console.error("\nSite e2e failed.");
   process.exit(1);
 }
 
-console.log("\nPlayground e2e passed.");
+console.log("\nSite e2e passed.");

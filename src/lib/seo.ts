@@ -6,6 +6,11 @@ export interface SeoInput {
   locale: Locale;
   /** Canonical path for this page. Defaults to the locale root. */
   path?: string;
+  /**
+   * Shared slug for a page that exists in both locales (`one-pager` →
+   * `/one-pager/` and `/en/one-pager/`). Omit on the locale home.
+   */
+  slug?: string;
   title?: string;
   description?: string;
   noindex?: boolean;
@@ -38,8 +43,28 @@ function rootHref(): string {
   return abs("/").replace(/\/$/, "");
 }
 
+/** Locale homes. Preview builds use this set on every page: the trusted publisher checks it. */
+function homeAlternates(): { hreflang: string; href: string }[] {
+  return [
+    { hreflang: "pt-BR", href: abs("/") },
+    { hreflang: "en", href: abs("/en/") },
+    { hreflang: "x-default", href: abs("/") },
+  ];
+}
+
+/** hreflang set. A slug points at that page; the home page stays the default. */
+function pageAlternates(slug: string): { hreflang: string; href: string }[] {
+  const clean = slug.replace(/^\/|\/$/g, "");
+  const portuguese = abs(`/${clean}/`);
+  return [
+    { hreflang: "pt-BR", href: portuguese },
+    { hreflang: "en", href: abs(`/en/${clean}/`) },
+    { hreflang: "x-default", href: portuguese },
+  ];
+}
+
 /** Single source of truth for everything that goes into <head>. */
-export function buildSeo({ locale, path, title, description, noindex = false }: SeoInput): Seo {
+export function buildSeo({ locale, path, slug, title, description, noindex = false }: SeoInput): Seo {
   const content = getContent(locale);
   const canonical = abs(path ?? pagePath(locale));
   const preview = isPreview();
@@ -52,11 +77,7 @@ export function buildSeo({ locale, path, title, description, noindex = false }: 
     canonical,
     ogImage: abs(locale === "en" ? "/og-en.png" : "/og.png"),
     ogLocaleAlternate: getContent(locale === "en" ? "pt-BR" : "en").meta.ogLocale,
-    alternates: [
-      { hreflang: "pt-BR", href: abs("/") },
-      { hreflang: "en", href: abs("/en/") },
-      { hreflang: "x-default", href: abs("/") },
-    ],
+    alternates: preview || !slug ? homeAlternates() : pageAlternates(slug),
     robots: preview
       ? "noindex, nofollow"
       : noindex

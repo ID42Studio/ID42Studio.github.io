@@ -19,9 +19,15 @@ export function isLocale(value: string): value is Locale {
   return value === "pt-BR" || value === "en";
 }
 
-/** Canonical path of the page for a locale. */
+/** Canonical path of the home page for a locale. */
 export function pagePath(locale: Locale): string {
   return locale === "en" ? "/en/" : "/";
+}
+
+/** Public path for a locale. `slug` is a page such as `one-pager`. */
+export function localizedPath(locale: Locale, slug = ""): string {
+  const page = slug ? `${slug.replace(/^\/|\/$/g, "")}/` : "";
+  return locale === "en" ? `/en/${page}` : `/${page}`;
 }
 
 /** Same-page path in the other locale, used by the language switch. */

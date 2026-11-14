@@ -550,4 +550,16 @@ export const ptBR: SiteContent = {
     mobileNav: "Navegação do menu",
     menu: "Menu",
   },
+  onePager: {
+    metaTitle: "ID42 Studio | Apresentação de uma página",
+    metaDescription:
+      "Folha única para a proposta: software que executa trabalho, modelos Build, Operate e Outcome, capacidades, processo e produtos em produção.",
+    kicker: "Apresentação de uma página",
+    print: "Imprimir ou salvar PDF",
+    back: "Voltar ao site",
+    thesis:
+      "Software as a Work: soluções que combinam engenharia, automação e inteligência artificial para executar processos e entregar resultados verificáveis.",
+    start: "Como começar",
+    download: "Baixar apresentação de uma página",
+  },
 };

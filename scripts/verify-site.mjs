@@ -63,10 +63,39 @@ function link(html, rel) {
   return pattern.exec(html)?.[1];
 }
 
+function alternateHref(html, lang) {
+  const tags = [...html.matchAll(/<link\b[^>]*>/gi)].map((match) => match[0]);
+  const tag = tags.find((value) => value.includes(`rel="alternate"`) && value.includes(`hreflang="${lang}"`));
+  return tag ? /href="([^"]+)"/.exec(tag)?.[1] : undefined;
+}
+
 const pages = [
   { file: "index.html", lang: "pt-BR", canonical: "https://id42studio.github.io/", robotsIndex: true },
   { file: "en/index.html", lang: "en", canonical: "https://id42studio.github.io/en/", robotsIndex: true },
 ];
+
+const onePagerPages = [
+  {
+    file: "one-pager/index.html",
+    lang: "pt-BR",
+    canonical: "https://id42studio.github.io/one-pager/",
+    href: "/one-pager/",
+    copy: ptBR,
+  },
+  {
+    file: "en/one-pager/index.html",
+    lang: "en",
+    canonical: "https://id42studio.github.io/en/one-pager/",
+    href: "/en/one-pager/",
+    copy: en,
+  },
+];
+
+const homeHreflang = {
+  "pt-BR": "https://id42studio.github.io/",
+  en: "https://id42studio.github.io/en/",
+  "x-default": "https://id42studio.github.io/",
+};
 
 /* ------------------------------------------------------------- structure */
 
@@ -164,6 +193,10 @@ for (const page of pages) {
     const expectedAlternate = page.lang === "en" ? "pt_BR" : "en_US";
     assert(alternateLocale === expectedAlternate, `og:locale:alternate ${alternateLocale ?? "missing"}`);
 
+    for (const [lang, href] of Object.entries(homeHreflang)) {
+      assert(alternateHref(html, lang) === href, `hreflang ${lang} → ${alternateHref(html, lang) ?? "missing"}`);
+    }
+
     const image = meta(html, "property", "og:image") ?? "";
     const imagePath = image.replace("https://id42studio.github.io/", "");
     assert(existsSync(join(dist, imagePath)), `og image missing: ${imagePath}`);
@@ -249,10 +282,114 @@ for (const page of pages) {
   });
 }
 
+for (const page of onePagerPages) {
+  check(`${page.file}: document basics`, () => {
+    const html = read(page.file);
+    assert(html.includes(`<html lang="${page.lang}"`), `expected lang=${page.lang}`);
+    assert(count(html, /<h1[\s>]/g) === 1, "expected exactly one <h1>");
+    assert((link(html, "canonical") ?? "") === page.canonical, "canonical mismatch");
+
+    const title = /<title>([^<]*)<\/title>/.exec(html)?.[1] ?? "";
+    assert(title.length >= 15 && title.length <= 70, `title length ${title.length}`);
+
+    const description = meta(html, "name", "description") ?? "";
+    assert(description.length >= 70 && description.length <= 165, `description length ${description.length}`);
+
+    const robots = meta(html, "name", "robots") ?? "";
+    assert(robots.includes("index"), "one-pager must be indexable");
+    assert(!/<header[^>]*class="[^"]*site-header/.test(html), "site nav must not render");
+    assert(!/class="[^"]*\bnav-link\b/.test(html), "nav links must not render");
+    assert(/@page\s*\{[^}]*size:\s*A4/.test(html), "missing @page size A4");
+    assert(html.includes(page.copy.onePager.print), "missing print action");
+    return `${title.length}c title, ${description.length}c description`;
+  });
+
+  check(`${page.file}: hreflang points at the sheet`, () => {
+    const html = read(page.file);
+    const expected = {
+      "pt-BR": "https://id42studio.github.io/one-pager/",
+      en: "https://id42studio.github.io/en/one-pager/",
+      "x-default": "https://id42studio.github.io/one-pager/",
+    };
+    for (const [lang, href] of Object.entries(expected)) {
+      assert(alternateHref(html, lang) === href, `hreflang ${lang} → ${alternateHref(html, lang) ?? "missing"}`);
+    }
+    const alternateLocale = meta(html, "property", "og:locale:alternate");
+    const expectedAlternate = page.lang === "en" ? "pt_BR" : "en_US";
+    assert(alternateLocale === expectedAlternate, `og:locale:alternate ${alternateLocale ?? "missing"}`);
+    return page.canonical;
+  });
+
+  check(`${page.file}: copy stays inside what the site already says`, () => {
+    const html = read(page.file);
+    const text = html
+      .replace(/<style[\s\S]*?<\/style>/gi, " ")
+      .replace(/<script[\s\S]*?<\/script>/gi, " ")
+      .replace(/&#39;|&apos;/g, "'")
+      .replace(/&amp;/g, "&")
+      .replace(/&quot;/g, '"')
+      .replace(/<[^>]+>/g, " ");
+    const copy = page.copy;
+    const other = page.lang === "en" ? ptBR : en;
+
+    for (const line of copy.hero.titleLines) assert(text.includes(line), `missing headline “${line}”`);
+    assert(text.includes(copy.onePager.thesis), "missing thesis");
+    const thesisClause = copy.onePager.thesis.split(": ").slice(1).join(": ");
+    assert(thesisClause.length > 40 && copy.saaw.text.includes(thesisClause), "thesis is not a clause from saaw.text");
+    assert(!text.includes(other.onePager.thesis), "other locale thesis leaked");
+
+    for (const model of copy.deliver.models) {
+      assert(text.includes(model.key), `missing ${model.key}`);
+      assert(text.includes(model.title), `missing “${model.title}”`);
+      assert(text.includes(model.model), `missing “${model.model}”`);
+      for (const item of model.items) assert(text.includes(item), `missing “${item}”`);
+    }
+    assert(text.includes(copy.deliver.note), "missing the no-list-price note");
+
+    for (const capability of copy.capabilities.items) {
+      assert(text.includes(capability.title), `missing capability “${capability.title}”`);
+      assert(text.includes(capability.text), `missing capability text “${capability.title}”`);
+    }
+    for (const step of copy.process.steps) {
+      assert(text.includes(step.title) && text.includes(step.text), `missing step “${step.title}”`);
+    }
+    for (const product of copy.work.items) {
+      assert(text.includes(product.name), `missing ${product.name}`);
+      assert(html.includes(`href="${product.url}"`), `missing link ${product.url}`);
+      assert(text.includes(product.solution), `missing solution for ${product.name}`);
+      assert(text.includes(product.status), `missing status for ${product.name}`);
+    }
+
+    assert(text.includes(site.email), "missing contact email");
+    assert(html.includes(`mailto:${site.email}`), "mailto must read site.email");
+    assert(!html.includes("contato@") || site.email.startsWith("contato@"), "email must come from site.ts");
+    assert(!html.includes(site.linkedin.url), "unpublished LinkedIn URL leaked");
+    return `${copy.work.items.length} products`;
+  });
+}
+
+check("home links to the one-pager without borrowing its print rules", () => {
+  for (const page of onePagerPages) {
+    const homeFile = page.lang === "en" ? "en/index.html" : "index.html";
+    const html = read(homeFile);
+    assert(html.includes(page.copy.onePager.download), `${homeFile} missing the download label`);
+    assert(html.includes(`href="${page.href}"`), `${homeFile} missing ${page.href}`);
+    assert(!/@page\s*\{[^}]*size:\s*A4/.test(html), `${homeFile} picked up the one-pager @page rule`);
+  }
+  const portuguese = read("index.html");
+  const english = read("en/index.html");
+  assert(!portuguese.includes(en.onePager.download), "English download label on the Portuguese home");
+  assert(!english.includes(ptBR.onePager.download), "Portuguese download label on the English home");
+  return "/one-pager/ + /en/one-pager/";
+});
+
 /* ----------------------------------------------------------------- assets */
 
+const publishedHtml = () =>
+  ["index.html", "en/index.html", ...onePagerPages.map((page) => page.file)].map((file) => read(file)).join("\n");
+
 check("every referenced asset exists", () => {
-  const html = `${read("index.html")}${read("en/index.html")}`;
+  const html = publishedHtml();
   const urls = new Set(
     [...html.matchAll(/(?:href|src)="(\/[^"#?]+)"/g)]
       .map((match) => match[1])
@@ -266,7 +403,7 @@ check("every referenced asset exists", () => {
 });
 
 check("no external requests", () => {
-  const html = `${read("index.html")}${read("en/index.html")}`;
+  const html = publishedHtml();
   // Only resource-bearing attributes matter: outbound <a href> links are fine.
   const resourcePatterns = [
     /<script[^>]*\ssrc="([^"]+)"/g,
@@ -285,7 +422,7 @@ check("no external requests", () => {
 });
 
 check("vendor strings removed", () => {
-  const files = ["index.html", "en/index.html", "llms.txt"];
+  const files = ["index.html", "en/index.html", "one-pager/index.html", "en/one-pager/index.html", "llms.txt"];
   const banned = ["n8n"];
   for (const file of files) {
     const body = read(file).toLowerCase();
@@ -298,24 +435,60 @@ check("vendor strings removed", () => {
 
 /* ------------------------------------------------------------------ seo */
 
-check("sitemap lists both locales", () => {
+check("sitemap lists both locales and the one-pager", () => {
   const sitemap = read("sitemap-0.xml");
-  assert(sitemap.includes("https://id42studio.github.io/"), "missing pt-BR url");
-  assert(sitemap.includes("https://id42studio.github.io/en/"), "missing en url");
-  assert((sitemap.match(/<lastmod>[^<]+<\/lastmod>/g) ?? []).length >= 2, "missing lastmod");
+  const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]).sort();
+  const expected = [
+    "https://id42studio.github.io/",
+    "https://id42studio.github.io/en/",
+    "https://id42studio.github.io/en/one-pager/",
+    "https://id42studio.github.io/one-pager/",
+  ];
+  assert(urls.join("\n") === expected.join("\n"), `urls:\n${urls.join("\n")}`);
+  assert((sitemap.match(/<lastmod>[^<]+<\/lastmod>/g) ?? []).length >= expected.length, "missing lastmod");
 
-  const alternates = [...sitemap.matchAll(/<xhtml:link\b[^>]*>/g)].map((match) => match[0]);
-  const xDefault = alternates.filter((tag) => /hreflang="x-default"/.test(tag));
-  assert(xDefault.length >= 2, "missing x-default alternate");
-  for (const tag of xDefault) {
-    const href = /href="([^"]+)"/.exec(tag)?.[1];
-    assert(href === "https://id42studio.github.io/", `x-default href ${href}`);
+  const blocks = sitemap.split("<url>").slice(1);
+  assert(blocks.length === expected.length, `expected ${expected.length} url blocks`);
+  for (const block of blocks) {
+    const loc = /<loc>([^<]+)<\/loc>/.exec(block)?.[1];
+    const xDefault = [...block.matchAll(/<xhtml:link\b[^>]*>/g)]
+      .map((match) => match[0])
+      .find((tag) => /hreflang="x-default"/.test(tag));
+    assert(xDefault, `missing x-default for ${loc}`);
+    const href = /href="([^"]+)"/.exec(xDefault)?.[1];
+    const fallback = loc?.includes("/one-pager/")
+      ? "https://id42studio.github.io/one-pager/"
+      : "https://id42studio.github.io/";
+    assert(href === fallback, `x-default for ${loc} is ${href}`);
+
+    const portuguese = [...block.matchAll(/<xhtml:link\b[^>]*>/g)]
+      .map((match) => match[0])
+      .find((tag) => /hreflang="pt-BR"/.test(tag));
+    const english = [...block.matchAll(/<xhtml:link\b[^>]*>/g)]
+      .map((match) => match[0])
+      .find((tag) => /hreflang="en"/.test(tag));
+    const ptHref = portuguese ? /href="([^"]+)"/.exec(portuguese)?.[1] : undefined;
+    const enHref = english ? /href="([^"]+)"/.exec(english)?.[1] : undefined;
+    if (loc?.includes("/one-pager/")) {
+      assert(ptHref === "https://id42studio.github.io/one-pager/", `pt-BR alternate ${ptHref}`);
+      assert(enHref === "https://id42studio.github.io/en/one-pager/", `en alternate ${enHref}`);
+    } else {
+      assert(ptHref === "https://id42studio.github.io/", `pt-BR alternate ${ptHref}`);
+      assert(enHref === "https://id42studio.github.io/en/", `en alternate ${enHref}`);
+    }
   }
-  return "2 urls + x-default + lastmod";
+  return "4 urls + paired hreflang + x-default + lastmod";
 });
 
 check("linkedin follows the published flag", () => {
-  const files = ["index.html", "en/index.html", "404.html", "llms.txt"];
+  const files = [
+    "index.html",
+    "en/index.html",
+    "one-pager/index.html",
+    "en/one-pager/index.html",
+    "404.html",
+    "llms.txt",
+  ];
   for (const file of files) {
     const present = read(file).includes(site.linkedin.url);
     assert(
@@ -337,7 +510,7 @@ check("robots.txt points at the sitemap and hides previews", () => {
 });
 
 check("production build is not a preview", () => {
-  for (const file of ["index.html", "en/index.html"]) {
+  for (const file of ["index.html", "en/index.html", "one-pager/index.html", "en/one-pager/index.html"]) {
     const html = read(file);
     assert(!html.includes("/pr-preview/"), `${file} contains a preview base`);
     const robots = meta(html, "name", "robots") ?? "";
@@ -351,6 +524,8 @@ check("production build is not a preview", () => {
 check("llms.txt exists", () => {
   const body = read("llms.txt");
   assert(body.includes("https://id42studio.github.io/en/"), "missing English url");
+  assert(body.includes("https://id42studio.github.io/one-pager/"), "missing Portuguese one-pager");
+  assert(body.includes("https://id42studio.github.io/en/one-pager/"), "missing English one-pager");
   return `${(body.length / 1024).toFixed(1)} KB`;
 });
 
@@ -372,6 +547,15 @@ check("contact address follows site.email", () => {
   const notFound = read("404.html");
   assert(notFound.includes(`mailto:${site.email}`), "404 mailto drifted");
   assert(notFound.includes(`>${site.email}<`), "404 is missing the visible address");
+
+  for (const page of onePagerPages) {
+    const html = read(page.file);
+    const href = htmlHref(page.copy.cta.emailSubject, page.copy.cta.emailBody);
+    assert(html.includes(href), `${page.file} mailto dropped the subject or body`);
+    assert(html.includes(`>${site.email}<`), `${page.file} is missing the visible address`);
+    assert(html.includes(`"email":"${site.email}"`), `${page.file} JSON-LD email drifted`);
+    assert(!html.includes("contato@"), `${page.file} still names the old inbox`);
+  }
 
   const llms = read("llms.txt");
   assert(llms.includes(`Email: ${site.email}`), "llms.txt email drifted");
@@ -402,6 +586,15 @@ check("page weight budget", () => {
   assert(css < 80 * 1024, `CSS is ${(css / 1024).toFixed(1)} KB (budget 80)`);
 
   return `html ${(gz / 1024).toFixed(1)} KB gz · css ${(css / 1024).toFixed(1)} KB`;
+});
+
+check("one-pager weight budget", () => {
+  const sizes = onePagerPages.map((page) => {
+    const gz = gzipSync(Buffer.from(read(page.file))).length;
+    assert(gz < 16 * 1024, `${page.file} is ${(gz / 1024).toFixed(1)} KB gzipped (budget 16)`);
+    return `${page.file} ${(gz / 1024).toFixed(1)} KB gz`;
+  });
+  return sizes.join(" · ");
 });
 
 /* ------------------------------------------------------------- i18n parity */
