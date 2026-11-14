@@ -40,4 +40,3 @@ local and private LLMs, developer tooling, open source, emerging architectures a
 
 ## Contact
 - Email: contato@id42.studio
-- LinkedIn: https://www.linkedin.com/company/id42studio

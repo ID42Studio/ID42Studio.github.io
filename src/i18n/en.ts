@@ -10,12 +10,12 @@ export const en: SiteContent = {
   },
   nav: {
     links: [
-      { label: "Solutions", href: "#solucoes" },
+      { label: "Products", href: "#work" },
+      { label: "Solutions", href: "#solutions" },
       { label: "Playground", href: "#playground" },
-      { label: "How we work", href: "#processo" },
-      { label: "Products", href: "#produtos" },
-      { label: "Studio", href: "#estudio" },
-      { label: "Contact", href: "#contato" },
+      { label: "How we work", href: "#process" },
+      { label: "Studio", href: "#studio" },
+      { label: "Contact", href: "#contact" },
     ],
     cta: "Discuss a project",
   },
@@ -27,7 +27,7 @@ export const en: SiteContent = {
       "We design, build and operate intelligent systems that connect applications, execute processes and deliver verifiable outcomes. From software engineering to AI agents, we turn technology into operational capability.",
     primaryCta: "Let's solve your challenge",
     secondaryCta: "Explore our solutions",
-    secondaryHref: "#solucoes",
+    secondaryHref: "#solutions",
     support: "Engineering · Intelligence · Products",
     proofLabel: "In production",
     proof: ["VBSell", "BuilderMonitor", "Deepze"],
@@ -189,7 +189,7 @@ export const en: SiteContent = {
     note: "Commercial models agreed case by case — no list price.",
   },
   capabilities: {
-    index: "03",
+    index: "04",
     eyebrow: "Capabilities",
     title: "Six practices. One principle: engineering before the tool.",
     subtitle:
@@ -234,7 +234,7 @@ export const en: SiteContent = {
     ],
   },
   saaw: {
-    index: "04",
+    index: "09",
     eyebrow: "Software as a Work",
     title: "From tools we use to systems that execute.",
     text: "Traditional software organises the work. The next generation also takes part in execution. We call this evolution Software as a Work: solutions that combine engineering, automation and artificial intelligence to execute processes and deliver verifiable outcomes.",
@@ -415,7 +415,7 @@ export const en: SiteContent = {
     note: "Possible applications, not products already delivered. Approvals and payments stay under human control, with an audit trail.",
   },
   work: {
-    index: "08",
+    index: "03",
     eyebrow: "Products",
     title: "Products that demonstrate our ability to execute.",
     subtitle:
@@ -469,7 +469,7 @@ export const en: SiteContent = {
     note: "Links and status verified. No mockups.",
   },
   about: {
-    index: "09",
+    index: "08",
     eyebrow: "Studio",
     title: "Engineering experience. Product mindset.",
     paragraphs: [
@@ -484,7 +484,7 @@ export const en: SiteContent = {
       { title: "Pragmatic intelligence", text: "AI where it creates real benefit — not where it sells a slide." },
       { title: "Products, not prototypes", text: "Designed to operate, not only to demonstrate." },
     ],
-    quote: "We don't sell AI as magic. We build systems that work.",
+    quote: "We don't sell AI as magic. We build systems that get work done.",
     expertiseLabel: "Expertise",
     expertise: [
       "Software engineering",
@@ -495,7 +495,7 @@ export const en: SiteContent = {
       "Intelligent operations",
     ],
     stats: [
-      { value: "25+", label: "years in business systems" },
+      { value: "25+", label: "years in management and ERP systems" },
       { value: "3", label: "own products in production" },
       { value: "OCA", label: "active ecosystem contribution" },
     ],
@@ -516,11 +516,19 @@ export const en: SiteContent = {
     ],
     note: "An internal practice of the studio — not a separate company.",
   },
+  notFound: {
+    label: "Page not found",
+    title: "This page has gone offline.",
+    accent: "The studio is still here.",
+    text: "The address does not exist, or it has moved. Head back to the home page — or write to us at",
+    home: "Back to the home page",
+    description: "This address does not exist, or it has moved.",
+  },
   cta: {
-    title: "Shall we build the right solution?",
+    title: "Let's build the right solution.",
     text: "Got a process that eats time, a system that needs to evolve, or a product idea? Tell us what you want to solve — we will look at the technical path and what makes sense to execute.",
     button: "Talk about a project",
-    secondary: "Chat on LinkedIn",
+    secondary: "Talk on LinkedIn",
     note: "contato@id42.studio · a person answers, not a form.",
     emailSubject: "Project — ID42 Studio",
     emailBody: "Hi ID42! What we want to solve is: ",

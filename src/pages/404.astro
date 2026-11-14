@@ -2,13 +2,27 @@
 import Base from "../layouts/Base.astro";
 import Brand from "../components/ui/Brand.astro";
 import { site } from "../data/site";
+import { getContent } from "../i18n";
+
+const pt = getContent("pt-BR").notFound;
+const en = getContent("en").notFound;
+const mailHref = `mailto:${site.email}`;
+
+/**
+ * GitHub Pages serves one 404.html for every missing path, including `/en/…`.
+ * Both languages are in the document so either reader can recover.
+ */
+const languages = [
+  { code: "pt-BR", copy: pt, href: "/" },
+  { code: "en", copy: en, href: "/en/" },
+] as const;
 ---
 
 <Base
   locale="pt-BR"
   path="/404.html"
-  title="404 — Página não encontrada | ID42 Studio"
-  description="O endereço não existe ou mudou de lugar."
+  title={`404 — ${pt.label} / ${en.label} | ${site.name}`}
+  description={`${pt.description} ${en.description}`}
   noindex
 >
   <main id="main" class="nf">
@@ -24,19 +38,34 @@ import { site } from "../data/site";
     <div class="shell nf-inner">
       <a href="/" class="nf-brand"><Brand href="/" /></a>
 
-      <p class="eyebrow"><span class="idx">404</span><span>Não encontrado</span></p>
-      <h1 class="display-2 nf-title">
-        Esta página saiu do ar.<br />
-        <span class="text-grad">O estúdio continua.</span>
-      </h1>
-      <p class="lead nf-text">
-        O endereço não existe (ou mudou de lugar). Volte para a página inicial — ou fale direto com a
-        gente em <a href={`mailto:${site.email}`}>{site.email}</a>.
-      </p>
+      <p class="eyebrow"><span class="idx">404</span></p>
 
-      <div class="nf-actions">
-        <a class="btn btn--primary" href="/">Voltar para o início</a>
-        <a class="btn btn--ghost" href="/en/">English version</a>
+      <div class="nf-langs">
+        {
+          languages.map((language, index) => (
+            <article lang={language.code}>
+              {index === 0 ? (
+                <h1 class="display-2 nf-title">
+                  {language.copy.title}
+                  <br />
+                  <span class="text-grad">{language.copy.accent}</span>
+                </h1>
+              ) : (
+                <h2 class="display-2 nf-title">
+                  {language.copy.title}
+                  <br />
+                  <span class="text-grad">{language.copy.accent}</span>
+                </h2>
+              )}
+              <p class="lead nf-text">
+                {language.copy.text} <a href={mailHref}>{site.email}</a>.
+              </p>
+              <a class:list={["btn", index === 0 ? "btn--primary" : "btn--ghost"]} href={language.href}>
+                {language.copy.home}
+              </a>
+            </article>
+          ))
+        }
       </div>
     </div>
   </main>
@@ -64,6 +93,23 @@ import { site } from "../data/site";
     margin-bottom: 1rem;
   }
 
+  .nf-langs {
+    display: grid;
+    gap: 2rem;
+    width: min(100%, 68rem);
+  }
+
+  .nf-langs article {
+    display: grid;
+    gap: 1.1rem;
+    justify-items: start;
+  }
+
+  .nf-langs article + article {
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-line);
+  }
+
   .nf-title {
     max-width: 18ch;
   }
@@ -77,10 +123,17 @@ import { site } from "../data/site";
     border-bottom: 1px solid var(--color-line-strong);
   }
 
-  .nf-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.7rem;
-    margin-top: 1rem;
+  @media (min-width: 800px) {
+    .nf-langs {
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+    }
+
+    .nf-langs article + article {
+      padding-top: 0;
+      padding-left: 3rem;
+      border-top: 0;
+      border-left: 1px solid var(--color-line);
+    }
   }
 </style>

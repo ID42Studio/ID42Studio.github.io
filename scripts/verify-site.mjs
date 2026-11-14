@@ -34,6 +34,12 @@ function assert(condition, message) {
 
 const read = (file) => readFileSync(join(dist, file), "utf8");
 
+const { site } = await import(join(root, "src/data/site.ts"));
+const [{ ptBR }, { en }] = await Promise.all([
+  import(join(root, "src/i18n/pt-BR.ts")),
+  import(join(root, "src/i18n/en.ts")),
+]);
+
 function count(html, regex) {
   return (html.match(regex) ?? []).length;
 }
@@ -69,17 +75,41 @@ const anchors = [
   ["top", "home"],
   ["diagnostico", "challenges"],
   ["entrega", "deliver"],
+  ["produtos", "work"],
   ["solucoes", "solutions"],
-  ["saaw", "saaw"],
   ["playground", "playground"],
   ["processo", "process"],
   ["casos-de-uso", "applications"],
-  ["produtos", "work"],
   ["estudio", "studio"],
+  ["saaw", "saaw"],
   ["labs", "labs"],
   ["discovery", "discovery"],
   ["contato", "contact"],
 ];
+
+/** Document order after products move up and the thesis moves down. */
+const sectionOrder = [
+  "top",
+  "diagnostico",
+  "entrega",
+  "produtos",
+  "solucoes",
+  "playground",
+  "processo",
+  "casos-de-uso",
+  "estudio",
+  "saaw",
+  "labs",
+  "contato",
+];
+
+const navByPage = {
+  "index.html": ["#produtos", "#solucoes", "#playground", "#processo", "#estudio", "#contato"],
+  "en/index.html": ["#work", "#solutions", "#playground", "#process", "#studio", "#contact"],
+};
+
+const portugueseHrefs = ["#produtos", "#solucoes", "#processo", "#estudio", "#contato"];
+const englishHrefs = ["#work", "#solutions", "#process", "#studio", "#contact"];
 
 check("both locales rendered", () => {
   for (const page of pages) assert(existsSync(join(dist, page.file)), `${page.file} missing`);
@@ -90,7 +120,14 @@ check("404 page rendered", () => {
   assert(existsSync(join(dist, "404.html")), "404.html missing");
   const html = read("404.html");
   assert(/noindex/i.test(meta(html, "name", "robots") ?? ""), "404 must be noindex");
-  return "noindex ok";
+  for (const copy of [ptBR.notFound, en.notFound]) {
+    for (const key of ["label", "title", "accent", "text", "home"]) {
+      assert(html.includes(copy[key]), `404 missing ${key}`);
+    }
+  }
+  assert(html.includes('lang="pt-BR"') && html.includes('lang="en"'), "both languages must be marked");
+  assert(html.includes('href="/"') && html.includes('href="/en/"'), "both home links must be present");
+  return "noindex, both languages";
 });
 
 for (const page of pages) {
@@ -123,6 +160,10 @@ for (const page of pages) {
       `hreflang set incomplete: ${hreflangs.join(", ")}`,
     );
 
+    const alternateLocale = meta(html, "property", "og:locale:alternate");
+    const expectedAlternate = page.lang === "en" ? "pt_BR" : "en_US";
+    assert(alternateLocale === expectedAlternate, `og:locale:alternate ${alternateLocale ?? "missing"}`);
+
     const image = meta(html, "property", "og:image") ?? "";
     const imagePath = image.replace("https://id42studio.github.io/", "");
     assert(existsSync(join(dist, imagePath)), `og image missing: ${imagePath}`);
@@ -138,7 +179,37 @@ for (const page of pages) {
       .map((match) => match[1])
       .filter((id, index, all) => all.indexOf(id) !== index);
     assert(duplicates.length === 0, `duplicate ids: ${[...new Set(duplicates)].join(", ")}`);
-    return `${anchors.length} sections`;
+
+    let cursor = -1;
+    for (const id of sectionOrder) {
+      const at = html.indexOf(`id="${id}"`);
+      assert(at > cursor, `${id} is out of section order`);
+      cursor = at;
+    }
+
+    const indexes = [...html.matchAll(/<span class="idx"[^>]*>\s*(\d+)\s*<\/span>/g)].map((match) => match[1]);
+    assert(indexes.join(",") === "01,02,03,04,05,06,07,08,09,10", `section indexes ${indexes.join(",")}`);
+    return `${sectionOrder.length} sections in order`;
+  });
+
+  check(`${page.file}: locale nav anchors`, () => {
+    const html = read(page.file);
+    const expected = navByPage[page.file];
+    for (const className of ["nav-link", "mobile-link"]) {
+      const hrefs = [...html.matchAll(new RegExp(`<a class="${className}" href="(#[^"]+)"`, "g"))].map(
+        (match) => match[1],
+      );
+      assert(hrefs.join(",") === expected.join(","), `${className}: ${hrefs.join(",")}`);
+    }
+
+    const footer = [...html.matchAll(/<a class="footer-link" href="(#[^"]+)"/g)].map((match) => match[1]);
+    assert(footer.join(",") === expected.join(","), `footer: ${footer.join(",")}`);
+
+    const own = page.file === "en/index.html" ? englishHrefs : portugueseHrefs;
+    const other = page.file === "en/index.html" ? portugueseHrefs : englishHrefs;
+    for (const href of own) assert(html.includes(`href="${href}"`), `missing ${href}`);
+    for (const href of other) assert(!html.includes(`href="${href}"`), `wrong-locale link ${href}`);
+    return expected.join(" ");
   });
 
   check(`${page.file}: internal links resolve`, () => {
@@ -155,8 +226,25 @@ for (const page of pages) {
     const raw = /<script type="application\/ld\+json">([\s\S]*?)<\/script>/.exec(html)?.[1];
     assert(raw, "no JSON-LD block");
     const data = JSON.parse(raw);
-    const types = data["@graph"].map((node) => node["@type"]);
-    assert(types.includes("Organization") && types.includes("WebSite"), `graph types: ${types.join(", ")}`);
+    const types = data["@graph"].flatMap((node) => (Array.isArray(node["@type"]) ? node["@type"] : [node["@type"]]));
+    for (const type of ["Organization", "ProfessionalService", "WebSite", "ItemList"]) {
+      assert(types.includes(type), `graph types: ${types.join(", ")}`);
+    }
+
+    const organization = data["@graph"].find((node) =>
+      [node["@type"]].flat().includes("Organization"),
+    );
+    const logoUrl = typeof organization.logo === "string" ? organization.logo : organization.logo?.url;
+    assert(logoUrl === `${site.url}${site.logo}`, `logo ${logoUrl}`);
+    assert(existsSync(join(dist, site.logo.slice(1))), "logo file missing from dist");
+
+    const serialized = JSON.stringify(data);
+    if (site.linkedin.published) {
+      assert(organization.sameAs?.includes(site.linkedin.url), "sameAs missing LinkedIn");
+    } else {
+      assert(!("sameAs" in organization), "unpublished profile must not set sameAs");
+      assert(!serialized.includes(site.linkedin.url), "unpublished profile leaked into JSON-LD");
+    }
     return types.join(" + ");
   });
 }
@@ -214,7 +302,30 @@ check("sitemap lists both locales", () => {
   const sitemap = read("sitemap-0.xml");
   assert(sitemap.includes("https://id42studio.github.io/"), "missing pt-BR url");
   assert(sitemap.includes("https://id42studio.github.io/en/"), "missing en url");
-  return "2 urls";
+  assert((sitemap.match(/<lastmod>[^<]+<\/lastmod>/g) ?? []).length >= 2, "missing lastmod");
+
+  const alternates = [...sitemap.matchAll(/<xhtml:link\b[^>]*>/g)].map((match) => match[0]);
+  const xDefault = alternates.filter((tag) => /hreflang="x-default"/.test(tag));
+  assert(xDefault.length >= 2, "missing x-default alternate");
+  for (const tag of xDefault) {
+    const href = /href="([^"]+)"/.exec(tag)?.[1];
+    assert(href === "https://id42studio.github.io/", `x-default href ${href}`);
+  }
+  return "2 urls + x-default + lastmod";
+});
+
+check("linkedin follows the published flag", () => {
+  const files = ["index.html", "en/index.html", "404.html", "llms.txt"];
+  for (const file of files) {
+    const present = read(file).includes(site.linkedin.url);
+    assert(
+      present === site.linkedin.published,
+      site.linkedin.published
+        ? `${file} is missing the LinkedIn URL`
+        : `${file} still publishes the LinkedIn URL`,
+    );
+  }
+  return site.linkedin.published ? "published" : "hidden";
 });
 
 check("robots.txt points at the sitemap", () => {
@@ -269,11 +380,6 @@ function shapeKeys(value, prefix = "") {
   }
   return [prefix.replace(/\.$/, "")];
 }
-
-const [{ ptBR }, { en }] = await Promise.all([
-  import(join(root, "src/i18n/pt-BR.ts")),
-  import(join(root, "src/i18n/en.ts")),
-]);
 
 check("locales have identical shape", () => {
   const ptKeys = shapeKeys(ptBR).sort();
