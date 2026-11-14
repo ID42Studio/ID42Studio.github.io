@@ -10,7 +10,8 @@ interface Props {
   locale: Locale;
   homeHref: string;
   mailHref: string;
-  linkedin: string;
+  /** Omitted while the company page in `site.linkedin` is unpublished. */
+  linkedin?: string;
 }
 
 const { content, locale, homeHref, mailHref, linkedin } = Astro.props;
@@ -28,15 +29,17 @@ const year = new Date().getFullYear();
           <a class="footer-icon" href={mailHref} aria-label={cta.button}>
             <Icon name="mail" size={16} />
           </a>
-          <a
-            class="footer-icon"
-            href={linkedin}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="LinkedIn"
-          >
-            <Icon name="linkedin" size={16} />
-          </a>
+          {linkedin && (
+            <a
+              class="footer-icon"
+              href={linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn"
+            >
+              <Icon name="linkedin" size={16} />
+            </a>
+          )}
         </div>
       </div>
 
@@ -53,11 +56,13 @@ const year = new Date().getFullYear();
         <p class="mono-label">{footer.contactTitle}</p>
         <ul>
           <li><a class="footer-link" href={mailHref}>{content.cta.button}</a></li>
-          <li>
-            <a class="footer-link" href={linkedin} target="_blank" rel="noopener noreferrer">
-              LinkedIn
-            </a>
-          </li>
+          {linkedin && (
+            <li>
+              <a class="footer-link" href={linkedin} target="_blank" rel="noopener noreferrer">
+                LinkedIn
+              </a>
+            </li>
+          )}
         </ul>
       </div>
     </div>

@@ -6,7 +6,8 @@ import Anchor from "../ui/Anchor.astro";
 interface Props {
   content: SiteContent["cta"];
   mailHref: string;
-  linkedin: string;
+  /** Omitted while the company page in `site.linkedin` is unpublished. */
+  linkedin?: string;
 }
 
 const { content, mailHref, linkedin } = Astro.props;
@@ -31,10 +32,12 @@ const { content, mailHref, linkedin } = Astro.props;
           <Icon name="mail" size={16} />
           {content.button}
         </a>
-        <a class="btn btn--ghost" href={linkedin} target="_blank" rel="noopener noreferrer">
-          <Icon name="linkedin" size={15} />
-          {content.secondary}
-        </a>
+        {linkedin && (
+          <a class="btn btn--ghost" href={linkedin} target="_blank" rel="noopener noreferrer">
+            <Icon name="linkedin" size={15} />
+            {content.secondary}
+          </a>
+        )}
       </div>
 
       <p class="cta-note">{content.note}</p>

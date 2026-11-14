@@ -5,18 +5,18 @@ import Hero from "../components/sections/Hero.astro";
 import Marquee from "../components/sections/Marquee.astro";
 import Problem from "../components/sections/Problem.astro";
 import Deliver from "../components/sections/Deliver.astro";
+import Cases from "../components/sections/Cases.astro";
 import Solutions from "../components/sections/Solutions.astro";
-import Saaw from "../components/sections/Saaw.astro";
 import Playground from "../components/sections/Playground.astro";
 import Process from "../components/sections/Process.astro";
 import UseCases from "../components/sections/UseCases.astro";
-import Cases from "../components/sections/Cases.astro";
 import About from "../components/sections/About.astro";
+import Saaw from "../components/sections/Saaw.astro";
 import Labs from "../components/sections/Labs.astro";
 import Cta from "../components/sections/Cta.astro";
 import Footer from "../components/sections/Footer.astro";
 import { getContent, pagePath, type Locale } from "../i18n";
-import { site, mailto } from "../data/site";
+import { mailto, publishedProfiles } from "../data/site";
 
 interface Props {
   locale: Locale;
@@ -26,6 +26,7 @@ const { locale } = Astro.props;
 const content = getContent(locale);
 const mailHref = mailto(content.cta.emailSubject, content.cta.emailBody);
 const homeHref = pagePath(locale);
+const linkedin = publishedProfiles()[0];
 ---
 
 <Base locale={locale}>
@@ -36,15 +37,15 @@ const homeHref = pagePath(locale);
     <Marquee content={content.marquee} />
     <Problem content={content.challenges} />
     <Deliver content={content.deliver} />
+    <Cases content={content.work} />
     <Solutions content={content.capabilities} />
-    <Saaw content={content.saaw} />
     <Playground content={content.playground} locale={locale} />
     <Process content={content.process} />
     <UseCases content={content.useCases} />
-    <Cases content={content.work} />
     <About content={content.about} />
+    <Saaw content={content.saaw} />
     <Labs content={content.labs} />
-    <Cta content={content.cta} mailHref={mailHref} linkedin={site.linkedin} />
+    <Cta content={content.cta} mailHref={mailHref} linkedin={linkedin} />
   </main>
 
   <Footer
@@ -52,6 +53,6 @@ const homeHref = pagePath(locale);
     locale={locale}
     homeHref={homeHref}
     mailHref={mailHref}
-    linkedin={site.linkedin}
+    linkedin={linkedin}
   />
 </Base>

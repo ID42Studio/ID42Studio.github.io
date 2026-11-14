@@ -73,10 +73,20 @@ if (reduceMotion || !("IntersectionObserver" in window)) {
 /* ------------------------------------------------------------ nav state */
 
 const navLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>("[data-nav-link]"));
+
+/** English slugs are zero-height aliases. The spy has to watch the section. */
+function navTarget(link: HTMLAnchorElement): Element | null {
+  const id = link.getAttribute("href");
+  if (!id?.startsWith("#")) return null;
+  const target = document.querySelector(id);
+  if (!target) return null;
+  if (target.classList.contains("anchor-alias")) return target.closest("section") ?? target;
+  return target;
+}
+
 const observed = navLinks
   .map((link) => {
-    const id = link.getAttribute("href");
-    const target = id && id.startsWith("#") ? document.querySelector(id) : null;
+    const target = navTarget(link);
     return target ? { link, target } : null;
   })
   .filter((entry): entry is { link: HTMLAnchorElement; target: Element } => entry !== null);

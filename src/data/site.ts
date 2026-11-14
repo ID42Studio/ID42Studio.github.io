@@ -7,10 +7,25 @@ export const site = {
   name: "ID42 Studio",
   legalName: "ID42 Studio",
   email: "contato@id42.studio",
-  linkedin: "https://www.linkedin.com/company/id42studio",
+  /** Raster mark used as the Organization logo in structured data. */
+  logo: "/icon-512.png",
+  /**
+   * Company page. Keep `published` false until the URL actually responds.
+   * Flipping it turns the CTA, the footer link and `sameAs` back on.
+   * When you do, list the URL in `public/llms.txt` again.
+   */
+  linkedin: {
+    url: "https://www.linkedin.com/company/id42studio",
+    published: false as boolean,
+  },
   locale: "pt-BR",
   themeColor: "#050507",
 } as const;
+
+/** Profile URLs that are safe to render and to list in structured data. */
+export function publishedProfiles(): string[] {
+  return [site.linkedin].filter((profile) => profile.published).map((profile) => profile.url);
+}
 
 export const mailto = (subject: string, body?: string): string => {
   const params = new URLSearchParams();

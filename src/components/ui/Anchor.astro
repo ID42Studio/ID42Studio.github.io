@@ -1,9 +1,9 @@
 ---
 /**
- * Empty target that keeps previously published English anchors working.
- * The Portuguese slug stays the canonical id of each section; these aliases
- * are only here so `/en/#work` and older shared links still land.
- * Set `inert` so the span never becomes a tap target or a focus stop.
+ * Empty target for the English slug of a section.
+ * The Portuguese id on the section stays canonical. The alias is what the
+ * English navigation links to (`/en/#work`, `/en/#contact`, …) and what keeps
+ * older shared links working.
  */
 interface Props {
   name: string;

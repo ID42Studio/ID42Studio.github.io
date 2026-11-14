@@ -9,7 +9,7 @@ const { href = "/", compact = false } = Astro.props;
 const gradientId = `brand-grad-${Math.random().toString(36).slice(2, 8)}`;
 ---
 
-<a href={href} class="brand" aria-label="ID42 Studio">
+<a href={href} class="brand">
   <span class="brand-mark" aria-hidden="true">
     <svg viewBox="0 0 26 26" width="26" height="26" fill="none">
       <defs>
@@ -27,7 +27,7 @@ const gradientId = `brand-grad-${Math.random().toString(36).slice(2, 8)}`;
   </span>
   <span class="brand-type">
     <span class="brand-name">ID42</span>
-    {!compact && <span class="brand-sub">Studio</span>}
+    {!compact && <span class="brand-sub">STUDIO</span>}
   </span>
 </a>
 
@@ -66,7 +66,6 @@ const gradientId = `brand-grad-${Math.random().toString(36).slice(2, 8)}`;
     font-family: var(--font-mono);
     font-size: 0.5625rem;
     letter-spacing: 0.2em;
-    text-transform: uppercase;
     color: var(--color-subtle);
   }
 </style>

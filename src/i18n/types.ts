@@ -247,6 +247,16 @@ export interface SiteContent {
     expertise: string[];
     stats: { value: string; label: string }[];
   };
+  notFound: {
+    /** Short label used in the document title, without the site name. */
+    label: string;
+    title: string;
+    accent: string;
+    /** Sentence that ends where the email address is inserted. */
+    text: string;
+    home: string;
+    description: string;
+  };
   cta: {
     title: string;
     text: string;

@@ -1,4 +1,4 @@
-import { site } from "../data/site";
+import { publishedProfiles, site } from "../data/site";
 import { getContent, htmlLang, pagePath, type Locale, type SiteContent } from "../i18n";
 
 export interface SeoInput {
@@ -17,6 +17,7 @@ export interface Seo {
   description: string;
   canonical: string;
   ogImage: string;
+  ogLocaleAlternate: string;
   alternates: { hreflang: string; href: string }[];
   robots: string;
   schema: Record<string, unknown>;
@@ -34,6 +35,7 @@ export function buildSeo({ locale, path, title, description, noindex = false }: 
     description: description ?? content.meta.description,
     canonical,
     ogImage: `${site.url}${locale === "en" ? "/og-en.png" : "/og.png"}`,
+    ogLocaleAlternate: getContent(locale === "en" ? "pt-BR" : "en").meta.ogLocale,
     alternates: [
       { hreflang: "pt-BR", href: `${site.url}/` },
       { hreflang: "en", href: `${site.url}/en/` },
@@ -46,17 +48,25 @@ export function buildSeo({ locale, path, title, description, noindex = false }: 
   };
 }
 
-/** Organization + WebSite + shipped products, as a single @graph. */
+/** Organization (also a ProfessionalService) + WebSite + shipped products, as one @graph. */
 function buildSchema(content: SiteContent, locale: Locale): Record<string, unknown> {
+  const sameAs = publishedProfiles();
+
   const organization = {
-    "@type": "Organization",
+    "@type": ["Organization", "ProfessionalService"],
     "@id": `${site.url}/#organization`,
     name: site.name,
     url: site.url,
+    logo: {
+      "@type": "ImageObject",
+      url: new URL(site.logo, site.url).href,
+      width: 512,
+      height: 512,
+    },
     email: site.email,
     description: content.meta.description,
     areaServed: { "@type": "Country", name: "Brazil" },
-    sameAs: [site.linkedin],
+    ...(sameAs.length > 0 ? { sameAs } : {}),
     knowsAbout: [
       "Software engineering",
       "Solution architecture",

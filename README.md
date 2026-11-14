@@ -40,10 +40,10 @@ src/
   components/
     Landing.astro          # page composition
     sections/              # Header, Hero, AgentConsole, Marquee, Problem,
-                           # Deliver, Solutions, Saaw, Process, UseCases,
-                           # Cases, About, Labs, Cta, Footer
+                           # Deliver, Cases, Solutions, Process, UseCases,
+                           # About, Saaw, Labs, Cta, Footer
     ui/                    # Anchor, Brand, Icon, LocaleSwitch, SectionHead
-  data/site.ts             # canonical URL, email, LinkedIn, helpers
+  data/site.ts             # canonical URL, email, logo, optional LinkedIn
   i18n/                    # types + pt-BR / en copy + locale helpers
   layouts/Base.astro       # document shell, head, skip link
   lib/seo.ts               # canonical, hreflang, OG, JSON-LD graph
@@ -54,7 +54,7 @@ src/
   pages/
     index.astro            # pt-BR at /
     en/index.astro         # English at /en/
-    404.astro              # GitHub Pages 404
+    404.astro              # bilingual GitHub Pages 404 (single 404.html)
   scripts/site.ts          # progressive enhancement (no framework)
   scripts/hero-gl.ts       # hand-written WebGL signal field for the hero
   styles/global.css        # tokens, layout primitives, motion
@@ -64,7 +64,7 @@ public/
   icon-192.png, icon-512.png, apple-touch-icon.png, favicon.svg
   manifest.webmanifest, robots.txt, llms.txt, .nojekyll
 scripts/
-  verify-site.mjs          # post-build gate: 20 assertions on dist/
+  verify-site.mjs          # post-build gate on dist/
   render-assets.sh         # regenerates cards + icons (headless Chrome)
   og-card.html, icon-card.html
 ```
@@ -75,17 +75,29 @@ All visible copy lives in `src/i18n/pt-BR.ts` and `src/i18n/en.ts`, typed by
 `src/i18n/types.ts`. Both files must satisfy the same `SiteContent` interface —
 a missing translation is a type error, not a silent fallback.
 
-Contact details (email, LinkedIn) are in `src/data/site.ts`. The canonical URL
-lives in `astro.config.mjs` (`site`), used for canonical tags and the sitemap.
+Contact details live in `src/data/site.ts`: the email, the logo path, and
+LinkedIn. LinkedIn stays off while `site.linkedin.published` is false (the
+company page does not exist yet). Set that flag to true to restore the CTA,
+the footer link and `sameAs`, and add the URL back to `public/llms.txt`.
+The canonical URL lives in `astro.config.mjs` (`site`), used for canonical
+tags and the sitemap.
+
+### Page order
+
+Hero, challenges, what we deliver, products, capabilities, the playground,
+how we work, applications, the studio, the Software as a Work thesis, then
+Labs. Section numbers in the copy follow that order, 01 to 10.
 
 ### Anchors
 
 Each section keeps its Portuguese slug as the canonical id (`#entrega`,
 `#solucoes`, `#saaw`, `#processo`, `#produtos`, `#estudio`, `#contato`).
 `<Anchor name="…" />` adds an empty English alias (`#deliver`, `#solutions`,
-`#work`, `#studio`, and `#discovery` on the delivery section) so old shared
-links keep working; `npm run verify` fails if a section id is missing,
-duplicated or if a `#anchor` in either page points at nothing.
+`#work`, `#process`, `#studio`, `#contact`, and `#discovery` on the delivery
+section). The English page navigates with those aliases; the Portuguese page
+keeps the Portuguese ids. `npm run verify` fails if a section id is missing,
+duplicated or out of order, if a `#anchor` points at nothing, or if either
+locale's navigation uses the other locale's slugs.
 
 ### Social cards and icons
 
@@ -106,11 +118,14 @@ breaks:
 
 - both locales rendered, one `<h1>` each, correct `lang` and canonical
 - title/description lengths inside search-safe ranges
-- Open Graph, Twitter and hreflang sets complete; OG image exists on disk
-- JSON-LD parses and carries Organization, WebSite and ItemList
-- every section id present, no duplicate ids, every `#anchor` resolves
+- Open Graph, Twitter and hreflang sets complete, including `og:locale:alternate`; OG image exists on disk
+- JSON-LD parses and carries Organization, ProfessionalService (with `logo`), WebSite and ItemList; `sameAs` lists LinkedIn only when that profile is published
+- every section id present, in page order, numbered 01–10, with no duplicate ids, and every `#anchor` resolves
+- each locale's navigation uses that locale's anchors
 - every referenced asset exists in `dist/`; no external resource requests
-- sitemap lists both URLs, `robots.txt` points at it
+- the 404 is `noindex` and contains both languages
+- sitemap lists both URLs with `lastmod` and an `x-default` alternate for the default locale; `robots.txt` points at it
+- LinkedIn is absent from the built pages while `site.linkedin.published` is false
 - page weight budgets (HTML gzipped, total CSS)
 - `pt-BR` and `en` dictionaries have identical key shapes and no empty strings
 - the classifier passes 8 bilingual cases plus a noise case, and every one of the

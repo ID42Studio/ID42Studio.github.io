@@ -10,10 +10,10 @@ export const ptBR: SiteContent = {
   },
   nav: {
     links: [
+      { label: "Produtos", href: "#produtos" },
       { label: "Soluções", href: "#solucoes" },
       { label: "Playground", href: "#playground" },
       { label: "Como trabalhamos", href: "#processo" },
-      { label: "Produtos", href: "#produtos" },
       { label: "Estúdio", href: "#estudio" },
       { label: "Contato", href: "#contato" },
     ],
@@ -189,7 +189,7 @@ export const ptBR: SiteContent = {
     note: "Modelos comerciais definidos caso a caso, sem preço de tabela.",
   },
   capabilities: {
-    index: "03",
+    index: "04",
     eyebrow: "Capacidades",
     title: "Seis frentes. Um princípio: engenharia antes da ferramenta.",
     subtitle:
@@ -234,7 +234,7 @@ export const ptBR: SiteContent = {
     ],
   },
   saaw: {
-    index: "04",
+    index: "09",
     eyebrow: "Software as a Work",
     title: "De ferramentas que usamos a sistemas que executam.",
     text: "O software tradicional organiza o trabalho. A próxima geração também participa da execução. Chamamos essa evolução de Software as a Work: soluções que combinam engenharia, automação e inteligência artificial para executar processos e entregar resultados verificáveis.",
@@ -415,7 +415,7 @@ export const ptBR: SiteContent = {
     note: "Aplicações possíveis, não produtos já entregues. Aprovações e pagamentos seguem sob controle humano, com trilha de auditoria.",
   },
   work: {
-    index: "08",
+    index: "03",
     eyebrow: "Produtos",
     title: "Produtos que demonstram nossa capacidade de execução.",
     subtitle:
@@ -469,7 +469,7 @@ export const ptBR: SiteContent = {
     note: "Links e status verificados. Nenhum mockup.",
   },
   about: {
-    index: "09",
+    index: "08",
     eyebrow: "Estúdio",
     title: "Experiência em engenharia. Mentalidade de produto.",
     paragraphs: [
@@ -515,6 +515,14 @@ export const ptBR: SiteContent = {
       "Avaliação de IA aplicada",
     ],
     note: "Prática interna do estúdio — não é uma empresa separada.",
+  },
+  notFound: {
+    label: "Página não encontrada",
+    title: "Esta página saiu do ar.",
+    accent: "O estúdio continua.",
+    text: "O endereço não existe (ou mudou de lugar). Volte para a página inicial — ou fale direto com a gente em",
+    home: "Voltar para o início",
+    description: "O endereço não existe ou mudou de lugar.",
   },
   cta: {
     title: "Vamos construir a solução certa?",
