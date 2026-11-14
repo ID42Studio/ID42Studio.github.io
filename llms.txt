@@ -39,4 +39,4 @@ ID42 Labs is the studio's applied research and prototyping practice: agents and 
 local and private LLMs, developer tooling, open source, emerging architectures and applied AI evaluation.
 
 ## Contact
-- Email: contato@id42.studio
+- Email: talkid42studio@gmail.com
