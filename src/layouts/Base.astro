@@ -8,13 +8,27 @@ import type { Locale } from "../i18n";
 interface Props {
   locale: Locale;
   path?: string;
+  /** Shared slug when the page exists in both locales. Omit on the home page. */
+  slug?: string;
   title?: string;
   description?: string;
   noindex?: boolean;
+  /** Document pages skip the nav, reveal and hero script. */
+  siteScript?: boolean;
+  bodyClass?: string;
 }
 
-const { locale, path, title, description, noindex = false } = Astro.props;
-const seo = buildSeo({ locale, path, title, description, noindex });
+const {
+  locale,
+  path,
+  slug,
+  title,
+  description,
+  noindex = false,
+  siteScript = true,
+  bodyClass,
+} = Astro.props;
+const seo = buildSeo({ locale, path, slug, title, description, noindex });
 const { content } = seo;
 const preview = isPreview();
 ---
@@ -83,12 +97,16 @@ const preview = isPreview();
     <script type="application/ld+json" set:html={JSON.stringify(seo.schema)} />
   </head>
 
-  <body class="grain">
+  <body class:list={["grain", bodyClass]}>
     <a class="skip-link" href="#main">{content.a11y.skip}</a>
     <slot />
-    <script>
-      import "../scripts/site";
-    </script>
+    {
+      siteScript && (
+        <script>
+          import "../scripts/site";
+        </script>
+      )
+    }
   </body>
 </html>
 

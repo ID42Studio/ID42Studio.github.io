@@ -550,4 +550,16 @@ export const en: SiteContent = {
     mobileNav: "Menu navigation",
     menu: "Menu",
   },
+  onePager: {
+    metaTitle: "ID42 Studio | One-page presentation",
+    metaDescription:
+      "A single sheet for the proposal: software that gets work done, the Build, Operate and Outcome models, capabilities, process and products in production.",
+    kicker: "One-page presentation",
+    print: "Print or save as PDF",
+    back: "Back to the site",
+    thesis:
+      "Software as a Work: solutions that combine engineering, automation and artificial intelligence to execute processes and deliver verifiable outcomes.",
+    start: "How to start",
+    download: "Download the one-page presentation",
+  },
 };

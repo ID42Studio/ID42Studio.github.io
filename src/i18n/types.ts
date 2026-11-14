@@ -283,4 +283,17 @@ export interface SiteContent {
     mobileNav: string;
     menu: string;
   };
+  /** Leave-behind sheet. Chrome strings only; the body reuses the site copy. */
+  onePager: {
+    metaTitle: string;
+    metaDescription: string;
+    kicker: string;
+    print: string;
+    back: string;
+    /** One sentence already stated in `saaw.text`. */
+    thesis: string;
+    start: string;
+    /** Discreet link beside the home contact CTA. */
+    download: string;
+  };
 }

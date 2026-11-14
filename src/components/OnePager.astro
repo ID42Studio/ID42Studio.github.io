@@ -1,0 +1,843 @@
+---
+import Base from "../layouts/Base.astro";
+import Brand from "./ui/Brand.astro";
+import LocaleSwitch from "./ui/LocaleSwitch.astro";
+import { getContent, localizedPath, type Locale } from "../i18n";
+import { isPreview, withBase } from "../lib/base";
+import { mailto, publishedProfiles, site } from "../data/site";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const content = getContent(locale);
+const sheet = content.onePager;
+const homeHref = withBase(localizedPath(locale));
+const pageHref = localizedPath(locale, "one-pager");
+const mailHref = mailto(content.cta.emailSubject, content.cta.emailBody);
+const linkedin = publishedProfiles()[0];
+const year = new Date().getFullYear();
+const siteHost = site.url.replace(/^https:\/\//, "");
+const discover = content.process.steps[0];
+---
+
+<Base
+  locale={locale}
+  path={pageHref}
+  slug="one-pager"
+  title={sheet.metaTitle}
+  description={sheet.metaDescription}
+  siteScript={false}
+  bodyClass="sheet-page"
+>
+  <main id="main" class="sheet-main">
+    <div class="sheet-toolbar">
+      <Brand href={homeHref} />
+      <div class="sheet-toolbar-actions">
+        <LocaleSwitch
+          locale={locale}
+          label={content.a11y.language}
+          ptHref={withBase(localizedPath("pt-BR", "one-pager"))}
+          enHref={withBase(localizedPath("en", "one-pager"))}
+        />
+        <button type="button" class="sheet-print" data-print>{sheet.print}</button>
+        <a class="sheet-back" href={homeHref}>{sheet.back}</a>
+      </div>
+      {
+        /* The publisher on main requires every preview page to name both locale homes. */
+        isPreview() && (
+          <span hidden>
+            <a href={withBase("/")}>{sheet.back}</a>
+            <a href={withBase("/en/")}>{sheet.back}</a>
+          </span>
+        )
+      }
+    </div>
+
+    <article class="sheet">
+      <div class="sheet-rule" aria-hidden="true"></div>
+
+      <header class="sheet-mast">
+        <Brand href={homeHref} />
+        <div class="sheet-mast-meta">
+          <p class="sheet-kicker">{sheet.kicker}</p>
+          <p class="sheet-support">{content.hero.support}</p>
+        </div>
+      </header>
+
+      <div class="sheet-hero">
+        <h1 class="sheet-title">
+          {
+            content.hero.titleLines.map((line, index) => (
+              <span class:list={{ "text-grad": index === content.hero.accentLine }}>{line}</span>
+            ))
+          }
+        </h1>
+        <p class="sheet-thesis">{sheet.thesis}</p>
+      </div>
+
+      <section class="sheet-block">
+        <h2 class="sheet-label">{content.deliver.eyebrow}</h2>
+        <div class="sheet-models">
+          {
+            content.deliver.models.map((model) => (
+              <article class:list={["sheet-model", { "is-pending": model.key === "Outcome" }]}>
+                <p class="sheet-key">{model.key}</p>
+                <h3>{model.title}</h3>
+                <ul class="sheet-items">
+                  {model.items.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+                <p class="sheet-meta">{model.model}</p>
+              </article>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="sheet-block">
+        <h2 class="sheet-label">{content.capabilities.eyebrow}</h2>
+        <ul class="sheet-caps">
+          {
+            content.capabilities.items.map((item) => (
+              <li class="sheet-cap">
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+                <p class="sheet-tags">{item.tags.join(" · ")}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <section class="sheet-block">
+        <h2 class="sheet-label">{content.process.eyebrow}</h2>
+        <p class="sheet-intro">{content.process.subtitle}</p>
+        <ol class="sheet-steps">
+          {
+            content.process.steps.map((step) => (
+              <li class="sheet-step">
+                <span class="sheet-n">{step.n}</span>
+                <h3>{step.title}</h3>
+                <p>{step.text}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </section>
+
+      <section class="sheet-block">
+        <h2 class="sheet-label">{content.work.eyebrow}</h2>
+        <div class="sheet-products">
+          {
+            content.work.items.map((item) => (
+              <article class="sheet-product" data-accent={item.accent}>
+                <p class="sheet-status">{item.status}</p>
+                <h3>{item.name}</h3>
+                <p class="sheet-cat">{item.category}</p>
+                <p class="sheet-solution">{item.solution}</p>
+                <a href={item.url} target="_blank" rel="noopener noreferrer">
+                  {item.linkLabel}
+                </a>
+              </article>
+            ))
+          }
+        </div>
+      </section>
+
+      <footer class="sheet-close">
+        <div>
+          <h2 class="sheet-label">{sheet.start}</h2>
+          <p class="sheet-start">
+            <span class="sheet-start-title">{discover.title}.</span>
+            {" "}
+            {discover.text}
+          </p>
+          <p class="sheet-price">{content.deliver.note}</p>
+        </div>
+        <div>
+          <h2 class="sheet-label">{content.footer.contactTitle}</h2>
+          <a class="sheet-mail" href={mailHref}>{site.email}</a>
+          <p class="sheet-mail-label">{content.cta.button}</p>
+          <a class="sheet-site" href={homeHref}>{siteHost}</a>
+          {
+            linkedin && (
+              <a class="sheet-site" href={linkedin} target="_blank" rel="noopener noreferrer">
+                LinkedIn
+              </a>
+            )
+          }
+        </div>
+      </footer>
+
+      <p class="sheet-legal">
+        © {year} {site.name}. {content.footer.rights} {content.footer.madeIn}
+      </p>
+    </article>
+  </main>
+
+  <script is:inline>
+    document.querySelector("[data-print]")?.addEventListener("click", () => window.print());
+  </script>
+</Base>
+
+<style>
+  .sheet-main {
+    padding: 1.25rem clamp(1rem, 3vw, 2rem) 3.5rem;
+  }
+
+  .sheet-toolbar {
+    width: min(100%, 980px);
+    margin: 0 auto 0.9rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.25rem;
+  }
+
+  .sheet-toolbar-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.7rem 0.85rem;
+  }
+
+  .sheet-print {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.48rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-line-strong);
+    background: rgba(255, 255, 255, 0.03);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 1;
+  }
+
+  .sheet-print:hover {
+    border-color: color-mix(in oklab, var(--color-blue) 70%, var(--color-line-strong));
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .sheet-back {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.04em;
+    color: var(--color-muted);
+    border-bottom: 1px solid var(--color-line-strong);
+  }
+
+  .sheet-back:hover {
+    color: var(--color-fg);
+    border-bottom-color: var(--color-blue);
+  }
+
+  .sheet {
+    width: min(100%, 980px);
+    margin: 0 auto;
+    border: 1px solid var(--color-line);
+    border-radius: 20px;
+    background:
+      radial-gradient(
+        120% 42% at 100% -8%,
+        color-mix(in oklab, var(--color-blue) 16%, transparent),
+        transparent 48%
+      ),
+      radial-gradient(
+        70% 36% at 0% 110%,
+        color-mix(in oklab, var(--color-cyan) 8%, transparent),
+        transparent 46%
+      ),
+      var(--color-bg-soft);
+    overflow: hidden;
+  }
+
+  .sheet-rule {
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      var(--color-blue),
+      var(--color-violet) 55%,
+      var(--color-cyan)
+    );
+  }
+
+  .sheet-mast,
+  .sheet-hero,
+  .sheet-block,
+  .sheet-close,
+  .sheet-legal {
+    padding-inline: clamp(1.05rem, 2.4vw, 1.7rem);
+  }
+
+  .sheet-mast {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 0.8rem 1.5rem;
+    padding-block: 1rem 0.9rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .sheet-mast-meta {
+    text-align: right;
+  }
+
+  .sheet-kicker {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .sheet-support {
+    margin-top: 0.28rem;
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.08em;
+    color: var(--color-subtle);
+  }
+
+  .sheet-hero {
+    display: grid;
+    gap: 0.9rem;
+    padding-block: 1.15rem 0.35rem;
+  }
+
+  .sheet-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.85rem, 3.6vw, 2.7rem);
+    font-weight: 560;
+    line-height: 0.98;
+    letter-spacing: -0.04em;
+    max-width: 16ch;
+  }
+
+  .sheet-title span {
+    display: block;
+  }
+
+  .sheet-thesis {
+    max-width: 46ch;
+    color: var(--color-muted);
+    font-size: 0.98rem;
+    line-height: 1.55;
+  }
+
+  .sheet-block {
+    padding-top: 1rem;
+  }
+
+  .sheet-label {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-blue);
+  }
+
+  .sheet-intro {
+    margin-top: 0.35rem;
+    max-width: 78ch;
+    color: var(--color-muted);
+    font-size: 0.8125rem;
+    line-height: 1.45;
+  }
+
+  .sheet-models,
+  .sheet-caps,
+  .sheet-products {
+    display: grid;
+    gap: 0.7rem;
+    margin-top: 0.7rem;
+  }
+
+  .sheet-model {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-width: 0;
+    padding: 0.8rem 0.85rem 0.7rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .sheet-model.is-pending {
+    border-color: color-mix(in oklab, var(--color-cyan) 42%, var(--color-line));
+  }
+
+  .sheet-key {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .sheet-model h3,
+  .sheet-cap h3,
+  .sheet-step h3,
+  .sheet-product h3 {
+    font-size: 0.98rem;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+  }
+
+  .sheet-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.18rem 0.15rem;
+  }
+
+  .sheet-items li {
+    font-size: 0.75rem;
+    line-height: 1.35;
+    color: var(--color-muted);
+  }
+
+  .sheet-items li::before {
+    content: "·";
+    margin-right: 0.28rem;
+    color: var(--color-blue);
+  }
+
+  .sheet-meta,
+  .sheet-tags,
+  .sheet-cat,
+  .sheet-status,
+  .sheet-legal,
+  .sheet-mail-label,
+  .sheet-price {
+    font-family: var(--font-mono);
+    letter-spacing: 0.03em;
+  }
+
+  .sheet-meta {
+    margin-top: auto;
+    padding-top: 0.45rem;
+    border-top: 1px solid var(--color-line);
+    font-size: 0.625rem;
+    line-height: 1.4;
+    color: var(--color-subtle);
+  }
+
+  .sheet-model.is-pending .sheet-meta {
+    color: var(--color-cyan);
+  }
+
+  .sheet-cap p,
+  .sheet-solution,
+  .sheet-step p,
+  .sheet-start {
+    margin-top: 0.28rem;
+    color: var(--color-muted);
+    font-size: 0.8125rem;
+    line-height: 1.45;
+  }
+
+  .sheet-tags {
+    margin-top: 0.35rem;
+    font-size: 0.625rem;
+    line-height: 1.4;
+    color: var(--color-subtle);
+  }
+
+  .sheet-steps {
+    display: grid;
+    gap: 0.75rem 1.1rem;
+    margin-top: 0.75rem;
+  }
+
+  .sheet-step {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: 0.55rem;
+    row-gap: 0.12rem;
+    min-width: 0;
+  }
+
+  .sheet-n {
+    grid-row: 1 / span 2;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+    color: var(--color-blue);
+    padding-top: 0.18rem;
+  }
+
+  .sheet-step h3 {
+    font-size: 0.92rem;
+  }
+
+  .sheet-step p {
+    grid-column: 2;
+    margin-top: 0;
+  }
+
+  .sheet-status {
+    font-size: 0.625rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-cyan);
+  }
+
+  .sheet-product {
+    min-width: 0;
+    padding-top: 0.55rem;
+    border-top: 2px solid var(--accent, var(--color-blue));
+  }
+
+  .sheet-product[data-accent="blue"] {
+    --accent: var(--color-blue);
+  }
+
+  .sheet-product[data-accent="cyan"] {
+    --accent: var(--color-cyan);
+  }
+
+  .sheet-product[data-accent="violet"] {
+    --accent: var(--color-violet);
+  }
+
+  .sheet-product h3 {
+    margin-top: 0.2rem;
+    font-size: 1.15rem;
+  }
+
+  .sheet-cat {
+    margin-top: 0.15rem;
+    font-size: 0.6875rem;
+    line-height: 1.4;
+    color: var(--color-subtle);
+  }
+
+  .sheet-product a,
+  .sheet-site,
+  .sheet-mail {
+    overflow-wrap: anywhere;
+  }
+
+  .sheet-product a,
+  .sheet-site {
+    color: var(--color-blue);
+    border-bottom: 1px solid color-mix(in oklab, var(--color-blue) 45%, transparent);
+  }
+
+  .sheet-product a {
+    display: inline-block;
+    margin-top: 0.45rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+  }
+
+  .sheet-close {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1.05rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-line);
+  }
+
+  .sheet-start-title {
+    color: var(--color-fg);
+    font-weight: 600;
+  }
+
+  .sheet-price {
+    margin-top: 0.45rem;
+    font-size: 0.6875rem;
+    line-height: 1.45;
+    color: var(--color-subtle);
+  }
+
+  .sheet-mail {
+    display: inline-block;
+    margin-top: 0.45rem;
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 560;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    border-bottom: 1px solid var(--color-line-strong);
+  }
+
+  .sheet-mail:hover,
+  .sheet-product a:hover,
+  .sheet-site:hover {
+    color: var(--color-fg);
+  }
+
+  .sheet-mail-label,
+  .sheet-site {
+    display: block;
+    margin-top: 0.4rem;
+    font-size: 0.75rem;
+    line-height: 1.4;
+  }
+
+  .sheet-mail-label {
+    color: var(--color-muted);
+  }
+
+  .sheet-legal {
+    padding-block: 0.85rem 1.05rem;
+    font-size: 0.625rem;
+    letter-spacing: 0.05em;
+    color: var(--color-subtle);
+  }
+
+  @media (min-width: 720px) {
+    .sheet-hero {
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+      align-items: end;
+      gap: 1.75rem;
+      padding-block: 1.25rem 0.45rem;
+    }
+
+    .sheet-thesis {
+      justify-self: end;
+    }
+
+    .sheet-models,
+    .sheet-products {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .sheet-caps,
+    .sheet-steps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .sheet-close {
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.8fr);
+      gap: 1.5rem;
+    }
+  }
+
+  @media (min-width: 980px) {
+    .sheet-caps {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 640px) {
+    .sheet-mast-meta {
+      text-align: left;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .sheet,
+    .sheet-model,
+    .sheet-product {
+      border: 1px solid CanvasText;
+    }
+  }
+
+  @page {
+    size: A4;
+    margin: 7mm;
+  }
+
+  /* Home print is ink-light. This sheet keeps the brand colours on paper. */
+  @media print {
+    :global(html:has(body.sheet-page)) {
+      background: var(--color-bg) !important;
+      print-color-adjust: exact;
+      -webkit-print-color-adjust: exact;
+    }
+
+    :global(body.sheet-page) {
+      background: var(--color-bg) !important;
+      color: var(--color-fg) !important;
+      print-color-adjust: exact;
+      -webkit-print-color-adjust: exact;
+    }
+
+    :global(body.sheet-page) :global(.skip-link),
+    .sheet-toolbar {
+      display: none !important;
+    }
+
+    :global(body.sheet-page) :global(a) {
+      color: inherit;
+      text-decoration: none !important;
+    }
+  }
+
+  @media print {
+    .sheet-main {
+      padding: 0 !important;
+    }
+
+    .sheet {
+      width: auto !important;
+      max-width: none !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      overflow: visible !important;
+      background: transparent !important;
+    }
+
+    .sheet-mast,
+    .sheet-hero,
+    .sheet-block,
+    .sheet-close,
+    .sheet-legal {
+      padding-inline: 0 !important;
+    }
+
+    .sheet-mast {
+      padding-block: 2mm 1.6mm !important;
+    }
+
+    .sheet-kicker,
+    .sheet-support,
+    .sheet-label,
+    .sheet-n,
+    .sheet-key {
+      font-size: 7pt !important;
+    }
+
+    .sheet-hero {
+      display: grid !important;
+      grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr) !important;
+      align-items: end !important;
+      gap: 4mm !important;
+      padding-block: 2.4mm 1mm !important;
+    }
+
+    .sheet-title {
+      font-size: 17.5pt !important;
+      line-height: 1.02 !important;
+    }
+
+    .sheet-thesis,
+    .sheet-intro,
+    .sheet-cap p,
+    .sheet-solution,
+    .sheet-step p,
+    .sheet-start {
+      font-size: 8pt !important;
+      line-height: 1.34 !important;
+    }
+
+    .sheet-block {
+      padding-top: 2.2mm !important;
+    }
+
+    .sheet-label {
+      margin: 0 !important;
+    }
+
+    .sheet-intro {
+      margin-top: 0.6mm !important;
+    }
+
+    .sheet-models,
+    .sheet-caps,
+    .sheet-products,
+    .sheet-steps {
+      display: grid !important;
+      gap: 1.6mm !important;
+      margin-top: 1.4mm !important;
+    }
+
+    .sheet-models,
+    .sheet-products,
+    .sheet-caps {
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    }
+
+    .sheet-steps {
+      grid-template-columns: 1fr 1fr !important;
+      gap: 1mm 3mm !important;
+    }
+
+    .sheet-model {
+      gap: 0.7mm !important;
+      padding: 1.5mm 1.7mm 1.3mm !important;
+      border-radius: 1.5mm !important;
+      break-inside: avoid;
+    }
+
+    .sheet-model h3,
+    .sheet-cap h3,
+    .sheet-step h3 {
+      font-size: 9pt !important;
+      line-height: 1.2 !important;
+    }
+
+    .sheet-items li,
+    .sheet-tags,
+    .sheet-cat,
+    .sheet-meta,
+    .sheet-status,
+    .sheet-price,
+    .sheet-mail-label,
+    .sheet-product a,
+    .sheet-site,
+    .sheet-legal {
+      font-size: 7pt !important;
+      line-height: 1.32 !important;
+    }
+
+    .sheet-meta {
+      padding-top: 0.8mm !important;
+    }
+
+    .sheet-tags,
+    .sheet-cat,
+    .sheet-solution,
+    .sheet-cap p,
+    .sheet-price {
+      margin-top: 0.5mm !important;
+    }
+
+    .sheet-product {
+      padding-top: 1mm !important;
+      break-inside: avoid;
+    }
+
+    .sheet-product h3 {
+      font-size: 10pt !important;
+    }
+
+    .sheet-product a {
+      margin-top: 0.7mm !important;
+    }
+
+    .sheet-close {
+      display: grid !important;
+      grid-template-columns: minmax(0, 1.45fr) minmax(12rem, 0.7fr) !important;
+      gap: 4mm !important;
+      margin-top: 2.4mm !important;
+      padding-top: 2mm !important;
+      break-inside: avoid;
+    }
+
+    .sheet-mail {
+      margin-top: 0.8mm !important;
+      font-size: 10pt !important;
+    }
+
+    .sheet-legal {
+      padding-block: 1.6mm 0 !important;
+    }
+
+    .sheet-title .text-grad {
+      background: none !important;
+      color: var(--color-cyan) !important;
+      -webkit-text-fill-color: currentColor !important;
+    }
+  }
+</style>

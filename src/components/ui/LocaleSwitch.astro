@@ -6,11 +6,18 @@ interface Props {
   locale: Locale;
   label: string;
   class?: string;
+  /** Override the home links when the switch stays on another page. */
+  ptHref?: string;
+  enHref?: string;
 }
 
-const { locale, label, class: className = "" } = Astro.props;
-const ptHref = pathFor("pt-BR");
-const enHref = pathFor("en");
+const {
+  locale,
+  label,
+  class: className = "",
+  ptHref = pathFor("pt-BR"),
+  enHref = pathFor("en"),
+} = Astro.props;
 ---
 
 <div class:list={["lang-switch", className]} role="group" aria-label={label} data-locale-switch>

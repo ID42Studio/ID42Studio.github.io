@@ -15,7 +15,7 @@ import Saaw from "../components/sections/Saaw.astro";
 import Labs from "../components/sections/Labs.astro";
 import Cta from "../components/sections/Cta.astro";
 import Footer from "../components/sections/Footer.astro";
-import { getContent, pagePath, type Locale } from "../i18n";
+import { getContent, localizedPath, pagePath, type Locale } from "../i18n";
 import { withBase } from "../lib/base";
 import { mailto, publishedProfiles } from "../data/site";
 
@@ -46,7 +46,13 @@ const linkedin = publishedProfiles()[0];
     <About content={content.about} />
     <Saaw content={content.saaw} />
     <Labs content={content.labs} />
-    <Cta content={content.cta} mailHref={mailHref} linkedin={linkedin} />
+    <Cta
+      content={content.cta}
+      mailHref={mailHref}
+      linkedin={linkedin}
+      onePagerHref={withBase(localizedPath(locale, "one-pager"))}
+      onePagerLabel={content.onePager.download}
+    />
   </main>
 
   <Footer
