@@ -4,6 +4,8 @@
 ## Pages
 - [Português](https://id42studio.github.io/): default locale
 - [English](https://id42studio.github.io/en/): English version
+- [Apresentação de uma página](https://id42studio.github.io/one-pager/): Portuguese one-page brief for proposals
+- [One-page presentation](https://id42studio.github.io/en/one-pager/): English one-page brief for proposals
 
 ## Thesis
 Software as a Work: systems that combine engineering, automation and artificial intelligence to
