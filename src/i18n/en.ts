@@ -525,7 +525,7 @@ export const en: SiteContent = {
     description: "This address does not exist, or it has moved.",
   },
   cta: {
-    title: "Let's build the right solution?",
+    title: "Let's build the right solution.",
     text: "Got a process that eats time, a system that needs to evolve, or a product idea? Tell us what you want to solve — we will look at the technical path and what makes sense to execute.",
     button: "Talk about a project",
     secondary: "Talk on LinkedIn",
