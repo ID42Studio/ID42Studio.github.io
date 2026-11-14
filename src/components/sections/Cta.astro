@@ -1,5 +1,6 @@
 ---
 import type { SiteContent } from "../../i18n";
+import { site } from "../../data/site";
 import Icon from "../ui/Icon.astro";
 import Anchor from "../ui/Anchor.astro";
 
@@ -40,7 +41,7 @@ const { content, mailHref, linkedin } = Astro.props;
         )}
       </div>
 
-      <p class="cta-note">{content.note}</p>
+      <p class="cta-note">{site.email} · {content.note}</p>
     </div>
   </div>
 </section>

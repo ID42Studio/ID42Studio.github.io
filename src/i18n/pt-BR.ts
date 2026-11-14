@@ -529,7 +529,7 @@ export const ptBR: SiteContent = {
     text: "Tem um processo que consome tempo, um sistema que precisa evoluir ou uma ideia de produto? Conte o que você quer resolver — avaliamos o caminho técnico e o que faz sentido executar.",
     button: "Conversar sobre um projeto",
     secondary: "Conversar no LinkedIn",
-    note: "contato@id42.studio · resposta de uma pessoa, não de um formulário.",
+    note: "resposta de uma pessoa, não de um formulário.",
     emailSubject: "Projeto — ID42 Studio",
     emailBody: "Olá ID42! O que queremos resolver é: ",
   },

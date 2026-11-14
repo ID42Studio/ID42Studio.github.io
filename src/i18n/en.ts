@@ -529,7 +529,7 @@ export const en: SiteContent = {
     text: "Got a process that eats time, a system that needs to evolve, or a product idea? Tell us what you want to solve — we will look at the technical path and what makes sense to execute.",
     button: "Talk about a project",
     secondary: "Talk on LinkedIn",
-    note: "contato@id42.studio · a person answers, not a form.",
+    note: "a person answers, not a form.",
     emailSubject: "Project — ID42 Studio",
     emailBody: "Hi ID42! What we want to solve is: ",
   },

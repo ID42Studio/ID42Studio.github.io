@@ -8,7 +8,11 @@ export const site = {
   url: "https://id42studio.github.io",
   name: "ID42 Studio",
   legalName: "ID42 Studio",
-  email: "contato@id42.studio",
+  /**
+   * Temporary inbox. The id42.studio domain is not registered yet;
+   * put contato@id42.studio back in this field once it is.
+   */
+  email: "talkid42studio@gmail.com",
   /** Raster mark used as the Organization logo in structured data. */
   logo: "/icon-512.png",
   /**
