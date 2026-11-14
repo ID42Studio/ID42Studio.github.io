@@ -16,6 +16,7 @@ import Labs from "../components/sections/Labs.astro";
 import Cta from "../components/sections/Cta.astro";
 import Footer from "../components/sections/Footer.astro";
 import { getContent, pagePath, type Locale } from "../i18n";
+import { withBase } from "../lib/base";
 import { mailto, publishedProfiles } from "../data/site";
 
 interface Props {
@@ -25,7 +26,7 @@ interface Props {
 const { locale } = Astro.props;
 const content = getContent(locale);
 const mailHref = mailto(content.cta.emailSubject, content.cta.emailBody);
-const homeHref = pagePath(locale);
+const homeHref = withBase(pagePath(locale));
 const linkedin = publishedProfiles()[0];
 ---
 

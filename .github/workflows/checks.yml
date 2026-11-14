@@ -1,0 +1,60 @@
+name: Pull request checks
+
+on:
+  pull_request:
+
+# The pull request build stays read-only. actions: write exists only so the
+# static preview artifact can be uploaded for the trusted publisher.
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: checks-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Ship gate
+        run: npm run ship
+
+      - name: Build the PR preview
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: npm run build:preview
+
+      - name: Verify the PR preview
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: npm run verify:preview
+
+      - name: Preview browser check
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: npm run test:preview
+
+      - name: Upload preview artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: preview-pr-${{ github.event.pull_request.number }}
+          path: dist-preview/
+          include-hidden-files: true
+          retention-days: 7

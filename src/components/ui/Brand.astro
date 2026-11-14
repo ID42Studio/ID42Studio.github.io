@@ -1,9 +1,11 @@
 ---
+import { withBase } from "../../lib/base";
+
 interface Props {
   href?: string;
   compact?: boolean;
 }
-const { href = "/", compact = false } = Astro.props;
+const { href = withBase("/"), compact = false } = Astro.props;
 
 /** Unique gradient id: the brand renders in the header and the footer. */
 const gradientId = `brand-grad-${Math.random().toString(36).slice(2, 8)}`;

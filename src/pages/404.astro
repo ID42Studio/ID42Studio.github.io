@@ -3,6 +3,7 @@ import Base from "../layouts/Base.astro";
 import Brand from "../components/ui/Brand.astro";
 import { site } from "../data/site";
 import { getContent } from "../i18n";
+import { withBase } from "../lib/base";
 
 const pt = getContent("pt-BR").notFound;
 const en = getContent("en").notFound;
@@ -13,8 +14,8 @@ const mailHref = `mailto:${site.email}`;
  * Both languages are in the document so either reader can recover.
  */
 const languages = [
-  { code: "pt-BR", copy: pt, href: "/" },
-  { code: "en", copy: en, href: "/en/" },
+  { code: "pt-BR", copy: pt, href: withBase("/") },
+  { code: "en", copy: en, href: withBase("/en/") },
 ] as const;
 ---
 
@@ -36,7 +37,7 @@ const languages = [
     </div>
 
     <div class="shell nf-inner">
-      <a href="/" class="nf-brand"><Brand href="/" /></a>
+      <a href={withBase("/")} class="nf-brand"><Brand href={withBase("/")} /></a>
 
       <p class="eyebrow"><span class="idx">404</span></p>
 

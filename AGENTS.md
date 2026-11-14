@@ -23,6 +23,9 @@ deployed to GitHub Pages at the domain root (`https://id42studio.github.io`).
   `prefers-reduced-motion: reduce` and must not be required to read content.
 - **English in the repo, Portuguese in the browser.** Commits, comments, docs
   and identifiers are English; site copy follows the locale dictionaries.
+- **Keep PR previews.** Production publishes `dist/` to `gh-pages` with
+  `clean-exclude: pr-preview/`. Do not force-push over that branch. Preview
+  builds set `SITE_BASE=/pr-preview/pr-<N>/` and must stay `noindex`.
 
 ## Commands
 
@@ -31,6 +34,8 @@ npm run dev       # dev server on :4321
 npm run build     # static build into dist/
 npm run preview   # serve dist/
 npm run check     # astro check — must pass before committing
+npm run test      # preview validation and workflow guards
+npm run ship      # test + check + build + verify + e2e
 ```
 
 ## Structure

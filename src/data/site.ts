@@ -1,3 +1,5 @@
+import { withBase } from "../lib/base.ts";
+
 /**
  * Site-wide configuration: canonical URL, contact channels and product links.
  * Values here are the single source of truth for the whole page.
@@ -35,6 +37,6 @@ export const mailto = (subject: string, body?: string): string => {
   return `mailto:${site.email}${query ? `?${query}` : ""}`;
 };
 
-/** Path for a locale: pt-BR lives at the root, English under /en/. */
+/** Path for a locale: pt-BR lives at the root, English under /en/. Includes the preview base. */
 export const pathFor = (locale: "pt-BR" | "en", hash = ""): string =>
-  locale === "en" ? `/en/${hash}` : `/${hash}`;
+  withBase(locale === "en" ? `/en/${hash}` : `/${hash}`);
